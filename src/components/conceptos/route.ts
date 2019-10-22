@@ -30,5 +30,24 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
         return res.status(500).json({message:"Error interno"});
     }
 });
+router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {response,code} = await controller.update(req);
+        return res.status(code).json(response);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:"Error interno"});
+    }
+});
+//eliminar una grupo
+router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {response,code} = await controller.remove(req);
+        return res.status(code).json(response);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:"Error interno"});
+    }
+});
 
 export default router;

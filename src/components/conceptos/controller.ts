@@ -69,3 +69,53 @@ export const getOne = async (id:string | number ,query:any):Promise<any> =>{
         throw new Error(`Error al consultar la base de datos, error: ${error}`);
     }
 }
+
+export const create = async (req:Request):Promise<any> =>{
+    let {data,data1} = req.body;
+    let newConcepto:IConcepto = data;
+    let presentaciones = data1;
+    try {
+        let {insertId} = await conceptos.create(model,newConcepto) as any;
+        presentaciones.forEach(async (element: any) => {
+            element.conceptos_id=insertId;
+            await conceptos.create('presentaciones',element);
+        });
+        let link = links.created('grupos',insertId);
+        let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
+        return {response,code:201};
+    } catch (error) {
+        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+    }
+}
+
+export const update = async (req:Request):Promise<any> => {
+    let {id} = req.params;
+    let {data,data1} = req.body;
+    let newGrupo:IConcepto = data;
+    let presentaciones = data1;
+    try {
+        let {affectedRows} = await conceptos.update(model,id,newGrupo) as any;
+        presentaciones.forEach(async (element:any) => {
+            await conceptos.update('presentaciones',element.id,element);
+        });
+        let link = links.created('grupos',id);
+        let response = Object.assign({message:"Registro actualizado en la base de datos",affectedRows},{link:link});
+        return {response,code:201};
+    } catch (error) {
+        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+    }
+}
+
+export const remove = async (req:Request):Promise<any> => {
+    let {id} = req.params;
+    try {
+        let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
+        pres.forEach(async (element:any) => {
+            await conceptos.remove('presentaciones',element.id);
+        });
+        await conceptos.remove(model,id);
+        return {response:{message:"Registro eliminado de la base de datos"},code:200};   
+    } catch (error) {
+        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+    }
+}
