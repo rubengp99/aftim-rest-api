@@ -14,6 +14,7 @@ export const get = async (model:string,query:any):Promise<any> => {
 export const getOne = async (model:string,id:string | number ,query:any):Promise<any> =>{
     const con = await connect();
     let sql = querys.selectSQLOne(id,query,model);
+
     try {
         let data = await con.query(sql);
         return data[0];

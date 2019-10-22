@@ -3,7 +3,14 @@
 //funcion dedicada a realizar el select
 export function selectSQL(query:any,tabla:string): string{
     var sql = "";
-    let field = query.fields || "*";
+    let {fields} = query;
+    if(fields){
+        fields = fields.replace(',presentaciones','');
+        fields = fields.replace(',presentaciones,','');
+        fields = fields.replace('presentaciones,','');
+        fields = fields.replace('presentaciones','');
+    }
+    let field = fields || "*";
     sql+= "SELECT "+field+" FROM "+tabla+" ";
     var where = "";
     var index = 0;
@@ -33,17 +40,32 @@ export function selectSQL(query:any,tabla:string): string{
     let offset = query.offset || "0";
     meta = "  order by "+orderField+" "+order+" limit "+limit+" offset "+offset;
     sql += meta;
+    console.log(sql);
     return sql;
 }
 export function selectSQLOne(id:string | number,query:any,tabla:string):string {
     var sql = "";
-    let fields = query.fields || "*";
-    sql= `SELECT ${fields} FROM ${tabla} WHERE id = '${id}'`;
+    let {fields} = query;
+    if(fields){
+        fields = fields.replace(',presentaciones','');
+        fields = fields.replace(',presentaciones,','');
+        fields = fields.replace('presentaciones,','');
+        fields = fields.replace('presentaciones','');
+    }
+    let field = fields || "*";
+    sql= `SELECT ${field} FROM ${tabla} WHERE id = '${id}'`;
     return sql;
 }
 export function selectByFilter(query:any,tabla:string,filter:string,id:string | number):string{
     var sql = "";
-    let field = query.fields || "*";
+    let {fields} = query;
+    if(fields){
+        fields = fields.replace(',presentaciones','');
+        fields = fields.replace(',presentaciones,','');
+        fields = fields.replace('presentaciones,','');
+        fields = fields.replace('presentaciones','');
+    }
+    let field =  fields || "*";
     sql += `SELECT ${field} FROM ${tabla} WHERE ${filter}_id = ${id}`;
     var where = "";
     var index = 0;
@@ -73,5 +95,6 @@ export function selectByFilter(query:any,tabla:string,filter:string,id:string | 
     let offset = query.offset || "0";
     meta = ` order by ${orderField} ${order} limit ${limit} offset ${offset}`;
     sql += meta;
+    console.log(sql);
     return sql;
 }

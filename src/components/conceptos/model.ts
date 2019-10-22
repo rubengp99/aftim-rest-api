@@ -54,5 +54,6 @@ export interface IConcepto{
     merma?: boolean | number,
     exitencia_c?: number,
     obviar_ajuste?: boolean | number,
-    iva?:boolean | number
+    iva?:boolean | number,
+    presentaciones?: any[]
 }
