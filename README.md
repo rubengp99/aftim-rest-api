@@ -140,57 +140,57 @@ The sotre are the diferentes places on the concepst can be on the inventory.
 The concepts are the different types of assets that the business owns
 
 #### Estructure:
-<strong>id</strong>: Unique identificator of the entity on the database </br>
-<strong>codigo</strong>: ID of the user responsible for the store </br>
-<strong>referencia</strong>: ID of the user responsible for the store </br>
-<strong>nombre</strong>: Name of the store to differentiate it </br>
-<strong>descripcion</strong>: ID of the user responsible for the store </br>
-<strong>talla</strong>: Name of the store to differentiate it </br>
-<strong>color</strong>: Name of the store to differentiate it </br>
-<strong>descuento</strong>: Name of the store to differentiate it </br>
-<strong>serial_statico</strong>: Name of the store to differentiate it </br>
-<strong>serial_dinamico</strong>: Name of the store to differentiate it </br>
-<strong>existencia_minima</strong>: Name of the store to differentiate it </br>
-<strong>existencia_maxima</strong>: Name of the store to differentiate it </br>
-<strong>tipos_conceptos_id</strong>: Name of the store to differentiate it </br>
-<strong>ubicacion_id</strong>: Name of the store to differentiate it </br>
-<strong>costo</strong>: Name of the store to differentiate it </br>
-<strong>ultimo_costo</strong>: Name of the store to differentiate it </br>
-<strong>costo_mayor</strong>: Name of the store to differentiate it </br>
-<strong>costo_promedio</strong>: Name of the store to differentiate it </br>
-<strong>fecha_at</strong>: Name of the store to differentiate it </br>
-<strong>fecha_in</strong>: Name of the store to differentiate it </br>
-<strong>fecha_uc</strong>: Name of the store to differentiate it </br>
-<strong>grupos_id</strong>: Name of the store to differentiate it </br>
-<strong>subgrupos_id</strong>: Name of the store to differentiate it </br>
-<strong>fecha_hora</strong>: Name of the store to differentiate it </br>
-<strong>marcas_id</strong>: Name of the store to differentiate it </br>
-<strong>estado</strong>: Name of the store to differentiate it </br>
-<strong>pvp</strong>: Name of the store to differentiate it </br>
-<strong>precio_a</strong>: Name of the store to differentiate it </br>
-<strong>precio_b</strong>: Name of the store to differentiate it </br>
-<strong>precio_c</strong>: Name of the store to differentiate it </br>
-<strong>precio_dolar</strong>: Name of the store to differentiate it </br>
-<strong>costo_dolar</strong>: Name of the store to differentiate it </br>
-<strong>predcio_variante</strong>: Name of the store to differentiate it </br>
-<strong>retiene</strong>: Name of the store to differentiate it </br>
-<strong>farm_principio_activo_id</strong>: Name of the store to differentiate it </br>
-<strong>imagen</strong>: Name of the store to differentiate it </br>
-<strong>costo_adicional</strong>: Name of the store to differentiate it </br>
-<strong>costo_adicional2</strong>: Name of the store to differentiate it </br>
-<strong>cant_ensamblado</strong>: Name of the store to differentiate it </br>
-<strong>licor</strong>: Name of the store to differentiate it </br>
-<strong>porcentaje</strong>: Name of the store to differentiate it </br>
-<strong>visible_pv</strong>: Name of the store to differentiate it </br>
-<strong>visible_web</strong>: Name of the store to differentiate it </br>
-<strong>rest_areas_id</strong>: Name of the store to differentiate it </br>
-<strong>set_cortesia</strong>: Name of the store to differentiate it </br>
-<strong>exento</strong>: Name of the store to differentiate it </br>
-<strong>merma</strong>: Name of the store to differentiate it </br>
-<strong>existencia_c</strong>: Name of the store to differentiate it </br>
-<strong>obviar_ajusto</strong>: Name of the store to differentiate it </br>
-<strong>iva</strong>: Name of the store to differentiate it </br>
-<strong>presentaciones</strong>: Name of the store to differentiate it </br>
+<strong>id</strong>: Type: number(12). Unique identificator of the entity on the database </br>
+<strong>codigo</strong>: Type: string(255). ID or code unique for the product, generaly is the barcode </br>
+<strong>referencia</strong>: Type: string(255). Intern reference of the concept may be barcode to</br>
+<strong>nombre</strong>: Type: string(255). Name of the product / service</br>
+<strong>descripcion</strong>: Type: string(500). Description of the concept </br>
+<strong>talla</strong>: Type: string(255). Size indentificator</br>
+<strong>color</strong>: Type: string(255). Color identificator</br>
+<strong>descuento</strong>: Type: number(12,2). Percent of discount at the sell</br>
+<strong>serial_statico</strong>: Type: string(255).</br>
+<strong>serial_dinamico</strong>: Type: string(255).</br>
+<strong>existencia_minima</strong>: Type: number(12,2). Minimal store of the concept</br>
+<strong>existencia_maxima</strong>: Type: number(12,2). Maximal sotre of the concepts</br>
+<strong>tipos_conceptos_id</strong>: Type: number(12). Type of the concepts 1. Service / 2. Article / 3. Compound / 4. Spend / 5. Assembled</br>
+<strong>ubicacion_id</strong>: Type: number(12). Especified ubication of the concepts on the fisic store</br>
+<strong>costo</strong>: Type: number(12,2). Initial cost of adquisition.</br>
+<strong>ultimo_costo</strong>: Type: number(12,2). Last cost of adquisition</br>
+<strong>costo_mayor</strong>: Type: number(12,2). Higher cost of adquisition </br>
+<strong>costo_promedio</strong>: Type: number(12,2). Average cost of adquisition </br>
+<strong>fecha_at</strong>: Type: date. Date of creation of the resource </br>
+<strong>fecha_in</strong>: Type: date. Date of the last modification </br>
+<strong>fecha_uc</strong>: Type: date. Date of the last buy. </br>
+<strong>grupos_id</strong>: Type: number(12). Identificator of the group tou which it belongs </br>
+<strong>subgrupos_id</strong>: Type: number(12). Identificator of the subgroup tou which it belongs </br>
+<strong>fecha_hora</strong>: Type: date. </br>
+<strong>marcas_id</strong>: Type: number(12). Identificator of the brand </br>
+<strong>estado</strong>: Type: number(12). state of the concept 1. Active / 2. Disabled </br>
+<strong>pvp</strong>: Type: number(12,2).  </br>
+<strong>precio_a</strong>: Type: number(12,2). Price of sell </br>
+<strong>precio_b</strong>: Type: number(12,2). Price of sell secundary </br>
+<strong>precio_c</strong>: Type: number(12,2). Price of sell secundary </br>
+<strong>precio_dolar</strong>: Type: number(12,2). Price of sell on dollars </br>
+<strong>costo_dolar</strong>: Type: number(12,2). Cost on dollars </br>
+<strong>predcio_variante</strong>: Type: number(12,2) </br>
+<strong>retiene</strong>: Type: boolean. </br>
+<strong>farm_principio_activo_id</strong>: Type: number(12). Active ingredient of the product </br>
+<strong>imagen</strong>: Type: string(255). URLs of the image avatar</br>
+<strong>costo_adicional</strong>: Type: number(12,2).</br>
+<strong>costo_adicional2</strong>: Type: number(12,2). </br>
+<strong>cant_ensamblado</strong>: Type: number(12,2). Cant of the assambled template </br>
+<strong>licor</strong>: Type: boolean. </br>
+<strong>porcentaje</strong>: Type: number(12,2). Percentage of asignation to the seller </br>
+<strong>visible_pv</strong>: Type: boolean. Active on the POS </br>
+<strong>visible_web</strong>: Type: boolean. Active on the WEB </br>
+<strong>rest_areas_id</strong>: Type: number(12). Area of sell </br>
+<strong>set_cortesia</strong>: Type: boolean.</br>
+<strong>exento</strong>: Type: boolean. No taxes </br>
+<strong>merma</strong>: Type: boolean. Have waste </br>
+<strong>existencia_c</strong>: Type: number(12,2) </br>
+<strong>obviar_ajuste</strong>: Type: boolean. Adjust of price evade </br>
+<strong>iva</strong>: Type: boolean. IVA aplicable </br>
+<strong>presentaciones</strong>: Type: array. Collection of presentation of the concept </br>
 
 #### End-points
 <code>GET: api/conceptos/</code> Get the concepts</br>

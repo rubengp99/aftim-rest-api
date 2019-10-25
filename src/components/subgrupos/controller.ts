@@ -2,7 +2,7 @@ import * as subgrupo from '../../helpers/consult';
 import {ISubgrupo} from './model';
 import {Request} from 'express';
 import  * as links from '../../helpers/links';
-const model = "subgrupo";
+const model = "subgrupos";
 export const get = async (req:Request):Promise<any>=>{
     let {query} = req;
     try {
