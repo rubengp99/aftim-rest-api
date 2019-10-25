@@ -31,16 +31,32 @@ run this script to generate a development server that watch the changes on the c
 Every call to the api require a header with a token with the developer authorization user and password of the partner </br>
 the token have the next estructure: <code>{"password" : "123456", "user" : "admin"}</code> and the header's name is <code>x-access-control</code>
 
+### Requests
+
+Requests to the server must be made through the URLs: <code>http://localhost:81/api/${endpint}/?${query}</code>, each endpoint will be given for the resource they wish to obtain or mutate, for example: <code>http://localhost:81/api/conceptos/?limit=20&fields=id,nombre</code>
+
+#### Query
+<strong>fields</strong>: This paramater indicate which of the attributes of the entity are required by the user, separated by comma</br>
+<strong>offset</strong>: This parameter indicates the index where the data path begins</br>
+<strong>limit</strong>: This parameter indicates the lenght of the array of data</br>
+<strong>order</strong>: This parameter indicates the order of the array ascendent/descendent</br>
+<strong>orderField</strong>: This parameter indicates the key or fiedl by which the array will be ordered</br>
+<strong>${field}</strong>: Indicates a key to filter the array</br>
+<strong>before</strong>: it gets concatenated before the filter key field to indicate that the records are less than or equal to the value</br>
+<strong>after</strong>: it gets concatenated before the filter key field to indicate that the records are greater than or equal to the value</br>
+
+## Entities
+
 ### Grupos
 
 The groups/grupos are a entity dedicated to clasify the concepts by general types, for example the <strong>milk</strong> belong to the <strong>drinks</strong> group
 
 #### Estructure:
-<strong>id</strong>: Unique identificator of the entity on the database </br>
-<strong>nombre</strong>: Name of the group to differentiate it </br>
-<strong>imagen</strong>: Url of the image avatar of the group </br>
-<strong>visualizar</strong>: Flag responsible for indicating if the group is seen in the system </br>
-<strong>posicion</strong>: Posicion of the group on the lists of the system </br>
+<strong>id</strong>: Type: number (12). Unique identificator of the entity on the database </br>
+<strong>nombre</strong>: Type: string (255). Name of the group to differentiate it </br>
+<strong>imagen</strong>: Type: string(255). Url of the image avatar of the group </br>
+<strong>visualizar</strong>: Type: boolean. Flag responsible for indicating if the group is seen in the system </br>
+<strong>posicion</strong>: Type: number(12) Posicion of the group on the lists of the system </br>
 
 #### End-points
 <code>GET: api/grupos/</code> Get the groups</br>
@@ -56,12 +72,12 @@ The groups/grupos are a entity dedicated to clasify the concepts by general type
 The subgroups like the groups are entities that handle the clasification of the concepts, for example the <strong>milk</strong> belong to the <strong>dairy</strong> subgroup which in turn belongs to the <strong>drinks</strong> group
 
 #### Estructure:
-<strong>id</strong>: Unique identificator of the entity on the database </br>
-<strong>grupos_id</strong>: Identificator of the group that the subgroup belong to </br>
-<strong>nombre</strong>: Name of the subgroup to differentiate it </br>
-<strong>imagen</strong>: Url of the image avatar of the group </br>
-<strong>visualizar</strong>: Flag responsible for indicating if the subgroup is seen in the system </br>
-<strong>posicion</strong>: Posicion of the group on the lists of the system </br>
+<strong>id</strong>: Type: number(12). Unique identificator of the entity on the database </br>
+<strong>grupos_id</strong>: Type: number(12). Identificator of the group that the subgroup belong to </br>
+<strong>nombre</strong>: Type: string(255). Name of the subgroup to differentiate it </br>
+<strong>imagen</strong>: Typè: string(255). Url of the image avatar of the group </br>
+<strong>visualizar</strong>: Type: boolean. Flag responsible for indicating if the subgroup is seen in the system </br>
+<strong>posicion</strong>: Type: boolean. Posicion of the group on the lists of the system </br>
 
 #### End-points
 <code>GET: api/subgrupos/</code> Get the subgroups</br>
@@ -76,8 +92,8 @@ The subgroups like the groups are entities that handle the clasification of the 
 The brands/marcas  are identificators of the concepts, for example the <strong>milk</strong> is from <strong>Andes</strong> brand
 
 #### Estructure:
-<strong>id</strong>: Unique identificator of the entity on the database </br>
-<strong>nombre</strong>: Name of the subgroup to differentiate it </br>
+<strong>id</strong>: Type: number(12). Unique identificator of the entity on the database </br>
+<strong>nombre</strong>: Type: string(255). Name of the brand to differentiate it </br>
 
 #### End-points
 <code>GET: api/marcas/</code> Get the brands</br>
@@ -92,8 +108,8 @@ The brands/marcas  are identificators of the concepts, for example the <strong>m
 The units are measures of cantity to the concepts, for example the <strong>milk</strong> is measured in  <strong>Liters</strong>
 
 #### Estructure:
-<strong>id</strong>: Unique identificator of the entity on the database </br>
-<strong>nombre</strong>: Name of the unit to differentiate it </br>
+<strong>id</strong>: Type: number(12). Unique identificator of the entity on the database </br>
+<strong>nombre</strong>: Type: string(255). Name of the unit to differentiate it </br>
 
 #### End-points
 <code>GET: api/unidades/</code> Get the units</br>
@@ -107,9 +123,9 @@ The units are measures of cantity to the concepts, for example the <strong>milk<
 The sotre are the diferentes places on the concepst can be on the inventory.
 
 #### Estructure:
-<strong>id</strong>: Unique identificator of the entity on the database </br>
-<strong>nombre</strong>: Name of the store to differentiate it </br>
-<strong>usuario_id</strong>: ID of the user responsible for the store </br>
+<strong>id</strong>: Type: number(12). Unique identificator of the entity on the database </br>
+<strong>nombre</strong>: Type: string(255). Name of the store to differentiate it </br>
+<strong>usuario_id</strong>: Type: number(12). ID of the user responsible for the store </br>
 
 #### End-points
 <code>GET: api/depositos/</code> Get the stores</br>
