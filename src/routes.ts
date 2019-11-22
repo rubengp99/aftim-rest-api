@@ -7,6 +7,7 @@ import unidades from './components/unidades/route';
 import depositos from './components/depositos/route';
 import movDep from './components/movimiento_deposito/route';
 import areasAtencion from './components/areas_atencion/route';
+import banco from './components/banco/route';
 
 export const routes =  (app:Application) =>{
     app.use('/api/grupos',grupo);
@@ -17,4 +18,5 @@ export const routes =  (app:Application) =>{
     app.use('/api/depositos',depositos);
     app.use('/api/movimiento_deposito',movDep);
     app.use('/api/areas_atencion',areasAtencion);
+    app.use('/api/banco',banco);
 };
