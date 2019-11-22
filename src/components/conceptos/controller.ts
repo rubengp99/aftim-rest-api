@@ -31,7 +31,7 @@ export const get = async (req: Request): Promise<any> => {
                     data[i].presentaciones = pres; // populo el objeto con el arreglo de presentaciones
                 }
             }
-            let link = links.pages(data, 'grupos', count, totalCount, limit);
+            let link = links.pages(data, 'conceptos', count, totalCount, limit);
             let response = Object.assign({ totalCount, count, data }, link);
             return response;
         } else {
@@ -44,18 +44,17 @@ export const get = async (req: Request): Promise<any> => {
 
 export const getOne = async (id:string | number ,query:any):Promise<any> =>{
     try {
+        if(isNaN(id as number)){
+            return {message:`${id} no es un ID valido`};
+        }
         let data:IConcepto[] = await conceptos.getOne(model,id,query);
         let count = await conceptos.count(model);
         let {fields} = query;
         if(data){
-            console.log(data);
-            if (!fields) {
-                let { id } = data[0];
+            if (!fields) {                
                 let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
                 data[0].presentaciones = pres;
             } else if (fields.includes('presentaciones')) {
-                let { id } = data[0];
-                console.log(id);
                 let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
                 data[0].presentaciones = pres;
             }
@@ -80,7 +79,7 @@ export const create = async (req:Request):Promise<any> =>{
             element.conceptos_id=insertId;
             await conceptos.create('presentaciones',element);
         });
-        let link = links.created('grupos',insertId);
+        let link = links.created('conceptos',insertId);
         let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
         return {response,code:201};
     } catch (error) {

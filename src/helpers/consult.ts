@@ -17,6 +17,7 @@ export const getOne = async (model:string,id:string | number ,query:any):Promise
 
     try {
         let data = await con.query(sql);
+        
         return data[0];
     } catch (error) {
         throw new Error(`Error en conexion con la BD, error: ${error}`);
