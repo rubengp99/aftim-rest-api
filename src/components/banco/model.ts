@@ -1,4 +1,4 @@
-export interface IAreasAtencion {
+export interface IBanco {
     id?: string | number,
     cuenta: string,
     fecha_at?:string,

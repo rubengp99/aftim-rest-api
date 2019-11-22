@@ -1,14 +1,14 @@
 import * as areas from '../../helpers/consult';
 import * as links from '../../helpers/links'
 import { Request } from 'express';
-import { IAreasAtencion } from './model';
+import { IBanco } from './model';
 
 const model = "banco";
 
 export const get = async (req:Request): Promise<any> =>{
     try {
         const { query } = req;
-        let data:IAreasAtencion[] = await areas.get(model,query);
+        let data:IBanco[] = await areas.get(model,query);
         let totalCount: number = await areas.count(model);
         let count = data.length;
         let { limit } = query;
@@ -29,10 +29,11 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
         if(isNaN(id as number)){
             return {message:`${id} no es un ID valido`};
         }
-        let data:IAreasAtencion = await areas.getOne(model,id,query);
+        let data:IBanco[] = await areas.getOne(model,id,query);
         let count:number = await areas.count(model);
-        if(data){
+        if(data[0]){
             let link = links.records(data,model,count);
+            
             let response = Object.assign({data},link);
             return response;
         }else{
@@ -45,7 +46,7 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
 
 export const create = async (req:Request): Promise<any> =>{
     let {data} = req.body;
-    let newArea: IAreasAtencion = data;
+    let newArea: IBanco = data;
     try {
         let {insertId} = await areas.create(model,newArea);
         let link = links.created('banco',insertId);
@@ -59,7 +60,7 @@ export const create = async (req:Request): Promise<any> =>{
 export const update = async (req:Request): Promise<any>=>{
     const {id} = req.params;
     let {data} = req.body;
-    let newArea:IAreasAtencion = data;
+    let newArea:IBanco = data;
 
     try {
         let {affectedRows}  = await areas.update(model,id,newArea);
