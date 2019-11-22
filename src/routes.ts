@@ -20,5 +20,5 @@ export const routes =  (app:Application) =>{
     app.use('/api/movimiento_deposito',movDep);
     app.use('/api/areas_atencion',areasAtencion);
     app.use('/api/banco',banco);
-    app.use('/api/cambio',banco);
+    app.use('/api/cambio',cambio);
 };
