@@ -4,7 +4,7 @@
   "description": "API de conexion entre las aplicaciones de la suite de administracion y la base de datos madre",
   "main": "index.js",
   "scripts": {
-    "clean":"rimraf ./dist",
+    "clean": "rimraf ./dist",
     "build": "tsc",
     "dev": "concurrently \"tsc -w\" \"cross-env NODE_ENV=development nodemon dist/index.js\"",
     "start": "cross-env NODE_ENV=production node dist/index.js"
