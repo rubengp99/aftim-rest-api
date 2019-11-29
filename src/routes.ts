@@ -10,6 +10,7 @@ import areasAtencion from './components/areas_atencion/route';
 import banco from './components/banco/route';
 import cambio from './components/cambio/route';
 import cargos from './components/cargos/route';
+import ciudad from './components/ciudad/route';
 
 export const routes =  (app:Application) =>{
     app.use('/api/grupos',grupo);
@@ -23,4 +24,5 @@ export const routes =  (app:Application) =>{
     app.use('/api/banco',banco);
     app.use('/api/cambio',cambio);
     app.use('/api/cargos',cargos);
+    app.use('/api/ciudad',ciudad);
 };
