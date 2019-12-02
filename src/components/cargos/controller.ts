@@ -50,7 +50,7 @@ export const create = async (req:Request): Promise<any> =>{
     try {
         let {insertId} = await cargos.create(model,newCargo);
         if(insertId){
-            let movDep:any[] = await cargos.get("movmiento_depositos",{depositos_id:newCargo.depositos_id,conceptos_id:newCargo});
+            let movDep:any[] = await cargos.get("movmiento_depositos",{depositos_id:newCargo.depositos_id,conceptos_id:newCargo.conceptos_id});
             let {affectedRows} = await cargos.update("movimiento_depositos",movDep[0].id,movDep[0]);
             if(affectedRows){
                 let link = links.created('banco',insertId);
