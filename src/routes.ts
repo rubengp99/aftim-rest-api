@@ -12,6 +12,7 @@ import cambio from './components/cambio/route';
 import cargos from './components/cargos/route';
 import ciudad from './components/ciudad/route';
 import clientes from './components/clientes/route';
+import descargos from './components/descargos/route';
 
 export const routes =  (app:Application) =>{
     app.use('/api/grupos',grupo);
@@ -26,5 +27,6 @@ export const routes =  (app:Application) =>{
     app.use('/api/cambio',cambio);
     app.use('/api/cargos',cargos);
     app.use('/api/ciudad',ciudad);
-    app.use('/api/clientes',clientes)
+    app.use('/api/clientes',clientes);
+    app.use('/api/descargos',descargos);
 };
