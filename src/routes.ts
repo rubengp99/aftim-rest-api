@@ -1,6 +1,6 @@
-import  {Application} from 'express';
-import  grupo from './components/grupos/route';
-import  subgrupos from './components/subgrupos/route';
+import {Application} from 'express';
+import grupo from './components/grupos/route';
+import subgrupos from './components/subgrupos/route';
 import conceptos from './components/conceptos/route';
 import marcas from './components/marcas/route';
 import unidades from './components/unidades/route';
@@ -13,6 +13,7 @@ import cargos from './components/cargos/route';
 import ciudad from './components/ciudad/route';
 import clientes from './components/clientes/route';
 import descargos from './components/descargos/route';
+import empresa from './components/empresa/route';
 
 export const routes =  (app:Application) =>{
     app.use('/api/grupos',grupo);
@@ -29,4 +30,5 @@ export const routes =  (app:Application) =>{
     app.use('/api/ciudad',ciudad);
     app.use('/api/clientes',clientes);
     app.use('/api/descargos',descargos);
+    app.use('/api/empresa',empresa);
 };
