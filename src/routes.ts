@@ -15,6 +15,7 @@ import clientes from './components/clientes/route';
 import descargos from './components/descargos/route';
 import empresa from './components/empresa/route';
 import entidad from './components/entidad/route';
+import galeria from './components/entidad/route';
 
 export const routes =  (app:Application) =>{
     app.use('/api/grupos',grupo);
@@ -33,4 +34,5 @@ export const routes =  (app:Application) =>{
     app.use('/api/descargos',descargos);
     app.use('/api/empresa',empresa);
     app.use('/api/entidad',entidad);
+    app.use('/api/galeria',galeria);
 };
