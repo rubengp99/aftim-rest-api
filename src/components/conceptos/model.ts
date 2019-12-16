@@ -1,5 +1,6 @@
 export interface IConcepto{
     id?: string | number,
+    empresa_id:string | number,
     codigo?:string | number,
     referencia?: string | number,
     nombre: string,
