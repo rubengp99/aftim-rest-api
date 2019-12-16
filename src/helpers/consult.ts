@@ -1,8 +1,13 @@
 import  {connect} from'../dbs';
+import  {Pool} from 'mysql2/promise';
 import * as querys from './query';
-
+var con:Pool;
+connect().then(connection =>{
+    con = connection;
+})
+.catch(e=>console.log(e));
 export const get = async (model:string,query:any):Promise<any> => {
-    const con = await connect();
+    
     let sql = querys.selectSQL(query,model);
     try {
         let data = await con.query(sql);
@@ -12,7 +17,6 @@ export const get = async (model:string,query:any):Promise<any> => {
     }
 }
 export const getOne = async (model:string,id:string | number ,query:any):Promise<any> =>{
-    const con = await connect();
     let sql = querys.selectSQLOne(id,query,model);
 
     try {
@@ -24,7 +28,6 @@ export const getOne = async (model:string,id:string | number ,query:any):Promise
     }
 }
 export const getOtherByMe = async (model:string,id:string | number ,query:any,other:string):Promise<any> =>{
-    const con = await connect();
     let sql = querys.selectByFilter(query,other,model,id);
     try {
         let data = await con.query(sql);
@@ -35,7 +38,6 @@ export const getOtherByMe = async (model:string,id:string | number ,query:any,ot
 }
 
 export const  create = async (model:string,object:any):Promise<any> =>{
-    const con = await connect();
     try {
         let inserted = await con.query(`INSERT INTO ${model} set ?`,[object]);
         return inserted;
@@ -44,7 +46,6 @@ export const  create = async (model:string,object:any):Promise<any> =>{
     }
 }
 export const update = async (model:string,id:string | number,object:any):Promise<any> =>{
-    const con = await connect();
     try {
         let updated = await con.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
         return updated;
@@ -54,7 +55,6 @@ export const update = async (model:string,id:string | number,object:any):Promise
 }
 
 export const remove = async (model:string,id:string | number):Promise<any> =>{
-    const con = await connect();
     try {
         let deleted = await con.query(`DELETE FROM ${model} WHERE id = ? `,[id]);
         return deleted;
@@ -63,7 +63,6 @@ export const remove = async (model:string,id:string | number):Promise<any> =>{
     } 
 }
 export const count = async (model:string):Promise<number> => {
-    const con = await connect();
     try {
         let count:any = await con.query(`SELECT COUNT(id) as total FROM ${model}`);
         let total = count[0][0].total;
@@ -73,7 +72,6 @@ export const count = async (model:string):Promise<number> => {
     }
 }
 export const countOther = async (model:string,other:string,id:string | number):Promise<number> =>{
-    const con = await connect();
     try {
         let count:any = await con.query(`SELECT COUNT(id) as total FROM ${other} WHERE ${model}_id = ${id}`);
         let total = count[0][0].total;

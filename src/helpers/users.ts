@@ -1,8 +1,11 @@
 import {connect}  from '../dbs';
-
-
+import  {Pool} from 'mysql2/promise';
+var con:Pool;
+connect().then(connection =>{
+    con = connection;
+})
+.catch(e=>console.log(e));
 export const getUser = async (user:string)=>{
-    const con = await connect();
     try {
         let data:any = await con.query(`SELECT * FROM usuario WHERE login = ?`,[user]);
         return data[0];
@@ -11,7 +14,6 @@ export const getUser = async (user:string)=>{
     }
 }
 export const empresa = async (id:string)=>{
-    const con = await connect();
     try {
         let empresa:any = await con.query(`SELECT * FROM empresa WHERE id = ?`,[id]);
         return empresa[0];
@@ -21,7 +23,6 @@ export const empresa = async (id:string)=>{
 }
 
 export const insertUser = async (user:any)=>{
-    const con = await connect();
     try {
         let response = await con.query(`INSERT INTO usuario SET ?`,[user]);
         return response;
