@@ -44,7 +44,7 @@ export const getOne = async (id:string | number ,query:any):Promise<any> => {
 export const getSubGruposByGrupo = async (id:string | number ,query:any ):Promise<any> => {
     try {
         let recurso:IGrupo = await grupo.getOne(model,id,{fields:'id'});
-        if(recurso){
+        if(!recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
         let data:any = await grupo.getOtherByMe(model,id,query,'subgrupos');
