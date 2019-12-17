@@ -47,7 +47,7 @@ export const getConceptosBydeposito = async (id:string | number ,query:any):Prom
         if(!recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
-        let data:any = await deposito.getOtherByMe(model,id,{},'movimiento_deposito');
+        let data:any = await deposito.getOtherByMe(model,id,'movimiento_deposito',{});
         let conceptos:any[] = [];
         for (let index = 0; index < data.length; index++) {
             let concepto = await deposito.getOne('conceptos',data[index].conceptos_id,query);

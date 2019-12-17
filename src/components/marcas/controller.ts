@@ -43,7 +43,7 @@ export const getConceptosByMarca = async (id:string | number ,query:any):Promise
         if(recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
-        let data:any = await marcas.getOtherByMe(model,id,query,'conceptos');
+        let data:any = await marcas.getOtherByMe(model,id,'conceptos',query);
         let totalCount = await marcas.countOther(model,'conceptos',id);
         let count = data.length;
         let {limit} = query;

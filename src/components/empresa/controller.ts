@@ -53,7 +53,7 @@ export const getConceptsByEmpresa = async (id:string | number, query:any):Promis
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
 
-        let data:any = await empresa.getOtherByMe(model,id,query,'conceptos');
+        let data:any = await empresa.getOtherByMe(model,id,'conceptos',query);
         let totalCount = await empresa.countOther(model,'conceptos',id);
         let count = data.length;
         let {limit} = query;
@@ -78,7 +78,7 @@ export const getDepositsByEmpresa = async (id:string | number, query:any):Promis
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
 
-        let data:any = await empresa.getOtherByMe(model,id,query,'depositos');
+        let data:any = await empresa.getOtherByMe(model,id,'depositos',query);
         let totalCount = await empresa.countOther(model,'depositos',id);
         let count = data.length;
         let {limit} = query;

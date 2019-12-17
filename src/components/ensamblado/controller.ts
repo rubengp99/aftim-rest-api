@@ -15,7 +15,7 @@ export const get = async (req:Request): Promise<any> =>{
         if(count > 0){
             for (let i = 0; i < data.length; i++) {
                 let { id } = data[i];
-                let pres:any[] = await ensamblado.getOtherByMe(model, id as string, {}, 'det_ensamblado');
+                let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
                 data[i].detalles = pres;
             }
             let link = links.pages(data, 'ensamblado', count, totalCount, limit);
@@ -37,7 +37,7 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
         let data:IEnsamblado[] = await ensamblado.getOne(model,id,query);
         let count:number = await ensamblado.count(model);
         if(data[0]){
-            let pres:any[] = await ensamblado.getOtherByMe(model, id as string, {}, 'det_ensamblado');
+            let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
             data[0].detalles = pres;
             let link = links.records(data,'ensamblado',count);
             let response = Object.assign({data},link);

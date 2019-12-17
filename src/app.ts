@@ -6,10 +6,22 @@ import path  from 'path';
 import {routes} from './routes';
 import cors  from 'cors';
 
+/**
+ * Class of the principal application of the server
+ * ```
+ * const app = new App();
+ * const app = new App(3000);
+ * ```
+ * 
+ */
 export class App {
     private app:Application;
     private storage:multer.StorageEngine | undefined;
 
+    /**
+     * 
+     * @param port the number of the port where the app is started to listen
+     */
     constructor(private port?: number | string){
         this.app = express();
         this.settings();
@@ -39,6 +51,9 @@ export class App {
         routes(this.app);
     }
 
+    /**
+     * Function to start the server
+     */
     public async listen(){
         await this.app.listen(this.app.get('port'));
         console.log(`[SERVER] running on port ${this.app.get('port')}`);

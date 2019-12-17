@@ -42,7 +42,7 @@ export const getConceptosBySubgrupo = async (id:string | number ,query:any):Prom
         if(recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
-        let data:any = await subgrupo.getOtherByMe(model,id,query,'conceptos');
+        let data:any = await subgrupo.getOtherByMe(model,id,'conceptos',query);
         let totalCount = await subgrupo.countOther(model,'conceptos',id);
         let count = data.length;
         let {limit} = query;

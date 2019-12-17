@@ -21,13 +21,13 @@ export const get = async (req: Request): Promise<any> => {
             if (!fields) {
                 for (let i = 0; i < data.length; i++) {
                     let { id } = data[i];
-                    let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
+                    let pres = await conceptos.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
                     data[i].presentaciones = pres;
                 }
             } else if (fields.includes('presentaciones')) {
                 for (let i = 0; i < data.length; i++) {
                     let { id } = data[i];
-                    let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
+                    let pres = await conceptos.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
                     data[i].presentaciones = pres; // populo el objeto con el arreglo de presentaciones
                 }
             }
@@ -52,10 +52,10 @@ export const getOne = async (id:string | number ,query:any):Promise<any> =>{
         let {fields} = query;
         if(data){
             if (!fields) {                
-                let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
+                let pres = await conceptos.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
                 data[0].presentaciones = pres;
             } else if (fields.includes('presentaciones')) {
-                let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
+                let pres = await conceptos.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
                 data[0].presentaciones = pres;
             }
             let link = links.records(data,'grupos',count);
@@ -78,7 +78,7 @@ export const getDepositsByConcept = async (id:string | number,query:any):Promise
         if(recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
-        let data:any = await conceptos.getOtherByMe(model,id,{fields:'depositos_id,existencia'},'movimiento_deposito');
+        let data:any = await conceptos.getOtherByMe(model,id,'movimiento_deposito',{fields:'depositos_id,existencia'});
         let totalCount = await conceptos.countOther(model,'depositos',id);
         let count = data.length;
         let {limit} = query;
@@ -134,7 +134,7 @@ export const update = async (req:Request):Promise<any> => {
 export const remove = async (req:Request):Promise<any> => {
     let {id} = req.params;
     try {
-        let pres = await conceptos.getOtherByMe(model, id as string, {}, 'presentaciones') as any[];
+        let pres = await conceptos.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
         pres.forEach(async (element:any) => {
             await conceptos.remove('presentaciones',element.id);
         });

@@ -47,7 +47,7 @@ export const getSubGruposByGrupo = async (id:string | number ,query:any ):Promis
         if(!recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
-        let data:any = await grupo.getOtherByMe(model,id,query,'subgrupos');
+        let data:any = await grupo.getOtherByMe(model,id,'subgrupos',query);
         let totalCount = await grupo.countOther(model,'subgrupos',id);
         let count = data.length;
         let {limit} = query;
@@ -65,10 +65,10 @@ export const getSubGruposByGrupo = async (id:string | number ,query:any ):Promis
 export const getConceptosByGrupo = async (id:string | number ,query:any):Promise<any> => {
     try {
         let recurso:IGrupo = await grupo.getOne(model,id,{fields:'id'});
-        if(recurso){
+        if(!recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
-        let data:any = await grupo.getOtherByMe(model,id,query,'conceptos');
+        let data:any = await grupo.getOtherByMe(model,id,'conceptos',query);
         let totalCount = await grupo.countOther(model,'conceptos',id);
         let count = data.length;
         let {limit} = query;
