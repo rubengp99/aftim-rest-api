@@ -38,7 +38,7 @@ export const get = async (req: Request): Promise<any> => {
             return { message: "No se encontraron registros" }
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
@@ -65,7 +65,33 @@ export const getOne = async (id:string | number ,query:any):Promise<any> =>{
             return {message:"No se encontro el recurso indicado"};
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
+    }
+}
+
+export const getDepositsByConcept = async (id:string | number,query:any):Promise<any>=>{
+    try {
+        if(isNaN(id as number)){
+            return {message:`${id} no es un ID valido`};
+        }
+        let recurso:IConcepto = await conceptos.getOne(model,id,{fields:'id'});
+        if(recurso){
+            return {response:{message:"No se encontro el recurso indicado"}, code:404};
+        }
+        let data:any = await conceptos.getOtherByMe(model,id,{fields:'depositos_id,existencia'},'movimiento_deposito');
+        let totalCount = await conceptos.countOther(model,'depositos',id);
+        let count = data.length;
+        let {limit} = query;
+        if(count > 0){
+            let link = links.pages(data,`conceptos/${id}/depositos`,count,totalCount,limit);
+            let response = Object.assign({totalCount,count,data},link);
+            return {response,code:200};
+        }else{
+            return {response:{count,totalCount,message:"No se encontraron registros"},code:200};
+        }
+
+    } catch (error) {
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
@@ -83,7 +109,7 @@ export const create = async (req:Request):Promise<any> =>{
         let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
         return {response,code:201};
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
@@ -101,7 +127,7 @@ export const update = async (req:Request):Promise<any> => {
         let response = Object.assign({message:"Registro actualizado en la base de datos",affectedRows},{link:link});
         return {response,code:201};
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
@@ -115,6 +141,6 @@ export const remove = async (req:Request):Promise<any> => {
         await conceptos.remove(model,id);
         return {response:{message:"Registro eliminado de la base de datos"},code:200};   
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
