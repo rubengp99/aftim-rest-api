@@ -87,11 +87,11 @@ export const getDepositsByConcept = async (id:string | number,query:any):Promise
             return {message:`${id} no es un ID valido`};
         }
         let recurso:IConcepto = await conceptos.getOne(model,id,{fields:'id'});
-        if(recurso){
+        if(!recurso){
             return {response:{message:"No se encontro el recurso indicado"}, code:404};
         }
         let data:any = await conceptos.getOtherByMe(model,id,'movimiento_deposito',{fields:'depositos_id,existencia'});
-        let totalCount = await conceptos.countOther(model,'depositos',id);
+        let totalCount = await conceptos.count('depositos');
         let count = data.length;
         let {limit} = query;
         if(count > 0){
