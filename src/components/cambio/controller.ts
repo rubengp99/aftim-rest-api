@@ -1,13 +1,15 @@
 import * as areas from '../../helpers/consult';
 import * as links from '../../helpers/links'
-import { Request } from 'express';
 import { ICambio } from './model';
 
 const model = "cambio";
 
-export const get = async (req:Request): Promise<any> =>{
+/**
+ * Get the last 50 currencies data
+ * @param query object modifier of the consult
+ */
+export const get = async (query:any): Promise<any> =>{
     try {
-        const { query } = req;
         let data:ICambio[] = await areas.get(model,query);
         let totalCount: number = await areas.count(model);
         let count = data.length;
@@ -20,10 +22,15 @@ export const get = async (req:Request): Promise<any> =>{
             return { message: "No se encontraron registros" }
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
+/**
+ * Get one currency
+ * @param id id of the currency
+ * @param query object modifier of the consult
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)){
@@ -40,12 +47,16 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
             return {message:"No se encontro el recurso indicado"};
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
-export const create = async (req:Request): Promise<any> =>{
-    let {data} = req.body;
+/**
+ * Create a new currency
+ * @param body data of the currency
+ */
+export const create = async (body:any): Promise<any> =>{
+    let {data} = body;
     let newArea: ICambio = data;
     try {
         let {insertId} = await areas.create(model,newArea);
@@ -53,13 +64,18 @@ export const create = async (req:Request): Promise<any> =>{
         let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
         return {response,code:201};
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
-export const update = async (req:Request): Promise<any>=>{
-    const {id} = req.params;
-    let {data} = req.body;
+/**
+ * Update a currency data
+ * @param params object params request
+ * @param body de data of the currency
+ */
+export const update = async (params:any,body:any): Promise<any>=>{
+    const {id} = params;
+    let {data} = body;
     let newArea:ICambio = data;
 
     try {
@@ -68,16 +84,20 @@ export const update = async (req:Request): Promise<any>=>{
         let response = Object.assign({message:"Registro actualizado en la base de datos",affectedRows},{link:link});
         return {response,code:201};
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+/**
+ * Delete a currency
+ * @param params obejct params request
+ */
+export const remove = async (params:any):Promise<any> => {
+    let {id} = params;
     try {
         await areas.remove(model,id);
         return {response:{message:"Registro eliminado de la base de datos"},code:200};   
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }

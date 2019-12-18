@@ -5,9 +5,12 @@ import { ICliente } from './model';
 
 const model = "clientes";
 
-export const get = async (req:Request):Promise<any> =>{
+/**
+ * Get all clients
+ * @param query modifier of the consult
+ */
+export const get = async (query:any):Promise<any> =>{
     try {
-        const { query } = req;
         let data:ICliente[] = await clientes.get(model,query);
         let totalCount: number = await clientes.count(model); // consulto el total de registros de la BD
         let count = data.length;
@@ -24,6 +27,11 @@ export const get = async (req:Request):Promise<any> =>{
     }
 }
 
+/**
+ * Get one client
+ * @param id id of the client
+ * @param query modifier of the consult
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any>=>{
     try {
         if(isNaN(id as number)){
@@ -44,8 +52,12 @@ export const getOne = async (id:string | number ,query:any): Promise<any>=>{
     }
 }
 
-export const create = async (req:Request): Promise<any> =>{
-    let {data} = req.body;
+/**
+ * Create a new client
+ * @param body data of the new client
+ */
+export const create = async (body:any): Promise<any> =>{
+    let {data} = body;
     let newCliente: ICliente = data;
     try {
         let {insertId} = await clientes.create(model,newCliente);
@@ -56,10 +68,14 @@ export const create = async (req:Request): Promise<any> =>{
         throw new Error(`Error al consultar la base de datos, error: ${error}`);
     }
 }
-
-export const update = async (req:Request): Promise<any>=>{
-    const {id} = req.params;
-    let {data} = req.body;
+/**
+ * Update a client data
+ * @param params params request object
+ * @param body data of the cliente
+ */
+export const update = async (params:any,body:any): Promise<any>=>{
+    const {id} = params;
+    let {data} = body;
     let newCliente:ICliente = data;
 
     try {
@@ -72,8 +88,12 @@ export const update = async (req:Request): Promise<any>=>{
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+/**
+ * Delete a client
+ * @param params params request object
+ */
+export const remove = async (params:any):Promise<any> => {
+    let {id} = params;
     try {
         await clientes.remove(model,id);
         return {response:{message:"Registro eliminado de la base de datos"},code:200};   

@@ -1,13 +1,15 @@
 import * as cargos from '../../helpers/consult';
 import * as links from '../../helpers/links'
-import { Request } from 'express';
 import { ICargo } from './model';
 
 const model = "cargos";
 
-export const get = async (req:Request): Promise<any> =>{
+/**
+ * Get all last 50 cargos
+ * @param query object modifier of the consult
+ */
+export const get = async (query:any): Promise<any> =>{
     try {
-        const { query } = req;
         let data:ICargo[] = await cargos.get(model,query);
         let totalCount: number = await cargos.count(model);
         let count = data.length;
@@ -20,11 +22,16 @@ export const get = async (req:Request): Promise<any> =>{
             return { message: "No se encontraron registros" }
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
 
+/**
+ * Get one cargo
+ * @param id id of the cargo
+ * @param query object modifier of the cargo
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)){
@@ -40,12 +47,16 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
             return {message:"No se encontro el recurso indicado"};
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
-export const create = async (req:Request): Promise<any> =>{
-    let {data} = req.body;
+/**
+ *Create a new cargo 
+ * @param body data of the new cargo
+ */
+export const create = async (body:any): Promise<any> =>{
+    let {data} = body;
     let newCargo: ICargo = data;
     try {
         let {insertId} = await cargos.create(model,newCargo);
@@ -61,6 +72,6 @@ export const create = async (req:Request): Promise<any> =>{
         }
         return {response:"Error al crear entidad"};
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }

@@ -5,10 +5,12 @@ import { IConcepto } from './model';
 
 const model = 'conceptos';
 
-//response with the concepts 
-export const get = async (req: Request): Promise<any> => {
+/**
+ * Get all last concepts
+ * @param query modifier of the consult
+ */ 
+export const get = async (query:any): Promise<any> => {
     try {
-        const { query } = req; //requiero el objeto query del request para tener accesso al query del usuario
         let data: IConcepto[] = await conceptos.get(model, query);// consulto los conceptos
         let totalCount: number = await conceptos.count(model); // consulto el total de registros de la BD
         let count = data.length;
@@ -42,6 +44,11 @@ export const get = async (req: Request): Promise<any> => {
     }
 }
 
+/**
+ * Get one concept
+ * @param id id of the concept
+ * @param query modifier of the consult
+ */
 export const getOne = async (id:string | number ,query:any):Promise<any> =>{
     try {
         if(isNaN(id as number)){
@@ -69,6 +76,11 @@ export const getOne = async (id:string | number ,query:any):Promise<any> =>{
     }
 }
 
+/**
+ * Get all the deposits where the concept it is
+ * @param id id of the concept
+ * @param query modifier of the consult
+ */
 export const getDepositsByConcept = async (id:string | number,query:any):Promise<any>=>{
     try {
         if(isNaN(id as number)){
@@ -95,8 +107,13 @@ export const getDepositsByConcept = async (id:string | number,query:any):Promise
     }
 }
 
-export const create = async (req:Request):Promise<any> =>{
-    let {data,data1} = req.body;
+
+/**
+ * Create a new concept
+ * @param body data of the concept
+ */
+export const create = async (body:any):Promise<any> =>{
+    let {data,data1} = body;
     let newConcepto:IConcepto = data;
     let presentaciones = data1;
     try {
@@ -112,10 +129,14 @@ export const create = async (req:Request):Promise<any> =>{
         throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
-
-export const update = async (req:Request):Promise<any> => {
-    let {id} = req.params;
-    let {data,data1} = req.body;
+/**
+ * Update a concept
+ * @param params params request object
+ * @param query data of the concept
+ */
+export const update = async (params:any,body:any):Promise<any> => {
+    let {id} = params;
+    let {data,data1} = body;
     let newGrupo:IConcepto = data;
     let presentaciones = data1;
     try {
@@ -131,8 +152,12 @@ export const update = async (req:Request):Promise<any> => {
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+/**
+ * Delete a concept
+ * @param params params request object
+ */
+export const remove = async (params:any):Promise<any> => {
+    let {id} = params;
     try {
         let pres = await conceptos.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
         pres.forEach(async (element:any) => {

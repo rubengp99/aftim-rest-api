@@ -1,7 +1,14 @@
-/*Libreria que permite armar consultas sql
- dependiendo de los querys pasados por la URL*/
-//funcion dedicada a realizar el select
-export function selectSQL(query:any,tabla:string): string{
+/*
+*Libreria que permite armar consultas sql
+*dependiendo de los querys pasados por la URL
+*/
+
+/**
+ * Generic consult data from a table
+ * @param query modifier of the consult
+ * @param tabla model of the table
+ */
+export function selectSQL(query:any={},tabla:string): string{
     var sql = "";
     let {fields} = query;
     if(fields){
@@ -40,9 +47,17 @@ export function selectSQL(query:any,tabla:string): string{
     let offset = query.offset || "0";
     meta = "  order by "+orderField+" "+order+" limit "+limit+" offset "+offset;
     sql += meta;
-    console.log(sql);
+    console.log(`[CONSULT] ${sql}`);
+    console.log(`[DATE] ${new Date()}`);
     return sql;
 }
+
+/**
+ * Generic consult to get one register
+ * @param id id of the register
+ * @param query modifier of the consult
+ * @param tabla model of the table
+ */
 export function selectSQLOne(id:string | number,query:any,tabla:string):string {
     var sql = "";
     let {fields} = query;
@@ -54,8 +69,18 @@ export function selectSQLOne(id:string | number,query:any,tabla:string):string {
     }
     let field = fields || "*";
     sql= `SELECT ${field} FROM ${tabla} WHERE id = '${id}'`;
+    console.log(`[CONSULT] ${sql}`);
+    console.log(`[DATE] ${new Date()}`);
     return sql;
 }
+
+/**
+ * Generic consult to get register of a table using a key
+ * @param query modifier of the consult
+ * @param tabla the model  table
+ * @param filter the model of the key
+ * @param id the key to filter
+ */
 export function selectByFilter(query:any,tabla:string,filter:string,id:string | number):string{
     var sql = "";
     let {fields} = query;
@@ -95,6 +120,7 @@ export function selectByFilter(query:any,tabla:string,filter:string,id:string | 
     let offset = query.offset || "0";
     meta = ` order by ${orderField} ${order} limit ${limit} offset ${offset}`;
     sql += meta;
-    console.log(sql);
+    console.log(`[CONSULT] ${sql}`);
+    console.log(`[DATE] ${new Date()}`);
     return sql;
 }

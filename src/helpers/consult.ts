@@ -17,7 +17,7 @@ connect().then(connection =>{
  * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
  * ``` 
  */
-export const get = async (model:string,query:any):Promise<any> => {
+export const get = async (model:string,query?:any):Promise<any> => {
     
     let sql = querys.selectSQL(query,model);
     try {

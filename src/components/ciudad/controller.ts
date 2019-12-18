@@ -5,9 +5,13 @@ import { ICiudad } from './model';
 
 const model = "ciudad";
 
-export const get = async (req: Request): Promise<any> => {
+
+/**
+ * Get all cities
+ * @param query modifier of the consult
+ */
+export const get = async (query:any): Promise<any> => {
     try {
-        const { query } = req;
         let data: ICiudad[] = await cargos.get(model, query);
         let totalCount: number = await cargos.count(model);
         let count = data.length;
@@ -20,11 +24,15 @@ export const get = async (req: Request): Promise<any> => {
             return { message: "No se encontraron registros" }
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
-
+/**
+ * Get one city
+ * @param id id of the city
+ * @param query modifier of the consult
+ */
 export const getOne = async (id: string | number, query: any): Promise<any> => {
     try {
         if (isNaN(id as number)) {
@@ -40,12 +48,16 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
             return { message: "No se encontro el recurso indicado" };
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
-export const create = async (req: Request): Promise<any> => {
-    let { data } = req.body;
+/**
+ * Create a new city
+ * @param body data of the new city
+ */
+export const create = async (body:any): Promise<any> => {
+    let { data } = body;
     let newCargo: ICiudad = data;
     try {
         let { insertId } = await cargos.create(model, newCargo);
@@ -56,6 +68,6 @@ export const create = async (req: Request): Promise<any> => {
         }
         return { response: "Error al crear entidad" };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }

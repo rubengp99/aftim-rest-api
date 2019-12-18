@@ -6,7 +6,6 @@ import  * as users from './users';
 export async function validar(req:Request,res:Response,next:NextFunction){
     let head:string = req.headers['x-access-control'] as string ;
     if(head){
-        console.log(head);
         let {password,user} = JSON.parse(head);
         let masterUser = await users.getUser(user);
         if(masterUser){
