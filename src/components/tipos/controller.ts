@@ -34,7 +34,7 @@ export const getOneTipoConcepto = async (id: string | number, query: any): Promi
         let data: ITipoConceptos[] = await tipos.getOne(model_1, id, query);
         let count: number = await tipos.count(model_1);
         if (data[0]) {
-            let link = links.records(data, model_1, count);
+            let link = links.records(data, 'tipos/conceptos', count);
             let response = Object.assign({ data }, link);
             return response;
         } else {
