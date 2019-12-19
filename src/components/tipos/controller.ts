@@ -2,7 +2,7 @@ import * as tipos from '../../helpers/consult';
 import * as links from '../../helpers/links';
 import { ITipoConceptos } from './model';
 
-const model_1 = "tipo_conceptos"
+const model_1 = "tipos_conceptos"
 
 /**
  * Get all the types of concepts
