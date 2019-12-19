@@ -5,7 +5,7 @@ const router = Router();
 //obtener todos los conceptos
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let data:any = await controller.get(req);
+        let data:any = await controller.get(req.query);
         if(data.message){
             return res.status(204).json(data);
         }else{
@@ -34,7 +34,7 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {response,code} = await controller.create(req);
+        let {response,code} = await controller.create(req.body);
         return res.status(code).json(response);
     } catch (error) {
         console.log(error);

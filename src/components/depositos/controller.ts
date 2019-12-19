@@ -5,8 +5,11 @@ import  * as links from '../../helpers/links';
 const model = "depositos";
 
 
-export const get = async (req:Request):Promise<any> => {
-    let {query} = req;
+/**
+ * Get all the deposits
+ * @param query modifier of the consult
+ */
+export const get = async (query:any):Promise<any> => {
     try {
         let data:IDeposito[] = await deposito.get(model,query);
         let totalCount:number = await deposito.count(model);
@@ -24,7 +27,11 @@ export const get = async (req:Request):Promise<any> => {
     }
 }
 
-
+/**
+ * Get one deposit
+ * @param id id of the deposit
+ * @param query modifier of the consult
+ */
 export const getOne = async (id:string | number ,query:any):Promise<any> => {
     try {
         let data:IDeposito = await deposito.getOne(model,id,query);
@@ -41,6 +48,11 @@ export const getOne = async (id:string | number ,query:any):Promise<any> => {
     }
 }
 
+/**
+ * Get all the concepts attached to a deposit
+ * @param id id of the deposit
+ * @param query modifier of the consult
+ */
 export const getConceptosBydeposito = async (id:string | number ,query:any):Promise<any> => {
     try {
         let recurso:IDeposito = await deposito.getOne(model,id,{fields:'id'});
@@ -69,8 +81,12 @@ export const getConceptosBydeposito = async (id:string | number ,query:any):Prom
     }
 }
 
-export const create = async (req:Request):Promise<any> =>{
-    let {data} = req.body;
+/**
+ * Create a new deposit
+ * @param body data of the new deposit
+ */
+export const create = async (body:any):Promise<any> =>{
+    let {data} = body;
     let newdeposito:IDeposito = data;
     try {
         let {insertId} = await deposito.create(model,newdeposito) as any;
@@ -82,9 +98,14 @@ export const create = async (req:Request):Promise<any> =>{
     }
 }
 
-export const update = async (req:Request):Promise<any> => {
-    let {id} = req.params;
-    let {data} = req.body;
+/**
+ * Update a deposit
+ * @param params params request object
+ * @param body data of the deposit
+ */
+export const update = async (params:any,body:any):Promise<any> => {
+    let {id} = params;
+    let {data} = body;
     let newdeposito:IDeposito = data;
     try {
         let {affectedRows} = await deposito.update(model,id,newdeposito) as any;
@@ -96,8 +117,12 @@ export const update = async (req:Request):Promise<any> => {
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+/**
+ * Delete one deposit
+ * @param params params request object
+ */
+export const remove = async (params: any):Promise<any> => {
+    let {id} = params;
     try {
         await deposito.remove(model,id);
         return {response:{message:"Registro eliminado de la base de datos"},code:200};   

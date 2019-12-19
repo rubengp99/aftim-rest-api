@@ -5,9 +5,12 @@ import { IDescargo } from './model';
 
 const model = "enc_descargos";
 
-export const get = async (req:Request): Promise<any> =>{
+/**
+ * Get all descargos
+ * @param query modifier of the consult 
+ */
+export const get = async (query:any): Promise<any> =>{
     try {
-        const { query } = req;
         let data:IDescargo[] = await descargos.get(model,query);
         let totalCount: number = await descargos.count(model);
         let count = data.length;
@@ -30,6 +33,11 @@ export const get = async (req:Request): Promise<any> =>{
 }
 
 
+/**
+ * Get one descargo
+ * @param id id of the descargo
+ * @param query modifier of the descargo
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)){
@@ -51,8 +59,13 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     }
 }
 
-export const create = async (req:Request): Promise<any> =>{
-    let {data} = req.body;
+
+/**
+ * Create a descargo
+ * @param body data of the new descargo
+ */
+export const create = async (body:any): Promise<any> =>{
+    let {data} = body;
     let newCargo: IDescargo = data;
     try {
         let {insertId} = await descargos.create(model,newCargo);
