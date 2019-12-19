@@ -1,6 +1,5 @@
 import * as cargos from '../../helpers/consult';
 import * as links from '../../helpers/links'
-import { Request } from 'express';
 import { ICiudad } from './model';
 
 const model = "ciudad";

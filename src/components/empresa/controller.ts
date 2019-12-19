@@ -180,8 +180,8 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
         let grp = conceptos[0].subgrupos_id;
         let data: any[] = await empresa.getOne('subgrupos', grp, {});
         for (let index = 0; index < conceptos.length; index++) {
-            if (conceptos[index].grupos_id !== grp) {
-                let group: any = await empresa.getOne('subgrupos', conceptos[index].grupos_id, {});
+            if (conceptos[index].subgrupos_id !== grp) {
+                let group: any = await empresa.getOne('subgrupos', conceptos[index].subgrupos_id, {});
                 data.push(group);
                 grp = conceptos[index].subgrupos_id;
             }
