@@ -1,6 +1,5 @@
 import * as empresa from '../../helpers/consult';
 import * as links from '../../helpers/links'
-import { Request } from 'express';
 import { IEmpresa } from './model';
 
 const model = "empresa";
@@ -220,9 +219,15 @@ export const create = async (body: any): Promise<any> => {
     }
 }
 
-export const update = async (req: Request): Promise<any> => {
-    const { id } = req.params;
-    let { data } = req.body;
+
+/**
+ * Update a company
+ * @param params params request object
+ * @param body data of the company
+ */
+export const update = async (params: any, body: any): Promise<any> => {
+    const { id } = params;
+    let { data } = body;
     let newCliente: IEmpresa = data;
 
     try {
@@ -235,8 +240,12 @@ export const update = async (req: Request): Promise<any> => {
     }
 }
 
-export const remove = async (req: Request): Promise<any> => {
-    let { id } = req.params;
+/**
+ * Delete a company
+ * @param params params request object
+ */
+export const remove = async (params: any): Promise<any> => {
+    let { id } = params;
     try {
         await empresa.remove(model, id);
         return { response: { message: "Registro eliminado de la base de datos" }, code: 200 };
