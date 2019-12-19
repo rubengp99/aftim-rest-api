@@ -138,7 +138,7 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].grupos_id !== grp) {
                 let group: any = await empresa.getOne('grupos', conceptos[index].grupos_id, {});
-                data.push(group);
+                data.push(group[0]);
                 grp = conceptos[index].grupos_id;
             }
         }
@@ -182,7 +182,7 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].subgrupos_id !== grp) {
                 let group: any = await empresa.getOne('subgrupos', conceptos[index].subgrupos_id, {});
-                data.push(group);
+                data.push(group[0]);
                 grp = conceptos[index].subgrupos_id;
             }
         }
