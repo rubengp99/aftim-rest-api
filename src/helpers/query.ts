@@ -48,7 +48,6 @@ export function selectSQL(query:any={},tabla:string): string{
     meta = "  order by "+orderField+" "+order+" limit "+limit+" offset "+offset;
     sql += meta;
     console.log(`[CONSULT] ${sql}`);
-    console.log(`[DATE] ${new Date()}`);
     return sql;
 }
 
@@ -70,7 +69,6 @@ export function selectSQLOne(id:string | number,query:any,tabla:string):string {
     let field = fields || "*";
     sql= `SELECT ${field} FROM ${tabla} WHERE id = '${id}'`;
     console.log(`[CONSULT] ${sql}`);
-    console.log(`[DATE] ${new Date()}`);
     return sql;
 }
 
@@ -121,6 +119,5 @@ export function selectByFilter(query:any,tabla:string,filter:string,id:string | 
     meta = ` order by ${orderField} ${order} limit ${limit} offset ${offset}`;
     sql += meta;
     console.log(`[CONSULT] ${sql}`);
-    console.log(`[DATE] ${new Date()}`);
     return sql;
 }

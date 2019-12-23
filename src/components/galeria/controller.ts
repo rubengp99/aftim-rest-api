@@ -5,9 +5,13 @@ import { IGaleria } from './model';
 
 const model = "rest_galeria";
 
-export const get = async (req:Request): Promise<any> =>{
+
+/**
+ * Get all photos
+ * @param query modifier of the consult
+ */
+export const get = async (query: any): Promise<any> =>{
     try {
-        const { query } = req;
         let data:IGaleria[] = await galeria.get(model,query);
         let totalCount: number = await galeria.count(model);
         let count = data.length;
@@ -24,6 +28,11 @@ export const get = async (req:Request): Promise<any> =>{
     }
 }
 
+/**
+ * Get one photo
+ * @param id id of the photo
+ * @param query modifier of the consult
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)){
@@ -44,8 +53,12 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     }
 }
 
-export const create = async (req:Request): Promise<any> =>{
-    let {data} = req.body;
+/**
+ * Create a photo
+ * @param body data of the new photo
+ */
+export const create = async (body: any): Promise<any> =>{
+    let {data} = body;
     let newArea: IGaleria = data;
     try {
         let {insertId} = await galeria.create(model,newArea);
@@ -57,9 +70,14 @@ export const create = async (req:Request): Promise<any> =>{
     }
 }
 
-export const update = async (req:Request): Promise<any>=>{
-    const {id} = req.params;
-    let {data} = req.body;
+/**
+ * Update a photo
+ * @param params paramas request object
+ * @param body data of the photo
+ */
+export const update = async (params: any, body:any): Promise<any>=>{
+    const {id} = params;
+    let {data} = body;
     let newArea:IGaleria = data;
 
     try {
@@ -72,8 +90,12 @@ export const update = async (req:Request): Promise<any>=>{
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+/**
+ * Delete a photo 
+ * @param params params request object
+ */
+export const remove = async (params: any):Promise<any> => {
+    let {id} = params;
     try {
         await galeria.remove(model,id);
         return {response:{message:"Registro eliminado de la base de datos"},code:200};   

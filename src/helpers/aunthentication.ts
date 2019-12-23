@@ -1,9 +1,10 @@
 import {Request,Response,NextFunction} from 'express';
 import  * as encript from './encript';
-import  * as users from './users';
+import  * as users from './consult';
 
 
 export async function validar(req:Request,res:Response,next:NextFunction){
+    console.log(`[DATE] ${new Date()}`);
     let head:string = req.headers['x-access-control'] as string ;
     if(head){
         let {password,user} = JSON.parse(head);

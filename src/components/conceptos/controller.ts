@@ -1,6 +1,5 @@
 import * as conceptos from '../../helpers/consult';
 import * as links from '../../helpers/links'
-import { Request } from 'express';
 import { IConcepto } from './model';
 
 const model = 'conceptos';
@@ -57,7 +56,7 @@ export const getOne = async (id:string | number ,query:any):Promise<any> =>{
         let data:IConcepto[] = await conceptos.getOne(model,id,query);
         let count = await conceptos.count(model);
         let {fields} = query;
-        if(data){
+        if(data[0]){
             if (!fields) {                
                 let pres = await conceptos.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
                 data[0].presentaciones = pres;
@@ -104,6 +103,36 @@ export const getDepositsByConcept = async (id:string | number,query:any):Promise
 
     } catch (error) {
         throw new Error(`Error en el controlador ${model}, error: ${error}`);
+    }
+}
+
+/**
+ * Get all the photos of the concept
+ * @param id id of the concept
+ * @param query modifier of the consult
+ */
+export const getPhotosByConcept = async (id:string | number ,query:any ):Promise<any> => {
+    try {
+        if(isNaN(id as number)){
+            return {message:`${id} no es un ID valido`};
+        }
+        let recurso:IConcepto = await conceptos.getOne(model,id,{fields:'id'});
+        if(!recurso){
+            return {response:{message:"No se encontro el recurso indicado"}, code:404};
+        }
+        let data:any = await conceptos.getOtherByMe(model,id,'rest_galeria',query);
+        let totalCount = await conceptos.countOther(model,'rest_galeria',id);
+        let count = data.length;
+        let {limit} = query;
+        if(count > 0){
+            let link = links.pages(data,`conceptos/${id}/photos`,count,totalCount,limit);
+            let response = Object.assign({totalCount,count,data},link);
+            return {response,code:200};
+        }else{
+            return {response:{count,totalCount,message:"No se encontraron registros"},code:200};
+        }
+    } catch (error) {
+        throw new Error(`Error al consultar la base de datos, error: ${error}`);
     }
 }
 

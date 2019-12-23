@@ -4,10 +4,12 @@ import * as querys from './query';
 
 // start the db connection
 var con:Pool;
-connect().then(connection =>{
-    con = connection;
-})
-.catch(e=>console.log(e));
+connect()
+    .then(connection =>{
+        con = connection;
+        console.log(`[DATABASE] connected`);
+    })
+    .catch(e=>console.log(e));
 
 /**
  * This function get all of the elements on the table
@@ -139,3 +141,30 @@ export const countOther = async (model:string,other:string,id:string | number):P
         throw new Error(`Error en conexion con la BD, error: ${other}`);
     }
 }
+
+export const getUser = async (user:string)=>{
+    try {
+        let data:any = await con.query(`SELECT * FROM usuario WHERE login = ?`,[user]);
+        return data[0];
+    } catch (error) {
+        throw new Error(`Error en conexion con la BD, error: ${error}`);
+    }
+}
+export const empresa = async (id:string)=>{
+    try {
+        let empresa:any = await con.query(`SELECT * FROM empresa WHERE id = ?`,[id]);
+        return empresa[0];
+    } catch (error) {
+        throw new Error(`Error en conexion con la BD, error: ${error}`);
+    }
+}
+
+export const insertUser = async (user:any)=>{
+    try {
+        let response = await con.query(`INSERT INTO usuario SET ?`,[user]);
+        return response;
+    } catch (error) {
+        throw new Error(`Error en conexion con la BD, error: ${error}`);
+    }
+}
+

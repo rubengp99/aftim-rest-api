@@ -5,9 +5,12 @@ import { IEntidad } from './model';
 
 const model = "entidad";
 
-export const get = async (req:Request): Promise<any> =>{
+/**
+ * Get all entities
+ * @param query modifier of the consult
+ */
+export const get = async (query: any): Promise<any> =>{
     try {
-        const { query } = req;
         let data:IEntidad[] = await entidad.get(model,query);
         let totalCount: number = await entidad.count(model);
         let count = data.length;
@@ -24,6 +27,11 @@ export const get = async (req:Request): Promise<any> =>{
     }
 }
 
+/**
+ * Get one entity
+ * @param id id of the entity
+ * @param query modifier of the consult
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)){
@@ -44,8 +52,12 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     }
 }
 
-export const create = async (req:Request): Promise<any> =>{
-    let {data} = req.body;
+/**
+ * Create a new entity
+ * @param body data of the new entity
+ */
+export const create = async (body: any): Promise<any> =>{
+    let {data} = body;
     let newArea: IEntidad = data;
     try {
         let {insertId} = await entidad.create(model,newArea);
@@ -57,9 +69,14 @@ export const create = async (req:Request): Promise<any> =>{
     }
 }
 
-export const update = async (req:Request): Promise<any>=>{
-    const {id} = req.params;
-    let {data} = req.body;
+/**
+ * Update a entity
+ * @param params paramas request object
+ * @param body data of the entity
+ */
+export const update = async (params: any, body:any): Promise<any>=>{
+    const {id} = params;
+    let {data} = body;
     let newArea:IEntidad = data;
 
     try {
@@ -72,8 +89,8 @@ export const update = async (req:Request): Promise<any>=>{
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+export const remove = async (params: any):Promise<any> => {
+    let {id} = params;
     try {
         await entidad.remove(model,id);
         return {response:{message:"Registro eliminado de la base de datos"},code:200};   

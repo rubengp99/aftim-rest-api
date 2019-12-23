@@ -5,6 +5,7 @@ import multer  from 'multer';
 import path  from 'path'; 
 import {routes} from './routes';
 import cors  from 'cors';
+import morgan from 'morgan';
 
 /**
  * Class of the principal application of the server
@@ -42,6 +43,7 @@ export class App {
     
     private middlewares(){
         this.app.use(cors());
+        this.app.use(morgan("dev"));
         this.app.use(express.static(path.resolve('public')));//carpeta de archivos publicos
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended:false}));
