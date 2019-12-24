@@ -142,6 +142,10 @@ export const countOther = async (model:string,other:string,id:string | number):P
     }
 }
 
+/**
+ * Validate if one user exist
+ * @param user login of the user
+ */
 export const getUser = async (user:string)=>{
     try {
         let data:any = await con.query(`SELECT * FROM usuario WHERE login = ?`,[user]);
@@ -150,6 +154,11 @@ export const getUser = async (user:string)=>{
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }
 }
+
+/**
+ * Get a company data
+ * @param id id of the company
+ */
 export const empresa = async (id:string)=>{
     try {
         let empresa:any = await con.query(`SELECT * FROM empresa WHERE id = ?`,[id]);
@@ -159,6 +168,10 @@ export const empresa = async (id:string)=>{
     }
 }
 
+/**
+ * Regist a user 
+ * @param user data of the user
+ */
 export const insertUser = async (user:any)=>{
     try {
         let response = await con.query(`INSERT INTO usuario SET ?`,[user]);

@@ -1,14 +1,14 @@
 import bcrypt from 'bcryptjs';
 
 
-export async function encriptar (password:string){
+export async function encriptar (password:string):Promise<string>{
     try {
         
         let salt = await bcrypt.genSalt(10);
         let hash = await bcrypt.hash(password,salt);
         return hash;
     } catch (error) {
-        console.log(error);
+        throw new Error(`Error al encriptar contraseña, Error: ${error}`);
     }
 }
 
