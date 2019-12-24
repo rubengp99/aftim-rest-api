@@ -19,7 +19,7 @@ export async function validar(req:Request,res:Response,next:NextFunction){
             // }
         }else{
             return res.status(400).json({message: "Datos no validos 1"});
-        }
+        } 
     }else{
         return res.status(400).json({message: "Datos no validos 2"});
     }

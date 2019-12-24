@@ -168,16 +168,4 @@ export const empresa = async (id:string)=>{
     }
 }
 
-/**
- * Regist a user 
- * @param user data of the user
- */
-export const insertUser = async (user:any)=>{
-    try {
-        let response = await con.query(`INSERT INTO usuario SET ?`,[user]);
-        return response;
-    } catch (error) {
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
-    }
-}
 

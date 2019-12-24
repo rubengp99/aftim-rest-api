@@ -1,6 +1,6 @@
 import * as pedidos from '../../helpers/consult';
 import * as links from '../../helpers/links'
-import { Request } from 'express';
+import { Request, response } from 'express';
 import { IPedidos, IDetPedidos } from './model';
 
 const model  = "pedidos";
@@ -70,6 +70,63 @@ export const create = async (req:Request): Promise<any> =>{
             return {response,code:201};
         }
         return {response:"Error al crear entidad"};
+    } catch (error) {
+        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+    }
+}
+
+
+export const addDetail = async (params: any, body: any): Promise<any> => {
+    let { data } = body;
+    let { id } = params;
+    if(isNaN(id)) return {message:`${id} No es un ID valido`,code:400};
+    try {
+        const pedido = await pedidos.getOne(model,id,{fields:'id'});
+        if(!pedido) return {message:"Recurso no encontrado",code:404};
+        const newDetail: IDetPedidos = data;
+        const { insertId } = await pedidos.create(model,newDetail);
+        if(!insertId) return {message:"Internal server error",code:500};
+        const link = links.created(model,insertId);
+        const response = {message:"Registro insertado en la base de datos",link:link,code:201}
+        return response;
+    } catch (error) {
+        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+    }
+}
+
+export const updateDetail = async(params: any, body: any): Promise<any> => {
+    let { data } = body;
+    let { id,id1 } = params;
+    if(isNaN(id) || isNaN(id1)) return {message:`${id} o ${id1} No son un ID valido`,code:400};
+    try {
+        const pedido = await pedidos.getOne(model,id,{fields:'id'});
+        if(!pedido) return {message:"Recurso no encontrado",code:404};
+
+        const detalle = await pedidos.getOne(submodel,id1,{fields:'id'});
+        if(!detalle) return {message:"Recurso no encontrado",code:404};
+
+        const newDetail: IDetPedidos = data;
+        const { affectedRows } = await pedidos.update(submodel,id1,newDetail);
+
+        if(!affectedRows) return {message:"Internal server error",code:500};
+        const link = links.created(model,id);
+        const response = {message:"Registro actualizdo en la base de datos",link:link,code:201}
+        return response;
+    } catch (error) {
+        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+    }
+}
+
+export const deleteDetail = async (params: any):Promise<any> => {
+    let { id,id1 } = params;
+    if(isNaN(id) || isNaN(id1)) return {message:`${id} o ${id1} No son un ID valido`,code:400};
+    try {
+        const pedido = await pedidos.getOne(model,id,{fields:'id'});
+        if(!pedido) return {message:"Recurso no encontrado",code:404};
+        
+        await pedidos.remove(submodel,id1);
+        const response = {message:"Registro eliminado en la base de datos",code:201}
+        return response;
     } catch (error) {
         throw new Error(`Error al consultar la base de datos, error: ${error}`);
     }

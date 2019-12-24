@@ -42,4 +42,34 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
     }
 });
 
+router.post('/:id/detalles/',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {message,code} = await controller.addDetail(req.params,req.body);
+        return res.status(code).json(message);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:"Error interno"});
+    }
+});
+
+router.post('/:id/detalles/:id1',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {link,message,code} = await controller.updateDetail(req.params,req.body);
+        return res.status(code).json({message,link});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:"Error interno"});
+    }
+});
+
+router.delete('/:id/detalles/:id1',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {message,code} = await controller.deleteDetail(req.params);
+        return res.status(code).json(message);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:"Error interno"});
+    }
+});
+
 export default router;
