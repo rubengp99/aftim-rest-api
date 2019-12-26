@@ -41,4 +41,7 @@ export const routes =  (app:Application) =>{
     app.use('/api/pedidos',pedidos);
     app.use('/api/tipos',tipos);
     app.use('/api/usuario',usuario);
+    app.use('*',async(req,res,next)=>{
+        res.status(404).json({message:"Route not especified"});
+    });
 };

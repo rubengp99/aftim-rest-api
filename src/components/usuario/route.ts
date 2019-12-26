@@ -3,7 +3,7 @@ import  {validar}  from'../../helpers/aunthentication';
 import  { Router,Request,Response } from 'express';
 const router = Router();
 
-router.get('/login',validar, async (req:Request, res:Response):Promise<Response> => {
+router.post('/login',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {code,data,message,token} = await controller.login(req.body);
         if(message) return res.status(code).json(message);
@@ -14,7 +14,7 @@ router.get('/login',validar, async (req:Request, res:Response):Promise<Response>
     }
 });
 
-router.get('/signup',validar, async (req:Request, res:Response):Promise<Response> => {
+router.post('/signup',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {code,data,message,token}= await controller.signUp(req.body);
         if(message){
