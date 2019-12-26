@@ -5,12 +5,9 @@ const router = Router();
 
 router.get('/login',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {code,data,message,token}= await controller.login(req.body);
-        if(message){
-            return res.status(code).json(message);
-        }else{
-            return res.status(code).header('user_token',token).json(data);
-        }
+        let {code,data,message,token} = await controller.login(req.body);
+        if(message) return res.status(code).json(message);
+        return res.status(code).header('user_token',token).json(data);
     } catch (error) {
         console.log(error);
         return res.status(500).json({message:"Error interno"});

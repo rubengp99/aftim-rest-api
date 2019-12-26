@@ -6,9 +6,12 @@ import { IPedidos, IDetPedidos } from './model';
 const model  = "pedidos";
 const submodel = "det_pedidos"
 
-export const get = async (req:Request): Promise<any> =>{
+/**
+ * Get all orders
+ * @param query modifier of the consult
+ */
+export const get = async (query: any): Promise<any> =>{
     try {
-        const { query } = req;
         let data:IPedidos[] = await pedidos.get(model,query);
         let totalCount: number = await pedidos.count(model);
         let count = data.length;
@@ -26,10 +29,15 @@ export const get = async (req:Request): Promise<any> =>{
             return { message: "No se encontraron registros" }
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
+/**
+ * Get one order
+ * @param id id of the order
+ * @param query modifier of the consult
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)){
@@ -47,12 +55,16 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
             return {message:"No se encontro el recurso indicado"};
         }
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
-export const create = async (req:Request): Promise<any> =>{
-    let {data,data1} = req.body;
+/**
+ * Create a new order
+ * @param body data of the new order
+ */
+export const create = async (body: any): Promise<any> =>{
+    let {data,data1} = body;
     let newPedido: IPedidos = data;
     let newDetalles: IDetPedidos[] = data1;
     try {
@@ -71,11 +83,40 @@ export const create = async (req:Request): Promise<any> =>{
         }
         return {response:"Error al crear entidad"};
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
 
+/**
+ * Delete a order
+ * @param params params request object
+ */
+export const remove = async (params: any):Promise<any> => {
+    let { id } = params;
+    try {
+        if(isNaN(id)) return {message:`${id} is not a valid ID`,code:400};
+
+        const data:IPedidos = await pedidos.getOne(model,id,{fields:'id'});
+        if(!data) return {message:"Recurso no encontrado",code:404};
+
+        const data1:IDetPedidos[] = await pedidos.get(submodel,{fields:'id'});
+        data1.forEach(async (element:any) => {
+            await pedidos.remove(submodel,element.id);
+        });
+        await pedidos.remove(model,id);
+        const response = {message:"Registro eliminado en la base de datos",code:201}
+        return response;
+    } catch (error) {
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
+    }
+}
+
+/**
+ * Add a detail to the order
+ * @param params paramas request object
+ * @param body data of the detail
+ */
 export const addDetail = async (params: any, body: any): Promise<any> => {
     let { data } = body;
     let { id } = params;
@@ -90,10 +131,15 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
         const response = {message:"Registro insertado en la base de datos",link:link,code:201}
         return response;
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
+/**
+ * Modify one detail of an order
+ * @param params params request object
+ * @param body data of the detail
+ */
 export const updateDetail = async(params: any, body: any): Promise<any> => {
     let { data } = body;
     let { id,id1 } = params;
@@ -113,10 +159,15 @@ export const updateDetail = async(params: any, body: any): Promise<any> => {
         const response = {message:"Registro actualizdo en la base de datos",link:link,code:201}
         return response;
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
 
+
+/**
+ * Remove a detail from the order
+ * @param params params request object
+ */
 export const deleteDetail = async (params: any):Promise<any> => {
     let { id,id1 } = params;
     if(isNaN(id) || isNaN(id1)) return {message:`${id} o ${id1} No son un ID valido`,code:400};
@@ -128,6 +179,6 @@ export const deleteDetail = async (params: any):Promise<any> => {
         const response = {message:"Registro eliminado en la base de datos",code:201}
         return response;
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        throw new Error(`Error en el controlador ${model}, error: ${error}`);
     }
 }
