@@ -14,6 +14,12 @@ export async function encriptar (password:string):Promise<string>{
 
 
 export async function validar (password:string,hash:string){
-    let valido = await bcrypt.compare(password,hash);
-    return valido;
+    try {
+        //console.log(password,hash)
+        let valido = await bcrypt.compare(password,hash);
+        return valido;
+    } catch (error) {
+        throw new Error(`Error al validar contraseña, Error: ${error}`);
+    }
+    
 }

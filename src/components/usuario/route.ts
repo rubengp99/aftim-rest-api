@@ -7,7 +7,7 @@ router.post('/login',validar, async (req:Request, res:Response):Promise<Response
     try {
         let {code,data,message,token} = await controller.login(req.body);
         if(message) return res.status(code).json(message);
-        return res.status(code).header('user_token',token).json(data);
+        return res.status(code).json({data,token});
     } catch (error) {
         console.log(error);
         return res.status(500).json({message:"Error interno"});
@@ -20,7 +20,7 @@ router.post('/signup',validar, async (req:Request, res:Response):Promise<Respons
         if(message){
             return res.status(code).json(message);
         }else{
-            return res.status(code).header('user_token',token).json(data);
+            return res.status(code).json({data,token});   
         }
     } catch (error) {
         console.log(error);
@@ -28,9 +28,9 @@ router.post('/signup',validar, async (req:Request, res:Response):Promise<Respons
     }
 });
 
-router.get('/validate',validar, async (req:Request, res:Response):Promise<Response> => {
+router.post('/validate',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { code, data, message } = await controller.validarToken(req.headers);
+        let { code, data, message } = await controller.validarToken(req.body);
         if(message){
             return res.status(code).json(message);
         }else{

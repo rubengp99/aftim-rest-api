@@ -79,7 +79,8 @@ export const getOtherByMe = async (model:string,id:string | number ,other:string
 export const  create = async (model:string,object:any):Promise<any> =>{
     try {
         let inserted = await con.query(`INSERT INTO ${model} set ?`,[object]);
-        return inserted;
+        console.log(inserted)
+        return inserted[0];
     } catch (error) {
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }
@@ -149,7 +150,7 @@ export const countOther = async (model:string,other:string,id:string | number):P
 export const getUser = async (user:string)=>{
     try {
         let data:any = await con.query(`SELECT * FROM usuario WHERE login = ?`,[user]);
-        return data[0];
+        return data[0][0];
     } catch (error) {
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }

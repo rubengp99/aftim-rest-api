@@ -11,7 +11,7 @@ const model = "usuario";
  * @param body user data
  */
 export const login = async (body:any):Promise<any> =>{
-    let {usuario,password} = body;
+    let {usuario,password} = body.data;
     if(usuario === '' || password === '') return {message:`Invalid access`,code:401};
     try {
         let user:IUsuario = await usuarios.getUser(usuario);
@@ -34,8 +34,9 @@ export const signUp = async (body: any): Promise<any> => {
     const newUser:IUsuario = data; 
     newUser.password = await encript.encriptar(newUser.password);
     try {
-        let {insertedId} = await usuarios.create(model,newUser);
-        if(!insertedId) return {message:`Error al registrar usuario`,code:500};
+        let {insertId} = await usuarios.create(model,newUser);
+        console.log(insertId)
+        if(!insertId) return {message:`Error al registrar usuario`,code:500};
         const token:string = jwt.sign({_id:newUser.login},process.env.TOKEN_KEY || "2423503",{ expiresIn: 60 * 60 * 24});
         const response = {token,data:newUser,code:200};
         return response;

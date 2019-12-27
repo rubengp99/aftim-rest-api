@@ -42,7 +42,7 @@ export class App {
     }
     
     private middlewares(){
-        this.app.use(cors());
+        this.app.use(cors({exposedHeaders:'Authorization'}));
         this.app.use(morgan("dev"));
         this.app.use(express.static(path.resolve('public')));//carpeta de archivos publicos
         this.app.use(express.json());

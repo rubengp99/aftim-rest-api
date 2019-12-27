@@ -7,8 +7,10 @@ export async function validar(req:Request,res:Response,next:NextFunction){
     console.log(`[DATE] ${new Date()}`);
     let head:string = req.headers['x-access-control'] as string ;
     if(head){
-        let {password,user} = JSON.parse(head);
-        let masterUser = await users.getUser(user);
+        let mamalo = JSON.parse(head);
+        let masterUser = await users.getUser(mamalo.user);
+        console.log(mamalo);
+        console.log(head);
         if(masterUser){
             req.userId = masterUser.id;
             next();
