@@ -26,6 +26,10 @@ export const get = async (model:string,query?:any):Promise<any> => {
         let data = await con.query(sql);
         return data[0];
     } catch (error) {
+        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
+            console.log(error);
+            throw new Error('BD_SYNTAX_ERROR');
+        }
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }
 }
@@ -41,12 +45,14 @@ export const get = async (model:string,query?:any):Promise<any> => {
  */
 export const getOne = async (model:string,id:string | number ,query:any):Promise<any> =>{
     let sql = querys.selectSQLOne(id,query,model);
-
     try {
-        let data = await con.query(sql);
-        
-        return data[0];
+        let data:any = await con.query(sql);
+        return data[0][0];
     } catch (error) {
+        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
+            console.log(error);
+            throw new Error('BD_SYNTAX_ERROR');
+        }
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }
 }
@@ -67,6 +73,10 @@ export const getOtherByMe = async (model:string,id:string | number ,other:string
         let data = await con.query(sql);
         return data[0];
     } catch (error) {
+        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
+            console.log(error);
+            throw new Error('BD_SYNTAX_ERROR');
+        }
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }
 }
@@ -79,9 +89,12 @@ export const getOtherByMe = async (model:string,id:string | number ,other:string
 export const  create = async (model:string,object:any):Promise<any> =>{
     try {
         let inserted = await con.query(`INSERT INTO ${model} set ?`,[object]);
-        console.log(inserted)
         return inserted[0];
     } catch (error) {
+        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2'){ 
+            console.log(error);
+            throw new Error('BD_SYNTAX_ERROR');
+        }
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }
 }
@@ -96,6 +109,10 @@ export const update = async (model:string,id:string | number,object:any):Promise
         let updated = await con.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
         return updated;
     } catch (error) {
+        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2'){ 
+            console.log(error);
+            throw new Error('BD_SYNTAX_ERROR');
+        }
         throw new Error(`Error en conexion con la BD, error: ${error}`);
     }
 }

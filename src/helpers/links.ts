@@ -33,13 +33,13 @@ export const pages =  (data:any,modelo:string,count:number,totalCount:number |st
 export const records = (data:any,modelo:string,count:number) => {
     let sig:string = '';
     let prev: string = '';
-    if(data[0].id<count){
-        sig = `http://localhost:81/api/${modelo}/${parseInt(data[0].id)+1}`;
+    if(data.id<count){
+        sig = `http://localhost:81/api/${modelo}/${parseInt(data.id)+1}`;
     }else{
         sig = "Last record";
     }
-    if(data[0].id>1){
-        prev = `http://localhost:81/api/${modelo}/${parseInt(data[0].id)-1}`;
+    if(data.id>1){
+        prev = `http://localhost:81/api/${modelo}/${parseInt(data.id)-1}`;
     }else{
         prev = "First Record";
     }

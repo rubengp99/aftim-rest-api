@@ -1,5 +1,6 @@
 import * as areas from '../../helpers/consult';
 import * as links from '../../helpers/links'
+import * as respuestas from '../../errors';
 import { IAreasAtencion } from './model';
 
 const model = "rest_areas";
@@ -15,14 +16,16 @@ export const get = async (query:any): Promise<any> =>{
         let count = data.length;
         let { limit } = query;
 
-        if(count <= 0) return { message: "No se encontraron registros",code:200}
+        if(count <= 0) return respuestas.Empty
 
         let link = links.pages(data, 'areas_atencion', count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
 
-        return {response,code:200};
+        return {response,code:respuestas.Ok.code};
     } catch (error) {
-        throw new Error(`Error en el controlador ${model}, error: ${error}`);
+        if(error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError; 
     }
 }
 
@@ -33,19 +36,21 @@ export const get = async (query:any): Promise<any> =>{
  */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
-        if(isNaN(id as number)) return {message:`${id} no es un ID valido`, code:400};
+        if(isNaN(id as number)) return respuestas.InvalidID;
 
         let data:IAreasAtencion = await areas.getOne(model,id,query);
         let count:number = await areas.count(model);
-        
-        if(!data)  return {message:"No se encontro el recurso indicado",code:200};
+        console.log(data);
+        if(!data)  return respuestas.ElementNotFound;
     
-        let link = links.records(data,model,count);
+        let link = links.records(data,'areas_atencion',count);
         let response = Object.assign({data},link);
-        return {response,code:200};
+        return {response,code:respuestas.Ok.code};
             
     } catch (error) {
-        throw new Error(`Error en el controlador ${model}, error: ${error}`);
+        if(error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -55,14 +60,16 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
  */
 export const create = async (body:any): Promise<any> =>{
     let {data} = body;
-    let newArea: IAreasAtencion = data;
     try {
+        let newArea: IAreasAtencion = data;
         let {insertId} = await areas.create(model,newArea);
         let link = links.created('areas_atencion',insertId);
-        let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
-        return {response,code:201};
+        let response = Object.assign({message:respuestas.Created.message},{link:link});
+        return {response,code:respuestas.Created.code};
     } catch (error) {
-        throw new Error(`Error en el controlador ${model}, error: ${error}`);
+        if(error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -79,10 +86,12 @@ export const update = async (params:any,body:any): Promise<any>=>{
     try {
         let {affectedRows}  = await areas.update(model,id,newArea);
         let link = links.created('areas_atencion',id);
-        let response = Object.assign({message:"Registro actualizado en la base de datos",affectedRows},{link:link});
-        return {response,code:201};
+        let response = Object.assign({message:respuestas.Update.message,affectedRows},{link:link});
+        return {response,code:respuestas.Update.code};
     } catch (error) {
-        throw new Error(`Error en el controlador ${model}, error: ${error}`);
+        if(error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -94,8 +103,9 @@ export const remove = async (params:any):Promise<any> => {
     let {id} = params;
     try {
         await areas.remove(model,id);
-        return {message:"Registro eliminado de la base de datos",code:200};   
+        return respuestas.Deleted;   
     } catch (error) {
-        throw new Error(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
