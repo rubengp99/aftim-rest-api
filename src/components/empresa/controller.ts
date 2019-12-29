@@ -1,5 +1,6 @@
 import * as empresa from '../../helpers/consult';
-import * as links from '../../helpers/links'
+import * as links from '../../helpers/links';
+import * as respuestas from '../../errors';
 import { IEmpresa } from './model';
 
 const model = "empresa";
