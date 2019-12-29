@@ -1,4 +1,4 @@
-import * as areas from '../../helpers/consult';
+import * as consult from '../../helpers/consult';
 import * as links from '../../helpers/links'
 import * as respuestas from '../../errors';
 import { IAreasAtencion } from './model';
@@ -11,8 +11,8 @@ const model = "rest_areas";
  */
 export const get = async (query:any): Promise<any> =>{
     try {
-        let data:IAreasAtencion[] = await areas.get(model,query);
-        let totalCount: number = await areas.count(model);
+        let data:IAreasAtencion[] = await consult.get(model,query);
+        let totalCount: number = await consult.count(model);
         let count = data.length;
         let { limit } = query;
 
@@ -38,8 +38,8 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
 
-        let data:IAreasAtencion = await areas.getOne(model,id,query);
-        let count:number = await areas.count(model);
+        let data:IAreasAtencion = await consult.getOne(model,id,query);
+        let count:number = await consult.count(model);
         console.log(data);
         if(!data)  return respuestas.ElementNotFound;
     
@@ -62,7 +62,7 @@ export const create = async (body:any): Promise<any> =>{
     let {data} = body;
     try {
         let newArea: IAreasAtencion = data;
-        let {insertId} = await areas.create(model,newArea);
+        let {insertId} = await consult.create(model,newArea);
         let link = links.created('areas_atencion',insertId);
         let response = Object.assign({message:respuestas.Created.message},{link:link});
         return {response,code:respuestas.Created.code};
@@ -82,9 +82,9 @@ export const update = async (params:any,body:any): Promise<any>=>{
     const {id} = params;
     let {data} = body;
     let newArea:IAreasAtencion = data;
-
     try {
-        let {affectedRows}  = await areas.update(model,id,newArea);
+        if(isNaN(id as number)) return respuestas.InvalidID;
+        let {affectedRows}  = await consult.update(model,id,newArea);
         let link = links.created('areas_atencion',id);
         let response = Object.assign({message:respuestas.Update.message,affectedRows},{link:link});
         return {response,code:respuestas.Update.code};
@@ -102,7 +102,8 @@ export const update = async (params:any,body:any): Promise<any>=>{
 export const remove = async (params:any):Promise<any> => {
     let {id} = params;
     try {
-        await areas.remove(model,id);
+        if(isNaN(id as number)) return respuestas.InvalidID;
+        await consult.remove(model,id);
         return respuestas.Deleted;   
     } catch (error) {
         console.log(`Error en el controlador ${model}, error: ${error}`);
