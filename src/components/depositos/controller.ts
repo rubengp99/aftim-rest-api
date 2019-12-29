@@ -1,7 +1,7 @@
-import * as deposito from '../../helpers/consult';
-import {IDeposito} from './model';
-import {Request} from 'express';
-import  * as links from '../../helpers/links';
+import * as consult from '../../helpers/consult';
+import { IDeposito } from './model';
+import * as respuestas from '../../errors';
+import * as links from '../../helpers/links';
 const model = "depositos";
 
 
@@ -9,21 +9,22 @@ const model = "depositos";
  * Get all the deposits
  * @param query modifier of the consult
  */
-export const get = async (query:any):Promise<any> => {
+export const get = async (query: any): Promise<any> => {
     try {
-        let data:IDeposito[] = await deposito.get(model,query);
-        let totalCount:number = await deposito.count(model);
+        let data: IDeposito[] = await consult.get(model, query);
+        let totalCount: number = await consult.count(model);
         let count = data.length;
-        let {limit} = query;
-        if(count > 0){
-            let link = links.pages(data,model,count,totalCount,limit);
-            let response = Object.assign({totalCount,count,data},link);
-            return response;
-        }else{
-            return {message:"No se encontraron registros"}
-        }
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        let link = links.pages(data, model, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -32,19 +33,22 @@ export const get = async (query:any):Promise<any> => {
  * @param id id of the deposit
  * @param query modifier of the consult
  */
-export const getOne = async (id:string | number ,query:any):Promise<any> => {
+export const getOne = async (id: string | number, query: any): Promise<any> => {
     try {
-        let data:IDeposito = await deposito.getOne(model,id,query);
-        let count = await deposito.count(model);
-        if(data){
-            let link = links.records(data,model,count);
-            let response = Object.assign({data},link);
-            return response;
-        }else{
-            return {message:"No se encontro el recurso indicado"};
-        }
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let data: IDeposito = await consult.getOne(model, id, query);
+        let count = await consult.count(model);
+
+        if (!data) return respuestas.ElementNotFound;
+
+        let link = links.records(data, model, count);
+        let response = Object.assign({ data }, link);
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -53,31 +57,34 @@ export const getOne = async (id:string | number ,query:any):Promise<any> => {
  * @param id id of the deposit
  * @param query modifier of the consult
  */
-export const getConceptosBydeposito = async (id:string | number ,query:any):Promise<any> => {
+export const getConceptosBydeposito = async (id: string | number, query: any): Promise<any> => {
     try {
-        let recurso:IDeposito = await deposito.getOne(model,id,{fields:'id'});
-        if(!recurso){
-            return {response:{message:"No se encontro el recurso indicado"}, code:404};
-        }
-        let data:any = await deposito.getOtherByMe(model,id,'movimiento_deposito',{});
-        let conceptos:any[] = [];
+        if (isNaN(id as number)) return respuestas.InvalidID;
+        
+        let recurso: IDeposito = await consult.getOne(model, id, { fields: 'id' });
+
+        if (!recurso) return respuestas.ElementNotFound;
+
+        let data: any = await consult.getOtherByMe(model, id, 'movimiento_deposito', {});
+        let conceptos: any[] = [];
         for (let index = 0; index < data.length; index++) {
-            let concepto = await deposito.getOne('conceptos',data[index].conceptos_id,query);
+            let concepto = await consult.getOne('conceptos', data[index].conceptos_id, query);
             conceptos.push(concepto);
         }
-        
-        let totalCount = await deposito.count('conceptos');
+
+        let totalCount = await consult.count('conceptos');
         let count = conceptos.length;
-        let {limit} = query;
-        if(count > 0){
-            let link = links.pages(conceptos,`${model}/${id}/conceptos`,count,totalCount,limit);
-            let response = Object.assign({totalCount,count,data:conceptos},link);
-            return {response,code:200};
-        }else{
-            return {response:{message:"No se encontraron registros"},code:200};
-        }
+        let { limit } = query;
+        
+        if (count <= 0) return respuestas.Empty;
+        
+        let link = links.pages(conceptos, `${model}/${id}/conceptos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data: conceptos }, link);
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -85,16 +92,18 @@ export const getConceptosBydeposito = async (id:string | number ,query:any):Prom
  * Create a new deposit
  * @param body data of the new deposit
  */
-export const create = async (body:any):Promise<any> =>{
-    let {data} = body;
-    let newdeposito:IDeposito = data;
+export const create = async (body: any): Promise<any> => {
+    let { data } = body;
+    let newdeposito: IDeposito = data;
     try {
-        let {insertId} = await deposito.create(model,newdeposito) as any;
-        let link = links.created('depositos',insertId);
-        let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
-        return {response,code:201};
+        let { insertId } = await consult.create(model, newdeposito) as any;
+        let link = links.created(model, insertId);
+        let response = Object.assign({ message: respuestas.Created.message}, { link: link });
+        return { response, code: respuestas.Created.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -103,17 +112,21 @@ export const create = async (body:any):Promise<any> =>{
  * @param params params request object
  * @param body data of the deposit
  */
-export const update = async (params:any,body:any):Promise<any> => {
-    let {id} = params;
-    let {data} = body;
-    let newdeposito:IDeposito = data;
+export const update = async (params: any, body: any): Promise<any> => {
+    let { id } = params;
+    let { data } = body;
+    let newdeposito: IDeposito = data;
     try {
-        let {affectedRows} = await deposito.update(model,id,newdeposito) as any;
-        let link = links.created('depositos',id);
-        let response = Object.assign({message:"Registro actualizado en la base de datos",affectedRows},{link:link});
-        return {response,code:201};
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let { affectedRows } = await consult.update(model, id, newdeposito) as any;
+        let link = links.created('depositos', id);
+        let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        return { response, code: respuestas.Update.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -121,12 +134,15 @@ export const update = async (params:any,body:any):Promise<any> => {
  * Delete one deposit
  * @param params params request object
  */
-export const remove = async (params: any):Promise<any> => {
-    let {id} = params;
+export const remove = async (params: any): Promise<any> => {
+    let { id } = params;
     try {
-        await deposito.remove(model,id);
-        return {response:{message:"Registro eliminado de la base de datos"},code:200};   
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        await consult.remove(model, id);
+        return respuestas.Deleted;
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
