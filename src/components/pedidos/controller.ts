@@ -3,7 +3,7 @@ import * as links from '../../helpers/links'
 import { Request, response } from 'express';
 import { IPedidos, IDetPedidos } from './model';
 
-const model  = "pedidos";
+const model  = "rest_pedidos";
 const submodel = "det_pedidos"
 
 /**
