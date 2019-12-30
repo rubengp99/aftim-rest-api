@@ -4,7 +4,7 @@ import { Request, response } from 'express';
 import { IPedidos, IDetPedidos } from './model';
 
 const model  = "rest_pedidos";
-const submodel = "det_pedidos"
+const submodel = "rest_det_pedidos"
 
 /**
  * Get all orders
@@ -19,7 +19,7 @@ export const get = async (query: any): Promise<any> =>{
         if(count > 0){
             for (let i = 0; i < data.length; i++) {
                 let { id } = data[i];
-                let pres:IDetPedidos[] = await pedidos.getOtherByMe(model, id as string, 'submodel');
+                let pres:IDetPedidos[] = await pedidos.getOtherByMe(model, id as string, submodel,{});
                 data[i].detalles = pres;
             }
             let link = links.pages(data, model, count, totalCount, limit);
@@ -46,7 +46,7 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
         let data:IPedidos[] = await pedidos.getOne(model,id,query);
         let count:number = await pedidos.count(model);
         if(data[0]){
-            let pres:IDetPedidos[] = await pedidos.getOtherByMe(model, id as string, submodel);
+            let pres:IDetPedidos[] = await pedidos.getOtherByMe(model, id as string, submodel,{});
             data[0].detalles = pres;
             let link = links.records(data,model,count);
             let response = Object.assign({data},link);
