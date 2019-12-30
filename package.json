@@ -9,9 +9,15 @@
     "dev": "concurrently \"tsc -w\" \"cross-env NODE_ENV=development nodemon dist/index.js\"",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "deploy": "npm run clean && npm run build && npm start",
+    
     "files": " cd ./src/components/temp && type NUL > model.ts && type NUL > controller.ts && type > NUL route.ts",
     "folder": "cd ./src/components && mkdir temp",
-    "componente": "npm run folder && npm run file && cd ./src/components && rename temp"
+    "component": "npm run folder && npm run file && cd ./src/components && rename temp", 
+    "helper": "cd ./src/helpers && type NUL > ",
+    
+    "seed": "mysql -u root -p  < api.sql",
+
+    "git": "git add . && git commit -am\""
   },
   "keywords": [],
   "author": "Jose Veliz",

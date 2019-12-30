@@ -6,10 +6,10 @@ import * as querys from './query';
 var con:Pool;
 connect()
     .then(connection =>{
-        con = connection;
+        con = connection as Pool;
         console.log(`[DATABASE] connected`);
     })
-    .catch(e=>console.log(e));
+    .catch(e=>console.log(e,"Hola"));
 
 /**
  * This function get all of the elements on the table

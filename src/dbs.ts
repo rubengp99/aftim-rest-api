@@ -2,6 +2,11 @@ import  {createPool} from 'mysql2/promise';
 import {database} from './keys';
 
 export async function connect(){
-    const connection = await createPool(database);
-    return connection;
+    try {
+        const connection = await createPool(database);
+        return connection;  
+    } catch (error) {
+        console.log(error);
+    }
+    
 }
