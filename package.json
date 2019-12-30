@@ -11,8 +11,7 @@
     "deploy": "npm run clean && npm run build && npm start",
     "files": " cd ./src/components/temp && type NUL > model.ts && type NUL > controller.ts && type > NUL route.ts",
     "create": "cd ./src/components && mkdir temp",
-    "componente": "npm run create && npm run file && cd ./src/components && rename temp",
-    "commit":"git add . && git commit -am"
+    "componente": "npm run create && npm run file && cd ./src/components && rename temp"
   },
   "keywords": [],
   "author": "Jose Veliz",
