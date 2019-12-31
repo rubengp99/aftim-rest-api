@@ -1,6 +1,5 @@
 import * as galeria from '../../helpers/consult';
 import * as links from '../../helpers/links'
-import { Request } from 'express';
 import { IGaleria } from './model';
 
 const model = "rest_galeria";
