@@ -1,80 +1,112 @@
-import * as movdep from '../../helpers/consult';
-import {IMovimientoDeposito} from './model';
-import {Request} from 'express';
-import  * as links from '../../helpers/links';
+import * as consult from '../../helpers/consult';
+import * as respuestas from '../../errors';
+import { IMovimientoDeposito } from './model';
+import * as links from '../../helpers/links';
 const model = "movimiento_deposito";
 
 
-export const get = async (req:Request):Promise<any> => {
-    let {query} = req;
+/**
+ * Get all deposits movements
+ * @param query modifier of the consult
+ */
+export const get = async (query: any): Promise<any> => {
     try {
-        let data:IMovimientoDeposito[] = await movdep.get(model,query);
-        let totalCount:number = await movdep.count(model);
+        let data: IMovimientoDeposito[] = await consult.get(model, query);
+        let totalCount: number = await consult.count(model);
         let count = data.length;
-        let {limit} = query;
-        if(count > 0){
-            let link = links.pages(data,model,count,totalCount,limit);
-            let response = Object.assign({totalCount,count,data},link);
-            return response;
-        }else{
-            return {message:"No se encontraron registros"}
-        }
+        let { limit } = query;
+
+        if (count > 0) return respuestas.Empty;
+
+        let link = links.pages(data, model, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return response;
+
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-
-export const getOne = async (id:string | number ,query:any):Promise<any> => {
+/**
+ * Get  a deposit movement
+ * @param id id of the object
+ * @param query modifier of the consult
+ */
+export const getOne = async (id: string | number, query: any): Promise<any> => {
     try {
-        let data:IMovimientoDeposito = await movdep.getOne(model,id,query);
-        let count = await movdep.count(model);
-        if(data){
-            let link = links.records(data,model,count);
-            let response = Object.assign({data},link);
-            return response;
-        }else{
-            return {message:"No se encontro el recurso indicado"};
-        }
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let data: IMovimientoDeposito = await consult.getOne(model, id, query);
+        let count = await consult.count(model);
+
+        if (!data) return respuestas.ElementNotFound;
+
+        let link = links.records(data, model, count);
+        let response = Object.assign({ data }, link);
+        return response;
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-
-export const create = async (req:Request):Promise<any> =>{
-    let {data} = req.body;
-    let newMovDep:IMovimientoDeposito = data;
+/**
+ * Create a new deposit movement
+ * @param body data of the object
+ */
+export const create = async (body: any): Promise<any> => {
+    let { data } = body;
+    let newMovDep: IMovimientoDeposito = data;
     try {
-        let {insertId} = await movdep.create(model,newMovDep) as any;
-        let link = links.created(model,insertId);
-        let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
-        return {response,code:201};
+        let { insertId } = await consult.create(model, newMovDep) as any;
+        let link = links.created(model, insertId);
+        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        return { response, code: respuestas.Created.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-export const update = async (req:Request):Promise<any> => {
-    let {id} = req.params;
-    let {data} = req.body;
-    let newMovDep:IMovimientoDeposito = data;
+/**
+ * Update a movement
+ * @param params params request object
+ * @param body data of the object
+ */
+export const update = async (params:any, body: any): Promise<any> => {
+    let { id } = params;
+    let { data } = body;
+    let newMovDep: IMovimientoDeposito = data;
     try {
-        let {affectedRows} = await movdep.update(model,id,newMovDep) as any;
-        let link = links.created(model,id);
-        let response = Object.assign({message:"Registro actualizado en la base de datos",affectedRows},{link:link});
-        return {response,code:201};
+        if(isNaN(id)) return respuestas.InvalidID;
+        let { affectedRows } = await consult.update(model, id, newMovDep) as any;
+        let link = links.created(model, id);
+        let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        return { response, code: respuestas.Update.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+/**
+ * Delete a movement
+ * @param params params request object
+ */
+export const remove = async (params: any): Promise<any> => {
+    let { id } = params;
     try {
-        await movdep.remove(model,id);
-        return {response:{message:"Registro eliminado de la base de datos"},code:200};   
+        if(isNaN(id)) return respuestas.InvalidID;
+        await consult.remove(model, id);
+        return respuestas.Deleted
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
