@@ -1,122 +1,168 @@
-import * as grupo from '../../helpers/consult';
-import {IGrupo} from './model';
-import {Request} from 'express';
-import  * as links from '../../helpers/links';
+import * as consult from '../../helpers/consult';
+import * as respuestas from '../../errors';
+import { IGrupo } from './model';
+import { Request } from 'express';
+import * as links from '../../helpers/links';
 const model = "grupos";
 
 
-export const get = async (req:Request):Promise<any> => {
-    let {query} = req;
+/**
+ * Get all groups
+ * @param query modifier of the consult
+ */
+export const get = async (query: any): Promise<any> => {
     try {
-        let data:IGrupo[] = await grupo.get(model,query);
-        let totalCount:number = await grupo.count(model);
+        let data: IGrupo[] = await consult.get(model, query);
+        let totalCount: number = await consult.count(model);
         let count = data.length;
-        let {limit} = query;
-        if(count > 0){
-            let link = links.pages(data,'grupos',count,totalCount,limit);
-            let response = Object.assign({totalCount,count,data},link);
-            return response;
-        }else{
-            return {message:"No se encontraron registros"}
-        }
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        let link = links.pages(data, model, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-
-export const getOne = async (id:string | number ,query:any):Promise<any> => {
+/**
+ * Get one group
+ * @param id id of the group
+ * @param query modifier of the consult
+ */
+export const getOne = async (id: string | number, query: any): Promise<any> => {
     try {
-        let data:IGrupo = await grupo.getOne(model,id,query);
-        let count = await grupo.count(model);
-        if(data){
-            let link = links.records(data,'grupos',count);
-            let response = Object.assign({data},link);
-            return response;
-        }else{
-            return {message:"No se encontro el recurso indicado"};
-        }
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let data: IGrupo = await consult.getOne(model, id, query);
+        let count = await consult.count(model);
+
+        if (!data) return respuestas.ElementNotFound;
+
+        let link = links.records(data, model, count);
+        let response = Object.assign({ data }, link);
+        return { response, code: respuestas.Ok.code };
+
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-export const getSubGruposByGrupo = async (id:string | number ,query:any ):Promise<any> => {
+/**
+ * Get all the subgroups of one group
+ * @param id id of the group
+ * @param query modifier of the consult
+ */
+export const getSubGruposByGrupo = async (id: string | number, query: any): Promise<any> => {
     try {
-        let recurso:IGrupo = await grupo.getOne(model,id,{fields:'id'});
-        if(!recurso){
-            return {response:{message:"No se encontro el recurso indicado"}, code:404};
-        }
-        let data:any = await grupo.getOtherByMe(model,id,'subgrupos',query);
-        let totalCount = await grupo.countOther(model,'subgrupos',id);
+        if (isNaN(id as number)) return respuestas.InvalidID;
+        
+        let recurso: IGrupo = await consult.getOne(model, id, { fields: 'id' });
+        
+        if (!recurso) return respuestas.ElementNotFound;
+        let data: any = await consult.getOtherByMe(model, id, 'subgrupos', query);
+        let totalCount = await consult.countOther(model, 'subgrupos', id);
         let count = data.length;
-        let {limit} = query;
-        if(count > 0){
-            let link = links.pages(data,`grupos/${id}/subgrupos`,count,totalCount,limit);
-            let response = Object.assign({totalCount,count,data},link);
-            return {response,code:200};
-        }else{
-            return {response:{count,totalCount,message:"No se encontraron registros"},code:200};
-        }
+        let { limit } = query;
+        
+        if (count <= 0) return respuestas.Empty;
+        
+        let link = links.pages(data, `grupos/${id}/subgrupos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
-export const getConceptosByGrupo = async (id:string | number ,query:any):Promise<any> => {
+
+/**
+ * Get all concepts of one group
+ * @param id id of the group
+ * @param query modifier of the consult
+ */
+export const getConceptosByGrupo = async (id: string | number, query: any): Promise<any> => {
     try {
-        let recurso:IGrupo = await grupo.getOne(model,id,{fields:'id'});
-        if(!recurso){
-            return {response:{message:"No se encontro el recurso indicado"}, code:404};
-        }
-        let data:any = await grupo.getOtherByMe(model,id,'conceptos',query);
-        let totalCount = await grupo.countOther(model,'conceptos',id);
+        if(isNaN(id as number)) return respuestas.InvalidID;
+
+        let recurso: IGrupo = await consult.getOne(model, id, { fields: 'id' });
+       
+        if (!recurso) return respuestas.Empty;
+
+        let data: any = await consult.getOtherByMe(model, id, 'conceptos', query);
+        let totalCount = await consult.countOther(model, 'conceptos', id);
         let count = data.length;
-        let {limit} = query;
-        if(count > 0){
-            let link = links.pages(data,`grupos/${id}/conceptos`,count,totalCount,limit);
-            let response = Object.assign({totalCount,count,data},link);
-            return {response,code:200};
-        }else{
-            return {response:{message:"No se encontraron registros"},code:200};
-        }
+        let { limit } = query;
+        if (count < 0) return respuestas.Empty;
+
+        let link = links.pages(data, `grupos/${id}/conceptos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
+        
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-export const create = async (req:Request):Promise<any> =>{
-    let {data} = req.body;
-    let newGrupo:IGrupo = data;
+/**
+ * Create a new group
+ * @param body the data of the new group
+ */
+export const create = async (body: any): Promise<any> => {
+    let { data } = body;
+    let newGrupo: IGrupo = data;
     try {
-        let {insertId} = await grupo.create(model,newGrupo) as any;
-        let link = links.created('grupos',insertId);
-        let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
-        return {response,code:201};
+        let { insertId } = await consult.create(model, newGrupo) as any;
+        let link = links.created(model, insertId);
+        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        return { response, code: respuestas.Created.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-export const update = async (req:Request):Promise<any> => {
-    let {id} = req.params;
-    let {data} = req.body;
-    let newGrupo:IGrupo = data;
+/**
+ * Update the data of one group
+ * @param params params request object
+ * @param body data of the group
+ */
+export const update = async (params: any,body:any): Promise<any> => {
+    let { id } = params;
+    let { data } = body;
+    let newGrupo: IGrupo = data;
     try {
-        let {affectedRows} = await grupo.update(model,id,newGrupo) as any;
-        let link = links.created('grupos',id);
-        let response = Object.assign({message:"Registro actualizado en la base de datos",affectedRows},{link:link});
-        return {response,code:201};
+        if(isNaN(id)) return respuestas.InvalidID;
+        let { affectedRows } = await consult.update(model, id, newGrupo) as any;
+        let link = links.created(model, id);
+        let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        return { response, code: respuestas.Update.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
-export const remove = async (req:Request):Promise<any> => {
-    let {id} = req.params;
+export const remove = async (params: any): Promise<any> => {
+    let { id } = params;
     try {
-        await grupo.remove(model,id);
-        return {response:{message:"Registro eliminado de la base de datos"},code:200};   
+        if(isNaN(id)) return respuestas.InvalidID;
+        await consult.remove(model, id);
+        return respuestas.Deleted;
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
