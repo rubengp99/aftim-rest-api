@@ -1,7 +1,6 @@
 import * as consult from '../../helpers/consult';
 import * as respuestas from '../../errors';
 import { IGrupo } from './model';
-import { Request } from 'express';
 import * as links from '../../helpers/links';
 const model = "grupos";
 
@@ -154,6 +153,10 @@ export const update = async (params: any,body:any): Promise<any> => {
     }
 }
 
+/**
+ * Delete a group
+ * @param params params request object
+ */
 export const remove = async (params: any): Promise<any> => {
     let { id } = params;
     try {
