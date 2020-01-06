@@ -1,5 +1,6 @@
 import * as usuarios from '../../helpers/consult';
 import * as encript from '../../helpers/encript';
+import * as respuestas from '../../errors';
 import { tokenKey } from '../../keys';
 import jwt from 'jsonwebtoken';
 import { IUsuario } from './model';
@@ -11,15 +12,17 @@ const model = "usuario";
  */
 export const login = async (body:any):Promise<any> =>{
     let {usuario,password} = body.data;
-    if(usuario === '' || password === '') return {message:`Invalid access`,code:401};
+    if(usuario === '' || password === '') return respuestas.Unauthorized;
     try {
         let user:IUsuario = await usuarios.getUser(usuario);
-        if(!user || !encript.validar(password,user.password)) return {message:`Invalid access`,code:401};
+        if(!user || !encript.validar(password,user.password)) return respuestas.Unauthorized;
         const token:string = jwt.sign({_id:user.login}, tokenKey || "2423503",{ expiresIn: 60 * 60 * 24});
-        const response = {token,data:user,code:200};
-        return response;
+        const response = {data:user};
+        return {response,token,code:respuestas.Ok.code};
     } catch (error) {
-        throw new Error(`Error al iniciar sesion, Error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -34,13 +37,13 @@ export const signUp = async (body: any): Promise<any> => {
     newUser.password = await encript.encriptar(newUser.password);
     try {
         let {insertId} = await usuarios.create(model,newUser);
-        console.log(insertId)
-        if(!insertId) return {message:`Error al registrar usuario`,code:500};
         const token:string = jwt.sign({_id:newUser.login},tokenKey || "2423503",{ expiresIn: 60 * 60 * 24});
-        const response = {token,data:newUser,code:200};
-        return response;
+        const response = {data:newUser}
+        return {token,response,code:respuestas.Created.code};
     } catch (error) {
-        throw new Error(`Error al iniciar sesion, Error: ${error}`);
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
@@ -51,15 +54,17 @@ export const signUp = async (body: any): Promise<any> => {
 export const validarToken = async (headers: any): Promise<any> =>{
     const { user_token }  = headers;
     try {
-        if(!user_token) return {message:`Ivalid access`,code:401};
+        if(!user_token) return respuestas.Unauthorized;
         let payload:any = jwt.verify(user_token,tokenKey || "2423503");
         let user:IUsuario = await usuarios.getUser(payload._id);
 
-        if(!user) return {message:`Invalid access`,code:401};
-        const response = { data:user,code:200 };
-        return response
+        if(!user) return respuestas.Unauthorized;
+        const response = { data:user };
+        return {response,code:respuestas.Ok.code};
     } catch (error) {
-        if(error.name=="TokenExpiredError") return {message:`Token expired`,code:403};
-        throw new Error(`Error desconocido al iniciar sesion, Error: ${error}`);
+        if(error.name=="TokenExpiredError") return respuestas.Forbidden;
+        if(error.message=="BD_SYNTAX_ERROR") return respuestas.BadRequest;
+        console.log(`Error desconocido al iniciar sesion, Error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }

@@ -1,44 +1,43 @@
 import * as controller  from './controller';
 import  {validar}  from'../../helpers/aunthentication';
-import  { Router,Request,Response } from 'express';
+import { InternalServerError } from '../../errors';
+import  { Router,Request,Response, response } from 'express';
 const router = Router();
 
 router.post('/login',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {code,data,message,token} = await controller.login(req.body);
-        if(message) return res.status(code).json(message);
-        return res.status(code).json({data,token});
+        let {code,response,message,token} = await controller.login(req.body);
+         return res.status(code).json(message || {response,token});
+        
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:"Error interno"});
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
     }
 });
 
 router.post('/signup',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {code,data,message,token}= await controller.signUp(req.body);
-        if(message){
-            return res.status(code).json(message);
-        }else{
-            return res.status(code).json({data,token});   
-        }
+        let {code,response,message,token}= await controller.signUp(req.body);
+        return res.status(code).json(message || {response,token});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:"Error interno"});
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
     }
 });
 
 router.post('/validate',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { code, data, message } = await controller.validarToken(req.body);
-        if(message){
-            return res.status(code).json(message);
-        }else{
-            return res.status(code).json(data);
-        }
+        let { code, response, message } = await controller.validarToken(req.body);
+        return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:"Error interno"});
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
     }
 });
 
