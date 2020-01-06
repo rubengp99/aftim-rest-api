@@ -3,51 +3,59 @@ API REST of Aftim software, to connection with the suite of aftim apps
 
 ## Usage
 
-<code>npm install --save</code>
+><code>npm install --save</code>
 
 ## Scripts
 
 ### Clean
-<code>npm run clean</code> </br></br>
+><code>npm run clean</code>
+
 run this script to delete the dist folder
 
 ### Build
-<code>npm run build</code> </br></br>
+><code>npm run build</code>
+
 run this script to compile the source code and create the dist folder
 
 ### Start
-<code>npm start</code>  </br></br>
+><code>npm start</code>
+
 run this script to start the server on production
 
 ### Dev
-<code>npm run dev</code> </br></br>
+><code>npm run dev</code>
+
 run this script to generate a development server that watch the changes on the code
 
 ### Deploy
-<code>npm run deploy</code> </br></br>
+><code>npm run deploy</code>
+
 run this script to do the clean build and start at the same time
 
 ### Helper
-<code>npm run helper</code> </br></br>
-with this command you can make a helper script</br>
-Example:</br>
-<code>npm run helper -- authentication.js</code>
+><code>npm run helper</code>
+
+with this command you can make a helper script  
+Example: <code>npm run helper -- authentication.js</code>
 
 ### Component
-<code>npm run component --<component-name> </code> </br></br>
-This command make a new component of the api whit the respective model, controller and rout files</br>
-Example:</br>
-<code>npm run component -- usuarios</code>
+><code>npm run component  </code>  
+
+This command make a new component of the api whit the respective model, controller and rout files
+
+Example:<code>npm run component -- usuarios</code>
 
 ### seed
-<code>npm run seed</code> </br></br>
+><code>npm run seed</code>
+
 This command mount the database on the MySQL server
 
 ### Git
-<code>npm run git</code> </br></br>
-with this script you can make a commit on git repository</br>
-Example:</br>
-<code>npm run git -- Fix on authntication</code>
+><code>npm run git</code>
+
+with this script you can make a commit on git repository
+
+Example: <code>npm run git -- Fix on authntication</code>
 
 
 
@@ -78,71 +86,70 @@ Requests to the server must be made through the URLs: <code>http://localhost:81/
 ## Examples
 
 In this case we'll make a request to the endpoin conceptos, requesting all last 50 concepts and we just want 
-the fields: id, nombre, codigo and  precio_dolar </br>
+the fields: id, nombre, codigo and  precio_dolar.
+
 Route: <code>http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar</code><br>
 
-Code:</br>
-<code>
-    var myHeaders = new Headers({
-        'x-access-control' : '{"password" : "123456", "user" : "admin"}' 
-    });
+Code:
 
-    fetch('http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar',
-    {
-        method: 'POST',
-        headers: myHeaders
-    })
-        .then( (response) =>{
-            var respuesta = JSON.parse(response);
-            console.log(response.data);
+        var myHeaders = new Headers({
+            'x-access-control' : '{"password" : "123456", "user" : "admin"}' 
         });
-</code></br>
+        fetch('http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar',
+        {
+            method: 'POST',
+            headers: myHeaders
+        })
+            .then( (response) =>{
+                var respuesta = JSON.parse(response);
+                console.log(response.data);
+            });
 
-Response:</br>
 
-<code>
-    {
-        "totalCount": 6,
-        "count": 6,
-        "data": [
-            {
-                "id": 1,
-                "nombre": "CARNE DE RES DE PRIMERA",
-                "codigo": "04010150541",
-                "precio_dolar": "5.75"
-            },
-            {
-                "id": 3,
-                "nombre": "PESCADO FRESCO",
-                "codigo": "27323221122",
-                "precio_dolar": "1.97"
-            },
-            {
-                "id": 4,
-                "nombre": "CARNE MOLIDA",
-                "codigo": "355214235135",
-                "precio_dolar": "5.03"
-            },
-            {
-                "id": 5,
-                "nombre": "CHORIZO POR BULTO",
-                "codigo": "3573676423",
-                "precio_dolar": "8.23"
-            },
-            {
-                "id": 6,
-                "nombre": "JAMON AHUMADO",
-                "codigo": "FGHFH",
-                "precio_dolar": "12.67"
-            },
-            {
-                "id": 7,
-                "nombre": "QUESO GOUDA",
-                "codigo": "45484548754121",
-                "precio_dolar": "1.00"
-            }
-        ],
-        "sig": "Last page",
-        "prev": "First Page"
-    }
-</code>
+Response:
+
+
+        {
+            "totalCount": 6,
+            "count": 6,
+            "data": [
+                {
+                    "id": 1,
+                    "nombre": "CARNE DE RES DE PRIMERA",
+                    "codigo": "04010150541",
+                    "precio_dolar": "5.75"
+                },
+                {
+                    "id": 3,
+                    "nombre": "PESCADO FRESCO",
+                    "codigo": "27323221122",
+                    "precio_dolar": "1.97"
+                },
+                {
+                    "id": 4,
+                    "nombre": "CARNE MOLIDA",
+                    "codigo": "355214235135",
+                    "precio_dolar": "5.03"
+                },
+                {
+                    "id": 5,
+                    "nombre": "CHORIZO POR BULTO",
+                    "codigo": "3573676423",
+                    "precio_dolar": "8.23"
+                },
+                {
+                    "id": 6,
+                    "nombre": "JAMON AHUMADO",
+                    "codigo": "FGHFH",
+                    "precio_dolar": "12.67"
+                },
+                {
+                    "id": 7,
+                    "nombre": "QUESO GOUDA",
+                    "codigo": "45484548754121",
+                    "precio_dolar": "1.00"
+                }
+            ],
+            "sig": "Last page",
+            "prev": "First Page"
+        }
