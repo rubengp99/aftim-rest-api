@@ -234,7 +234,7 @@ An error has ocurred on the server and the request was rejected
 
 ## Endpoints
 
-- **[Areas de atencion](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/areas_atencion"Areas of atention")**
+- **[Areas de atencion](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/areas_atencion)**
 - **[Banco]()**
 - **[Cambio]()**
 - **[Cargo]()**
