@@ -156,7 +156,8 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
         const newDetail: IDetPedidos = data;
         const { affectedRows } = await pedidos.update(submodel, id1, newDetail);
         const link = links.created(model, id);
-        const response = { message: respuestas.Update.message, link: link}
+        const response = { message: respuestas.Update.message, link: link
+        }
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;

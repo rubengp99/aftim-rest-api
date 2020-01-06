@@ -141,7 +141,7 @@ Response:
             "prev": "First Page"
         }
 
-On the other hand we can also do a request to create data, in this case we'll make a group
+On the other hand we can also do a request to create data, in this case we'll make a group, the optional fields could be guessed
 
 Route: `POST: http://localhost:81/api/conceptos`
 
