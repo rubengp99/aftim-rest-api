@@ -25,13 +25,13 @@ export function selectSQL(query:any={},tabla:string): string{
     for(const prop in query){
         if(prop !== 'fields' && prop !=='limit' && prop !== 'order' && prop !=='orderField' && prop !=='offset'){
             if(prop.includes('after') || prop.includes('before')){
-                if(prop.split('_').length > 1){
-                    where += (index==0) ? " WHERE " : "AND";
+                if(prop.split('-').length > 1){
+                    where += (index==0) ? " WHERE " : " AND ";
                     where += `${prop.split('-')[1]} ${prop.split('-')[0] ==='before' ? '<=' : '>='} '${query[prop]}'`;
                     index++;
                 }
             }else{
-                where += (index==0) ? " WHERE " : "AND";
+                where += (index==0) ? " WHERE " : " AND ";
                 where += `${prop} like '%${query[prop]}%'`;
                 index++;
             }
