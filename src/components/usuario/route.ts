@@ -41,6 +41,20 @@ router.post('/validate',validar, async (req:Request, res:Response):Promise<Respo
     }
 });
 
+router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Response> =>{
+    let {id} = req.params;
+    let {query} = req;
+    try {
+        let { code, response, message } = await controller.getPedidosByUser(id,query);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+
 
 
 export default router;

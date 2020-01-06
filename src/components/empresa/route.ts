@@ -79,6 +79,20 @@ router.get('/:id/subgrupos',validar, async (req:Request, res:Response):Promise<R
                 .json({message:InternalServerError.message});
     }
 });
+
+router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Response> =>{
+    let {id} = req.params;
+    let {query} = req;
+    try {
+        let { code, response, message } = await controller.getPedidosByEmpresa(id,query);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
   
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
