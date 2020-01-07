@@ -176,11 +176,13 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
         if (!conceptos) return respuestas.Empty;
 
         let grp = conceptos[0].subgrupos_id;
-        let data: any[] = await consult.getOne('subgrupos', grp, {});
+        let data: any[] = [];
+        let data1 =  await consult.getOne('subgrupos', grp, {});
+        data.push(data1);
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].subgrupos_id !== grp) {
                 let group: any = await consult.getOne('subgrupos', conceptos[index].subgrupos_id, {});
-                data.push(group[0]);
+                data.push(group);
                 grp = conceptos[index].subgrupos_id;
             }
         }
@@ -215,6 +217,13 @@ export const getPedidosByEmpresa = async (id: string | number, query: any): Prom
         let { limit } = query;
 
         if (count <= 0) return respuestas.Empty;
+
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
+            let pres: any[] = await consult.getOtherByMe('rest_pedidos', id as string, 'rest_det_pedidos', {});
+            data[i].detalles = pres;
+        }
+
         let link = links.pages(data, `empresa/${id}/pedidos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
         return { response, code: respuestas.Ok.code };
