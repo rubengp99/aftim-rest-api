@@ -83,6 +83,13 @@ export const getPedidosByUser = async (id: string | number, query: any): Promise
         let { limit } = query;
 
         if (count <= 0) return respuestas.Empty;
+
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
+            let pres: any[] = await consult.getOtherByMe('rest_pedidos', id as string, 'rest_det_pedidos', {});
+            data[i].detalles = pres;
+        }
+
         let link = links.pages(data, `usuario/${id}/pedidos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
         return { response, code: respuestas.Ok.code };
