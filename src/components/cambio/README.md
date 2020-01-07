@@ -9,7 +9,7 @@ This represent the diferents currencies and his rate of change to the principal
 - **moneda:** the name of the currency **(Optional field) String**
 - **principal:** the flag to indicate if its the principal currency **(Optional field) Boolean**
 
->`GET: /api/cambio` : Get an array of currencies
+- **GET: /api/cambio** : Get an array of currencies
 
         {
             "totalCount": 3,
@@ -37,8 +37,8 @@ This represent the diferents currencies and his rate of change to the principal
             "sig": "Last page",
             "prev": "First Page"
         }
-
->`GET: /api/cambio/:id` : Get an object corresponding to a currency
+---
+**GET: /api/cambio/:id** : Get an object corresponding to a currency
 
         {
             "data": {
@@ -50,7 +50,7 @@ This represent the diferents currencies and his rate of change to the principal
             "sig": "http://localhost:81/api/cambio/3",
             "prev": "http://localhost:81/api/cambio/1"
         }
-
+---
 >`POST: /api/cambio` : Create a new currency
 
     {

@@ -24,7 +24,7 @@ This entity represent the banks accounts of the company to track the contability
 
 ## Routes:
 
->`GET: /api/banco/` : Gets an array of objects corresponding to "banco"
+- **GET: /api/banco/** : Gets an array of objects corresponding to "banco"
 
         {
             "totalCount": 2,
@@ -72,8 +72,8 @@ This entity represent the banks accounts of the company to track the contability
             "sig": "Last page",
             "prev": "First Page"
         }
-
->`GET: /api/banco/1` : Get an object corresponding to "banco"
+---
+- **GET: /api/banco/1** : Get an object corresponding to "banco"
 
         {
             "data": {
@@ -98,8 +98,10 @@ This entity represent the banks accounts of the company to track the contability
             "sig": "http://localhost:81/api/banco/2",
             "prev": "First Record"
         }
+---
+- **POST: /api/banco/** : Create a new bank account record on the api
 
->`POST: /api/banco/` : Create a new bank account record on the api
+    Request: 
 
         {
 	
@@ -115,14 +117,16 @@ This entity represent the banks accounts of the company to track the contability
                     }
         }
 
-------------------------------
+    Response:
 
         {
             "message": "Record created",
             "link": "http://localhost:81/api/banco/3"
         }
 
->`POST: /api/banco/:id` : Update a record on the banco entity
+- **POST: /api/banco/:id** : Update a record on the banco entity
+
+    Request: 
 
         {
 	
@@ -133,14 +137,14 @@ This entity represent the banks accounts of the company to track the contability
                     }
         }
 
--------
+    Response:
 
         {
             "message": "Record updated",
             "link": "http://localhost:81/api/banco/3"
         }
-
->`DELETE: /api/banco/` : Remove a record from the entity
+---
+- **DELETE: /api/banco/** : Remove a record from the entity
         
         {
             "message": "Record deleted"

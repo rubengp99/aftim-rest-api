@@ -78,7 +78,9 @@ export const create = async (body: any): Promise<any> => {
             await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
         }
         let link = links.created(model, insertId);
-        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        newPedido.detalles = newDetalles;
+        newPedido.id = insertId;
+        let response = Object.assign({data:newPedido, message: respuestas.Created.message }, { link: link });
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
