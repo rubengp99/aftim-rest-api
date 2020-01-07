@@ -179,57 +179,21 @@ Response:
 
 ## Responses and errors
 
-- ### Ok
-Everything was good and the response is expected as desired
-**Code:** 200 / **Message:** "Ok"
-
-- ### Created 
-The data its saved and the record created successfully
-**Code:** 201 / **Message:** "Record created"
-
-- ### Updated
-The record was successfuly updated and midificated
-**Code:** 201 / **Message:** "Record updated"
-
-- ### Deleted
-The record was deleted of the api
-**Code:** 200 / **Message:** "Record deleted"
-
-- ### Empty
-The request was good but the endpoint is empty
-**Code:** 200 / **Message:** "The entity is empty"
-
-- ### Invalid ID
-The given ID doesn't have the correct numeric format
-**Code:** 400 / **Message:** "The given ID is not valid"
-
-- ### Bad Request
-The route or the data have invalid format or doesn't exist
-**Code:** 400 / **Message:** "Bad Request"
-
-- ### Unauthorized
-The credentials are missing or are invalids
-**Code:** 401 / **Message:** "The credentials are invalids"
-
-- ### Forbidden
-The user doesn't have permissions to use the route
-**Code:** 403 / **Message:** "You are not allowed to use this route"
-
-- ### Element Not Found
-The elemente requested doesn't exist
-**Code:** 404 / **Message:** "The element not exist"
-
-- ### Route Not Found
-The route requested not exist
-**Code:** 404 / **Message:** "The route not exist"
-
-- ### Bad Format
-The format of the data is invalid
-**Code:** 406 / **Message:** "Format incorrect"
-
-- ### Internal Server Error
-An error has ocurred on the server and the request was rejected
-**Code:** 500 / **Message:** "Internal server error"
+| Response | Description | Message | Code |
+| -------- | ----------- | ------- | ---- |
+| Ok | Everything was good and the response is expected as desired | Ok | 200 |
+| Created | The data its saved and the record created successfully | Record created | 201 |
+| Updated | The record was successfuly updated and midificated | Record updated | 201 |
+| Deleted | The record was deleted from the api | Record deleted | 200 |
+| Empty | The resquest was good but the endpoint is empty | The entity is empty | 200 |
+| Invalid ID | The given ID doesn't have the correct numeric format | The given ID is not valid | 400 |
+| Bad Request | The route or the data have invalid format or doesn't exist | Bad Request | 400 |
+| Unauthorized | The credentials are missing or are invalids | The credentials are invalids | 401 |
+| Forbidden | The user doesn't have permissions to use this route | You are not allow to use this route | 403 |
+| Element Not Found | The element requested doesn't exist | Element not found | 404 |
+| Route Not Found | The route requested doesn't exist | Route not found | 404 |
+| Bad Format | The format of the data is invalid | Format invalid | 406 |
+| Internal Server Error | An error has ocurred on the server and the request was rejected | Internal server error | 500 |
 
 
 ## Endpoints
