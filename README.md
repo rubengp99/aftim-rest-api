@@ -234,23 +234,23 @@ An error has ocurred on the server and the request was rejected
 
 ## Endpoints
 
-- **[Areas de atencion](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/areas_atencion)**
-- **[Banco]()**
-- **[Cambio]()**
-- **[Cargo]()**
-- **[Ciudad]()**
-- **[Clientes]()**
-- **[Conceptos]()**
-- **[Depositos]()**
-- **[Descargos]()**
-- **[Empresa]()**
-- **[Entidad]()**
-- **[Galeria]()**
-- **[Grupos]()**
-- **[Marcas]()**
-- **[Movimientos de deposito]()**
-- **[Pedidos]()**
-- **[Subgrupos]()**
-- **[Tipos]()**
-- **[Unidades]()**
-- **[Usuario]()**
+- **[Areas de atencion](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/areas_atencion "Areas of atention")**
+- **[Banco](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/banco "Bank")**
+- **[Cambio](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/cambio "Currency")**
+- **[Cargo](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/cargos "Charge")**
+- **[Ciudad](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/ciudad "City")**
+- **[Clientes](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/clientes "Clients")**
+- **[Conceptos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/conceptos "Concepts")**
+- **[Depositos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/depositos "Depositos")**
+- **[Descargos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/descargos "ds")**
+- **[Empresa](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/empresa "Company")**
+- **[Entidad](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/Entidad "Entity")**
+- **[Galeria](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/galeria  "Gallery")**
+- **[Grupos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/grupos "Groups")**
+- **[Marcas](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/marcas "Brands")**
+- **[Movimientos de deposito](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/movimiento_depositos "Deposits movements")**
+- **[Pedidos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/pedidos "Orders")**
+- **[Subgrupos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/subgrupos "Subgrupos")**
+- **[Tipos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/tipos "Types")**
+- **[Unidades](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/unidades "Units")**
+- **[Usuario](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/usuario "User")**

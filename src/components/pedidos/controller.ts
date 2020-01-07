@@ -70,13 +70,11 @@ export const create = async (body: any): Promise<any> => {
     let newDetalles: IDetPedidos[] = data1;
     try {
         let { insertId } = await pedidos.create(model, newPedido);
-        await pedidos.create(submodel, newDetalles);
-        newPedido.detalles = newDetalles;
-
-        for (let index = 0; index < newPedido.detalles.length; index++) {
-            let detalle = newPedido.detalles[index];
-            let movDep: any[] = await pedidos.get("movmiento_depositos", { conceptos_id: detalle.conceptos_id });
-            await pedidos.update("movimiento_depositos", movDep[0].id, movDep[0]);
+        for (let index = 0; index < newDetalles.length; index++) {
+            await pedidos.create(submodel, newDetalles[index]);
+            let detalle = newDetalles[index];
+            let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: detalle.conceptos_id });
+            await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
         }
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
