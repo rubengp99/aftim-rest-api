@@ -71,6 +71,7 @@ export const create = async (body: any): Promise<any> => {
     try {
         let { insertId } = await pedidos.create(model, newPedido);
         for (let index = 0; index < newDetalles.length; index++) {
+            newDetalles[index].rest_pedidos_id = insertId;
             await pedidos.create(submodel, newDetalles[index]);
             let detalle = newDetalles[index];
             let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: detalle.conceptos_id });

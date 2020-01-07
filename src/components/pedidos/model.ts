@@ -19,8 +19,8 @@
 export interface IPedidos 
 {
     id?: string | number,
-    mesas_id?:string | number,
-    estatus_id:string | number,
+    rest_mesas_id?:string | number,
+    rest_estatus_id:string | number,
     estado: string,
     cant_personas: number,
     fecha_at:string,
@@ -57,7 +57,7 @@ export interface IPedidos
 */
 export interface IDetPedidos {
     id?:string | number,
-    pedidos_id:string | number,
+    rest_pedidos_id:string | number,
     conceptos_id:string | number,
     cantidad:number,
     precio:number,
