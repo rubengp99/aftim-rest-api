@@ -10,7 +10,7 @@ This entity correspond to the areas where the order are printed, for example a h
 
 ## Routes:
 
-**GET: /api/areas_atencion** : Get an array of objects corresponding to "areas de atencion"
+- **GET: /api/areas_atencion** : Get an array of objects corresponding to "areas de atencion"
 
         {
             "totalCount": 4,
@@ -41,7 +41,7 @@ This entity correspond to the areas where the order are printed, for example a h
             "prev": "First Page"
     }
 
-**GET: /api/areas_atencion/:id** : Get a object corresponding to one "area de atencion"
+- **GET: /api/areas_atencion/:id** : Get a object corresponding to one "area de atencion"
 
         {
             "data": {
@@ -53,7 +53,7 @@ This entity correspond to the areas where the order are printed, for example a h
             "prev": "First Record"
         }
 
-**POST: /api/areas_atencion/** : Create a new "area de atencion"
+- **POST: /api/areas_atencion/** : Create a new "area de atencion"
 
 
         {
@@ -62,15 +62,13 @@ This entity correspond to the areas where the order are printed, for example a h
                 "impresora": "SKY POS"
             }
         }
-
------------------------------------------------------------------
-
+    ---
         {
             "message": "Record created",
             "link": "http://localhost:81/api/areas_atencion/5"
         }
 
-**POST: /api/areas_atencion/:id** : Update the data of an "area de atencion"
+- **POST: /api/areas_atencion/:id** : Update the data of an "area de atencion"
 
 
         {
@@ -79,14 +77,14 @@ This entity correspond to the areas where the order are printed, for example a h
             }
         }
 
------------------------------------------------------------------
+    ---
 
         {
             "message": "Record updated",
             "link": "http://localhost:81/api/areas_atencion/5"
         }
 
-**DELETE: /api/areas_atencion/:id** : Remove an "area de atencion"
+- **DELETE: /api/areas_atencion/:id** : Remove an "area de atencion"
 
         {
             "message": "Record deleted"
