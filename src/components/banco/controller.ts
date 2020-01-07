@@ -36,10 +36,10 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
         
-        let data:IBanco[] = await consult.getOne(model,id,query);
+        let data:IBanco = await consult.getOne(model,id,query);
         let count:number = await consult.count(model);
         
-        if(!data[0]) return respuestas.ElementNotFound;
+        if(!data) return respuestas.ElementNotFound;
         
         let link = links.records(data,model,count);    
         let response = Object.assign({data},link);

@@ -99,7 +99,7 @@ export const remove = async (params: any): Promise<any> => {
         const data: IPedidos = await pedidos.getOne(model, id, { fields: 'id' });
         if (!data) return respuestas.ElementNotFound;
 
-        const data1: IDetPedidos[] = await pedidos.get(submodel, { fields: 'id' });
+        const data1: IDetPedidos[] = await pedidos.getOtherByMe(model,id,submodel, { fields: 'id' });
         data1.forEach(async (element: any) => {
             await pedidos.remove(submodel, element.id);
         });
