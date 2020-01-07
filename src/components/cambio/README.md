@@ -9,6 +9,8 @@ This represent the diferents currencies and his rate of change to the principal
 - **moneda:** the name of the currency **(Optional field) String**
 - **principal:** the flag to indicate if its the principal currency **(Optional field) Boolean**
 
+## Routes
+
 - **GET: /api/cambio** : Get an array of currencies
 
         {
@@ -38,7 +40,7 @@ This represent the diferents currencies and his rate of change to the principal
             "prev": "First Page"
         }
 ---
-**GET: /api/cambio/:id** : Get an object corresponding to a currency
+- **GET: /api/cambio/:id** : Get an object corresponding to a currency
 
         {
             "data": {
@@ -51,45 +53,49 @@ This represent the diferents currencies and his rate of change to the principal
             "prev": "http://localhost:81/api/cambio/1"
         }
 ---
->`POST: /api/cambio` : Create a new currency
+- **POST: /api/cambio** : Create a new currency
 
-    {
-        
-        "data":
-                {
-                    "tasa": "30000.00",
-                    "moneda": "CO",
-                    "principal": 0
-                }
+    Request:
+
+        {
             
-    }
+            "data":
+                    {
+                        "tasa": "30000.00",
+                        "moneda": "CO",
+                        "principal": 0
+                    }
+                
+        }
 
-----
+    Response:
 
-    {
-        "message": "Record created",
-        "link": "http://localhost:81/api/cambio/4"
-    }
+        {
+            "message": "Record created",
+            "link": "http://localhost:81/api/cambio/4"
+        }
+---
+- **POST: /api/cambio/:id** : Edit the data of one currency
 
->`POST: /api/cambio/:id` : Edit the data of one currency
+    Request:
 
-    {   
-        
-        "data":
-                {
-                    "tasa": "450000.00",
-                }
-    }
+        {   
+            
+            "data":
+                    {
+                        "tasa": "450000.00",
+                    }
+        }
 
-----
+    Response:
 
-    {
-        "message": "Record updated",
-        "link": "http://localhost:81/api/cambio/4"
-    }
+        {
+            "message": "Record updated",
+            "link": "http://localhost:81/api/cambio/4"
+        }
+---
+- **DELETE: /api/cambio/:id** : Remove a currency
 
->`DELETE: /api/cambio/:id` : Remove a currency
-
-    {
-        "message" : "Record deleted"
-    }
+        {
+            "message" : "Record deleted"
+        }
