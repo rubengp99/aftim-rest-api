@@ -15,3 +15,6 @@ This entity represent the banks accounts of the company to track the contability
 - **contacto:** name of the contact on the sucursal **String**
 - **telefono_contacto:** phone of the contact **String**
 - **email_contacto:** email of the contact **String**
+- **dias_diferidos:** daysof the transaction diferation **Number**
+- **ult_saldo_conciliado:** last balance reconciled in the bank account **Number**
+- **saldo_actual:** current balance according to the system

@@ -41,7 +41,7 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
     }
 });
 
-router.delete('/',validar, async (req:Request, res:Response):Promise<Response> => {
+router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,code} = await controller.remove(req.params);
         return res.status(code).json(message);

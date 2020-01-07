@@ -125,7 +125,8 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
         const pedido = await pedidos.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
         const newDetail: IDetPedidos = data;
-        const { insertId } = await pedidos.create(model, newDetail);
+        newDetail.rest_pedidos_id = id;
+        const { insertId } = await pedidos.create(submodel, newDetail);
         const link = links.created(model, insertId);
         const response = { message: respuestas.Created.message, link: link }
         return { response, code: respuestas.Created.code };
