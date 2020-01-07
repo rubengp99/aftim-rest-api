@@ -39,8 +39,8 @@ This entity correspond to the areas where the order are printed, for example a h
             ],
             "sig": "Last page",
             "prev": "First Page"
-    }
-
+        }
+---
 - **GET: /api/areas_atencion/:id** : Get a object corresponding to one "area de atencion"
 
         {
@@ -52,9 +52,10 @@ This entity correspond to the areas where the order are printed, for example a h
             "sig": "http://localhost:81/api/areas_atencion/2",
             "prev": "First Record"
         }
-
+---
 - **POST: /api/areas_atencion/** : Create a new "area de atencion"
 
+    Request:
 
         {
             "data":{
@@ -62,14 +63,16 @@ This entity correspond to the areas where the order are printed, for example a h
                 "impresora": "SKY POS"
             }
         }
-    ---
+    Response:
+
         {
             "message": "Record created",
             "link": "http://localhost:81/api/areas_atencion/5"
         }
-
+---
 - **POST: /api/areas_atencion/:id** : Update the data of an "area de atencion"
 
+    Request:
 
         {
             "data":{
@@ -77,13 +80,13 @@ This entity correspond to the areas where the order are printed, for example a h
             }
         }
 
-    ---
+    Response:
 
         {
             "message": "Record updated",
             "link": "http://localhost:81/api/areas_atencion/5"
         }
-
+---
 - **DELETE: /api/areas_atencion/:id** : Remove an "area de atencion"
 
         {
