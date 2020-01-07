@@ -130,13 +130,13 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
         if (!conceptos) return respuestas.Empty;
 
         let grp = conceptos[0].grupos_id;
-        let data1:any[]  = [];
-        let data = await consult.getOne('grupos', grp, {});
-        data1.push(data);
+        let data:any[]  = [];
+        let data1 = await consult.getOne('grupos', grp, {});
+        data.push(data1);
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].grupos_id !== grp) {
                 let group: any = await consult.getOne('grupos', conceptos[index].grupos_id, {});
-                data1.push(group[0]);
+                data.push(group);
                 grp = conceptos[index].grupos_id;
             }
         }
