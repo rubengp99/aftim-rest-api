@@ -30,7 +30,7 @@ run this script to generate a development server that watch the changes on the c
 - ### Deploy
 ><code>npm run deploy</code>
 
-run this script to do the clean build and start at the same time
+run this script to do the clean, build and start at the same time
 
 - ### Helper
 ><code>npm run helper</code>
@@ -43,7 +43,7 @@ Example: <code>npm run helper -- authentication.js</code>
 
 This command make a new component of the api with the respective model, controller and route files
 
-Example:<code>npm run component -- usuarios</code>
+Example: <code>npm run component -- usuarios</code>
 
 - ### seed
 ><code>npm run seed</code>
@@ -55,7 +55,7 @@ This command mount the database on the MySQL server
 
 with this script you can make a commit on git repository
 
-Example: <code>npm run git -- Fix on authntication</code>
+Example: <code>npm run git -- Fix on authentication</code>
 
 
 
@@ -74,17 +74,17 @@ The token have the next estructure: <code>{"password" : "123456", "user" : "admi
 Requests to the server must be made through the URLs: `http://localhost:81/api/${endpint}/?${query}`, each endpoint will be given for the resource they wish to obtain or mutate, for example: `http://localhost:81/api/conceptos/?limit=20&fields=id,nombre`
 
 #### Query
-**fields**: This paramater indicate which of the attributes of the entity are required by the user, separated by comma  
-**offset**: This parameter indicates the index where the data path begins  
-**limit**: This parameter indicates the lenght of the array of data  
-**order**: This parameter indicates the order of the array ascendent/descendent  
-**orderField**: This parameter indicates the key or field by which the array will be ordered  
-**before**: it gets concatenated before the filter key field to indicate that the records are less than or equal to the value  
-**after**: it gets concatenated before the filter key field to indicate that the records are greater than or equal to the value  
++ **fields**: This paramater indicate which of the attributes of the entity are required by the user, separated by comma.
++ **offset**: This parameter indicates the index where the data path begins.
++ **limit**: This parameter indicates the lenght of the array of data.
++ **order**: This parameter indicates the order of the array ascendent/descendent.
++ **orderField**: This parameter indicates the key or field by which the array will be ordered.
++ **before**: it gets concatenated before the filter key field to indicate that the records are less than or equal to the value.
++ **after**: it gets concatenated before the filter key field to indicate that the records are greater than or equal to the value.
 
 ## Examples
 
-In this case we'll make a request to the endpoin conceptos, requesting all last 50 concepts and we just want 
+In this case we'll make a request to the endpoint conceptos, requesting all last 50 concepts and we just want 
 the fields: id, nombre, codigo and  precio_dolar. With a price greater than $1.5 and less than $10. We can do this because the api identifies the entity's fields and can filter through them, prefixes such as 'before' or 'after' can be used so that the filtering is less than or greater than a value, as many filters can be concatenated as desired.
 
 Route: `GET: http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar&after-precio_dolar=1.5&before-precio_dolar=10`
@@ -188,7 +188,7 @@ The data its saved and the record created successfully
 **Code:** 201 / **Message:** "Record created"
 
 - ### Updated
-The record was perfectly updated and midificated
+The record was successfuly updated and midificated
 **Code:** 201 / **Message:** "Record updated"
 
 - ### Deleted
@@ -204,7 +204,7 @@ The given ID doesn't have the correct numeric format
 **Code:** 400 / **Message:** "The given ID is not valid"
 
 - ### Bad Request
-The route or the data have invalid format or dosen't exist
+The route or the data have invalid format or doesn't exist
 **Code:** 400 / **Message:** "Bad Request"
 
 - ### Unauthorized
@@ -217,7 +217,7 @@ The user doesn't have permissions to use the route
 
 - ### Element Not Found
 The elemente requested doesn't exist
-**Code:** 404 / **Message:** "The elemente not exist"
+**Code:** 404 / **Message:** "The element not exist"
 
 - ### Route Not Found
 The route requested not exist
