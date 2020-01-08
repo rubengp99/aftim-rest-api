@@ -135,10 +135,14 @@ export const create = async (body: any): Promise<any> => {
     let presentaciones = data1;
     try {
         let { insertId } = await consult.create(model, newConcepto) as any;
-        presentaciones.forEach(async (element: any) => {
-            element.conceptos_id = insertId;
-            await consult.create('presentaciones', element);
-        });
+        if(presentaciones){
+            presentaciones.forEach(async (element: any) => {
+                element.conceptos_id = insertId;
+                await consult.create('presentaciones', element);
+            });
+            newConcepto.presentaciones = presentaciones;
+        }
+        
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         return { response, code: respuestas.Created.code };
