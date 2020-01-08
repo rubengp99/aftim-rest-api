@@ -4,9 +4,11 @@ This entity correspond to the areas where the order are printed, for example a h
 
 ## Model
 
-- **id:** the identifier of the record **(Optional on create and update)**
-- **nombre:** name of the area
-- **impresora:** printer of the area **(Optional on create and update)**
+| Field | Description | Type | Priority |
+| ----- | ----------- | ---- | -------- |
+| **id** | The identifier of the record | *Number* | Optional |
+| **nombre** | Name of the area | *String* | Required |
+| **impresora** | Printer of the area | *String* | Optional |
 
 ## Routes:
 

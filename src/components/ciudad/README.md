@@ -4,9 +4,11 @@ The referenc of the cities
 
 ## Model
 
-- **id:** Numerical identifier **(Optional field) Number**
-- **estado_id:** The estate of the city **Number**
-- **nombre:** Name of the city **String**
+| Field | Description | Type | Priority |
+| ----- | ----------- | ---- | -------- |
+| **id** | Numerical identifier | *Number* | Optional | 
+| **estado_id** | The estate of the city | *Number* | Required |
+| **nombre** | Name of the city | *String* | Required |
 
 ## Routes
 

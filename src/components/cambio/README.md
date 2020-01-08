@@ -3,11 +3,12 @@
 This represent the diferents currencies and his rate of change to the principal
 
 ## Model
-
-- **id:** Numerical identifier **(Optional field) Number**
-- **tasa:** the referential rate of change **(Optional field) Number**
-- **moneda:** the name of the currency **(Optional field) String**
-- **principal:** the flag to indicate if its the principal currency **(Optional field) Boolean**
+| Field | Description | Type | Priority |
+| ----- | ----------- | ---- | -------- |
+| **id** | Numerical identifier | *Number* | Optional |
+| **tasa** | The referential rate of change | *Number* | Optional |
+| **moneda** | The name of the currency | *String* | Optional |
+| **principal** | The flag to indicate if its the principal currency | *Boolean* | Optional |
 
 ## Routes
 

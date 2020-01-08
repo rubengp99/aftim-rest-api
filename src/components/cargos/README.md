@@ -3,13 +3,14 @@
 This entity represents a charge on the inventory
 
 ## Model
-
-- **id:** Numerical identifier **(Optional field) Number**
-- **fecha_at:** Date of the charge **Date**
-- **fecha_in:** Date of reference **Date**
-- **conceptos_id:** Id of the concept **Number**
-- **depositos_id:** Id of the deposit of the charge **Number**
-- **usuario_id:** Id of the user that make the charge **Number**
+| Field | Description | Type | Priority |
+| ----- | ----------- | ---- | -------- |
+| **id** | Numerical identifier | *Number* | Optional |
+| **fecha_at** | Date of the charge | *Date* | Optional |
+| **fecha_in** | Date of reference | *Date* | Optional |
+| **conceptos_id** | Id of the concept | *Number* | Required |
+| **depositos_id** | Id of the deposit of the charge | *Number* | Required |
+| **usuario_id** | Id of the user that make the charge | *Number* | Required |
 
 ## Routes
 

@@ -1,7 +1,7 @@
 export interface ICliente {
     id?:string | number,
     nombre:string,
-    nombre_comercial:string,
+    nombre_comercial?:string,
     cedula:string,
     fecha_at:string,
     fecha_in:string,
