@@ -1,4 +1,4 @@
-import * as pedidos from '../../helpers/consult';
+import * as consult from '../../helpers/consult';
 import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IPedidos, IDetPedidos } from './model';
@@ -12,15 +12,15 @@ const submodel = "rest_det_pedidos"
  */
 export const get = async (query: any): Promise<any> => {
     try {
-        let data: IPedidos[] = await pedidos.get(model, query);
-        let totalCount: number = await pedidos.count(model);
+        let data: IPedidos[] = await consult.get(model, query);
+        let totalCount: number = await consult.count(model);
         let count = data.length;
         let { limit } = query;
         if (count <= 0) return respuestas.Empty;
 
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
-            let pres: IDetPedidos[] = await pedidos.getOtherByMe(model, id as string, submodel, {});
+            let pres: IDetPedidos[] = await consult.getOtherByMe(model, id as string, submodel, {});
             data[i].detalles = pres;
         }
         let link = links.pages(data, model, count, totalCount, limit);
@@ -42,12 +42,12 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: IPedidos = await pedidos.getOne(model, id, query);
-        let count: number = await pedidos.count(model);
+        let data: IPedidos = await consult.getOne(model, id, query);
+        let count: number = await consult.count(model);
 
         if (!data) return respuestas.Empty;
 
-        let pres: IDetPedidos[] = await pedidos.getOtherByMe(model, id as string, submodel, {});
+        let pres: IDetPedidos[] = await consult.getOtherByMe(model, id as string, submodel, {});
         data.detalles = pres;
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
@@ -69,14 +69,14 @@ export const create = async (body: any): Promise<any> => {
     let newPedido: IPedidos = data;
     let newDetalles: IDetPedidos[] = data1;
     try {
-        let { insertId } = await pedidos.create(model, newPedido);
+        let { insertId } = await consult.create(model, newPedido);
         for (let index = 0; index < newDetalles.length; index++) {
             newDetalles[index].rest_pedidos_id = insertId;
-            let inserted = await pedidos.create(submodel, newDetalles[index]);
+            let inserted = await consult.create(submodel, newDetalles[index]);
             newDetalles[index].id = inserted.insertId;
-            let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: newDetalles[index].conceptos_id });
+            let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: newDetalles[index].conceptos_id });
             movDep[0].existencia = movDep[0].existencia - newDetalles[index].cantidad;
-            await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
+            await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
         }
         let link = links.created(model, insertId);
         newPedido.detalles = newDetalles;
@@ -99,17 +99,17 @@ export const remove = async (params: any): Promise<any> => {
     try {
         if (isNaN(id)) return respuestas.InvalidID;
 
-        const data: IPedidos = await pedidos.getOne(model, id, { fields: 'id' });
+        const data: IPedidos = await consult.getOne(model, id, { fields: 'id' });
         if (!data) return respuestas.ElementNotFound;
 
-        const data1: IDetPedidos[] = await pedidos.getOtherByMe(model, id, submodel, { fields: 'id' });
+        const data1: IDetPedidos[] = await consult.getOtherByMe(model, id, submodel, { fields: 'id' });
         data1.forEach(async (element: any) => {
-            let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: element.conceptos_id });
+            let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: element.conceptos_id });
             movDep[0].existencia = movDep[0].existencia + element.cantidad;
-            await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
-            await pedidos.remove(submodel, element.id);
+            await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
+            await consult.remove(submodel, element.id);
         });
-        await pedidos.remove(model, id);
+        await consult.remove(model, id);
         return respuestas.Deleted;
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -128,17 +128,17 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
     let { id } = params;
     if (isNaN(id)) return respuestas.InvalidID;
     try {
-        const pedido = await pedidos.getOne(model, id, { fields: 'id' });
+        const pedido = await consult.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
         const newDetail: IDetPedidos = data;
         newDetail.rest_pedidos_id = id;
-        const { insertId } = await pedidos.create(submodel, newDetail);
+        const { insertId } = await consult.create(submodel, newDetail);
 
         newDetail.id = insertId;
 
-        let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
+        let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
         movDep[0].existencia = movDep[0].existencia - newDetail.cantidad;
-        await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
+        await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
 
         const link = links.created(model, insertId);
         const response = { data: newDetail, message: respuestas.Created.message, link: link }
@@ -160,20 +160,20 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
     let { id, id1 } = params;
     if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
     try {
-        const pedido = await pedidos.getOne(model, id, { fields: 'id' });
+        const pedido = await consult.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
 
-        const detalle = await pedidos.getOne(submodel, id1,{});
+        const detalle = await consult.getOne(submodel, id1,{});
         if (!detalle) return respuestas.ElementNotFound;
 
         const newDetail: IDetPedidos = data;
         
 
-        let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
+        let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
         movDep[0].existencia = movDep[0].existencia - (newDetail.cantidad - detalle.cantidad);
-        await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
+        await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
 
-        await pedidos.update(submodel, id1, newDetail);
+        await consult.update(submodel, id1, newDetail);
 
         const link = links.created(model, id);
         const response = { message: respuestas.Update.message, link: link }
@@ -194,14 +194,14 @@ export const deleteDetail = async (params: any): Promise<any> => {
     let { id, id1 } = params;
     if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
     try {
-        const pedido = await pedidos.getOne(model, id, { fields: 'id' });
+        const pedido = await consult.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
-        const detalle = await pedidos.getOne(submodel,id1,{});
-        let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: detalle.conceptos_id });
+        const detalle = await consult.getOne(submodel,id1,{});
+        let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: detalle.conceptos_id });
         movDep[0].existencia = movDep[0].existencia + detalle.cantidad;
-        await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
+        await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
 
-        await pedidos.remove(submodel, id1);
+        await consult.remove(submodel, id1);
 
         return respuestas.Deleted;
     } catch (error) {
