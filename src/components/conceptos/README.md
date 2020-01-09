@@ -266,7 +266,31 @@ This entity representes all the actives inside a company, articles to sell, serv
             "prev": "First Page"
         }
 ---
+- **GET: /api/conceptos/:id/presentaciones** : Get all presentations of one concept
 
+        {
+            "totalCount": 2,
+            "count": 2,
+            "data": [
+                {
+                    "id": 3,
+                    "conceptos_id": 3,
+                    "nombre": "prueba 2",
+                    "modificador": "1.00",
+                    "utilidad": "1.00"
+                },
+                {
+                    "id": 4,
+                    "conceptos_id": 3,
+                    "nombre": "prueba 3",
+                    "modificador": "1.00",
+                    "utilidad": "1.00"
+                }
+            ],
+            "sig": "Last page",
+            "prev": "First Page"
+        }
+---
 - **POST: /api/conceptos/** : Create a new concept 
 
     Request:

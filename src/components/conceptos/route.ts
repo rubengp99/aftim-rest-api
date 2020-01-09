@@ -42,7 +42,19 @@ router.get('/:id/depositos',validar, async (req:Request, res:Response):Promise<R
 router.get('/:id/photos',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let { message, response, code } = await controller.getDepositsByConcept(id,req.query);
+        let { message, response, code } = await controller.getPhotosByConcept(id,req.query);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+router.get('/:id/presentaciones',validar, async (req:Request, res:Response):Promise<Response> => {
+    let {id} = req.params;
+    try {
+        let { message, response, code } = await controller.getPresentationsByConcept(id,req.query);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
