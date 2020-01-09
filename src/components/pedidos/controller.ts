@@ -102,13 +102,14 @@ export const remove = async (params: any): Promise<any> => {
         const data: IPedidos = await consult.getOne(model, id, { fields: 'id' });
         if (!data) return respuestas.ElementNotFound;
 
-        const data1: IDetPedidos[] = await consult.getOtherByMe(model, id, submodel, { fields: 'id' });
-        data1.forEach(async (element: any) => {
-            let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: element.conceptos_id });
-            movDep[0].existencia = movDep[0].existencia + element.cantidad;
+        const data1: IDetPedidos[] = await consult.getOtherByMe(model, id, submodel, {});
+        for (let index = 0; index < data1.length; index++) {
+            let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: data1[index].conceptos_id });
+            movDep[0].existencia = parseFloat(movDep[0].existencia) +  parseFloat(data1[index].cantidad as unknown as string);
             await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
-            await consult.remove(submodel, element.id);
-        });
+            await consult.remove(submodel, data1[index].id as number);
+            
+        }
         await consult.remove(model, id);
         return respuestas.Deleted;
     } catch (error) {
@@ -170,7 +171,7 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
         
 
         let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
-        movDep[0].existencia = movDep[0].existencia - (newDetail.cantidad - detalle.cantidad);
+        movDep[0].existencia = parseFloat(movDep[0].existencia) - (newDetail.cantidad - parseFloat(detalle.cantidad));
         await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
 
         await consult.update(submodel, id1, newDetail);
@@ -198,7 +199,7 @@ export const deleteDetail = async (params: any): Promise<any> => {
         if (!pedido) return respuestas.ElementNotFound;
         const detalle = await consult.getOne(submodel,id1,{});
         let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: detalle.conceptos_id });
-        movDep[0].existencia = movDep[0].existencia + detalle.cantidad;
+        movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
         await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
 
         await consult.remove(submodel, id1);

@@ -124,6 +124,8 @@ export const getPhotosByConcept = async (id: string | number, query: any): Promi
     }
 }
 
+// export const getPresentationsByConcept = async (id: string | number, )
+
 
 /**
  * Create a new concept
