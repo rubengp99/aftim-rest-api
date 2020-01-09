@@ -75,12 +75,13 @@ export const create = async (body: any): Promise<any> => {
             let inserted = await pedidos.create(submodel, newDetalles[index]);
             newDetalles[index].id = inserted.insertId;
             let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: newDetalles[index].conceptos_id });
+            movDep[0].existencia = movDep[0].existencia - newDetalles[index].cantidad;
             await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
         }
         let link = links.created(model, insertId);
         newPedido.detalles = newDetalles;
         newPedido.id = insertId;
-        let response = Object.assign({data:newPedido, message: respuestas.Created.message }, { link: link });
+        let response = Object.assign({ data: newPedido, message: respuestas.Created.message }, { link: link });
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -101,8 +102,11 @@ export const remove = async (params: any): Promise<any> => {
         const data: IPedidos = await pedidos.getOne(model, id, { fields: 'id' });
         if (!data) return respuestas.ElementNotFound;
 
-        const data1: IDetPedidos[] = await pedidos.getOtherByMe(model,id,submodel, { fields: 'id' });
+        const data1: IDetPedidos[] = await pedidos.getOtherByMe(model, id, submodel, { fields: 'id' });
         data1.forEach(async (element: any) => {
+            let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: element.conceptos_id });
+            movDep[0].existencia = movDep[0].existencia + element.cantidad;
+            await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
             await pedidos.remove(submodel, element.id);
         });
         await pedidos.remove(model, id);
@@ -132,8 +136,12 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
 
         newDetail.id = insertId;
 
+        let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
+        movDep[0].existencia = movDep[0].existencia - newDetail.cantidad;
+        await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
+
         const link = links.created(model, insertId);
-        const response = {data:newDetail, message: respuestas.Created.message, link: link }
+        const response = { data: newDetail, message: respuestas.Created.message, link: link }
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -155,14 +163,20 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
         const pedido = await pedidos.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
 
-        const detalle = await pedidos.getOne(submodel, id1, { fields: 'id' });
+        const detalle = await pedidos.getOne(submodel, id1,{});
         if (!detalle) return respuestas.ElementNotFound;
 
         const newDetail: IDetPedidos = data;
-        const { affectedRows } = await pedidos.update(submodel, id1, newDetail);
+        
+
+        let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
+        movDep[0].existencia = movDep[0].existencia - (newDetail.cantidad - detalle.cantidad);
+        await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
+
+        await pedidos.update(submodel, id1, newDetail);
+
         const link = links.created(model, id);
-        const response = { message: respuestas.Update.message, link: link
-        }
+        const response = { message: respuestas.Update.message, link: link }
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -182,6 +196,10 @@ export const deleteDetail = async (params: any): Promise<any> => {
     try {
         const pedido = await pedidos.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
+        const detalle = await pedidos.getOne(submodel,id1,{});
+        let movDep: any[] = await pedidos.get("movimiento_deposito", { conceptos_id: detalle.conceptos_id });
+        movDep[0].existencia = movDep[0].existencia + detalle.cantidad;
+        await pedidos.update("movimiento_deposito", movDep[0].id, movDep[0]);
 
         await pedidos.remove(submodel, id1);
 
