@@ -166,9 +166,11 @@ export const update = async (params: any, body: any): Promise<any> => {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         let { affectedRows } = await consult.update(model, id, newGrupo) as any;
-        presentaciones.forEach(async (element: any) => {
-            await consult.update('presentaciones', element.id, element);
-        });
+        if(presentaciones){
+            presentaciones.forEach(async (element: any) => {
+                await consult.update('presentaciones', element.id, element);
+            });
+        }
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
         return { response, code: respuestas.Update.code };
