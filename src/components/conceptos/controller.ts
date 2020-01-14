@@ -132,7 +132,7 @@ export const getPhotosByConcept = async (id: string | number, query: any): Promi
 export const getPresentationsByConcept = async (id: string | number, query: any): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
-        
+
         let recurso: IConcepto = await consult.getOne(model, id, { fields: 'id' });
         if (!recurso) return respuestas.ElementNotFound;
         let data: any = await consult.getOtherByMe(model, id, 'presentaciones', query);
@@ -155,22 +155,23 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
  * Create a new concept
  * @param body data of the concept
  */
-export const create = async (body: any,file:any): Promise<any> => {
+export const create = async (body: any, file: any): Promise<any> => {
     let { data, data1 } = body;
-    // let { filename } = file;
-    // console.log(filename,file);
+    console.log(file);
+    let { filename = "default.png" } = file;
     let newConcepto: IConcepto = data;
+    newConcepto.imagen = filename;
     let presentaciones = data1;
     try {
         let { insertId } = await consult.create(model, newConcepto) as any;
-        if(presentaciones){
+        if (presentaciones) {
             presentaciones.forEach(async (element: any) => {
                 element.conceptos_id = insertId;
                 await consult.create('presentaciones', element);
             });
             newConcepto.presentaciones = presentaciones;
         }
-        
+
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         return { response, code: respuestas.Created.code };
@@ -180,6 +181,7 @@ export const create = async (body: any,file:any): Promise<any> => {
         return respuestas.InternalServerError;
     }
 }
+
 /**
  * Update a concept
  * @param params params request object
@@ -194,7 +196,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         let { affectedRows } = await consult.update(model, id, newGrupo) as any;
-        if(presentaciones){
+        if (presentaciones) {
             presentaciones.forEach(async (element: any) => {
                 await consult.update('presentaciones', element.id, element);
             });
