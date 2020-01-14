@@ -158,7 +158,7 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
 export const create = async (body: any,file:any): Promise<any> => {
     //let { data, data1 } = body;
     let { filename } = file;
-    console.log(filename);
+    console.log(filename,file);
     //let newConcepto: IConcepto = data;
     //let presentaciones = data1;
     // try {
