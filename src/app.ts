@@ -1,10 +1,11 @@
 ////ARCHIVO DE CONFIGURACION DEL SERVIDOR
 //Requerimos los modulos necesarios para la app
-import express, {Application} from 'express';
-import multer  from 'multer';
-import path  from 'path'; 
-import {routes} from './routes';
-import cors  from 'cors';
+import express, { Application } from 'express';
+import multer from 'multer';
+import path from 'path';
+import { routes } from './routes';
+import { connect } from './dbs'
+import cors from 'cors';
 import morgan from 'morgan';
 
 /**
@@ -17,47 +18,51 @@ import morgan from 'morgan';
  */
 
 export class App {
-    private app:Application;
-    private storage:multer.StorageEngine | undefined;
+    private app: Application;
+    private storage: multer.StorageEngine | undefined;
 
     /**
      * 
      * @param port the number of the port where the app is started to listen
      */
-    constructor(private port?: number | string){
+    constructor(private port?: number | string) {
         this.app = express();
         this.settings();
         this.middlewares();
+        this.conecctions();
         this.routes();
     }
 
-    private settings(){
-        this.app.set('port',this.port || process.env.PORT || 80);
+    private settings() {
+        this.app.set('port', this.port || process.env.PORT || 80);
         this.storage = multer.diskStorage({//manejador de archivos como imagenes
             destination: path.resolve('public/images'),
-            filename: (req,file,cb)=>{
-                cb(null,new Date().getTime()+path.extname(file.originalname));
+            filename: (req, file, cb) => {
+                cb(null, new Date().getTime() + path.extname(file.originalname));
             }
         });
     }
-    
-    private middlewares(){
-        this.app.use(cors({exposedHeaders:'Authorization'}));
+
+    private middlewares() {
+        this.app.use(cors({ exposedHeaders: 'Authorization' }));
         this.app.use(morgan("dev"));
         this.app.use(express.static(path.resolve('public')));//carpeta de archivos publicos
         this.app.use(express.json());
-        this.app.use(express.urlencoded({extended:false}));
-        this.app.use(multer({storage:this.storage}).single('image')); 
+        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(multer({ storage: this.storage }).single('image'));
     }
 
-    private routes(){
+    private routes() {
         routes(this.app);
     }
 
+    private conecctions() {
+        connect();
+    }
     /**
      * Function to start the server
      */
-    public async listen(){
+    public async listen() {
         await this.app.listen(this.app.get('port'));
         console.log(`[SERVER] running on port ${this.app.get('port')}`);
     }

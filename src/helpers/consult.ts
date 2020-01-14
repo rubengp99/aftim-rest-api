@@ -1,15 +1,8 @@
-import  {connect} from'../dbs';
-import  {Pool} from 'mysql2/promise';
+import  {connection} from'../dbs';
 import * as querys from './query';
 
 // start the db connection
-var con:Pool;
-connect()
-    .then(connection =>{
-        con = connection as Pool;
-        console.log(`[DATABASE] connected`);
-    })
-    .catch(e=>console.log(e,"Hola"));
+
 
 /**
  * This function get all of the elements on the table
@@ -23,14 +16,14 @@ export const get = async (model:string,query?:any):Promise<any> => {
     
     let sql = querys.selectSQL(query,model);
     try {
-        let data = await con.query(sql);
+        let data = await connection.query(sql);
         return data[0];
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
             console.log(error);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -46,14 +39,14 @@ export const get = async (model:string,query?:any):Promise<any> => {
 export const getOne = async (model:string,id:string | number ,query:any):Promise<any> =>{
     let sql = querys.selectSQLOne(id,query,model);
     try {
-        let data:any = await con.query(sql);
+        let data:any = await connection.query(sql);
         return data[0][0];
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
             console.log(error);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -70,14 +63,14 @@ export const getOne = async (model:string,id:string | number ,query:any):Promise
 export const getOtherByMe = async (model:string,id:string | number ,other:string,query?:any):Promise<any> =>{
     let sql = querys.selectByFilter(query,other,model,id);
     try {
-        let data = await con.query(sql);
+        let data = await connection.query(sql);
         return data[0];
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
             console.log(error);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -88,14 +81,14 @@ export const getOtherByMe = async (model:string,id:string | number ,other:string
  */
 export const  create = async (model:string,object:any):Promise<any> =>{
     try {
-        let inserted = await con.query(`INSERT INTO ${model} set ?`,[object]);
+        let inserted = await connection.query(`INSERT INTO ${model} set ?`,[object]);
         return inserted[0];
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2'){ 
             console.log(error);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 /**
@@ -106,14 +99,14 @@ export const  create = async (model:string,object:any):Promise<any> =>{
  */
 export const update = async (model:string,id:string | number,object:any):Promise<any> =>{
     try {
-        let updated = await con.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
+        let updated = await connection.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
         return updated;
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2'){ 
             console.log(error);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -124,10 +117,10 @@ export const update = async (model:string,id:string | number,object:any):Promise
  */
 export const remove = async (model:string,id:string | number):Promise<any> =>{
     try {
-        let deleted = await con.query(`DELETE FROM ${model} WHERE id = ? `,[id]);
+        let deleted = await connection.query(`DELETE FROM ${model} WHERE id = ? `,[id]);
         return deleted;
     } catch (error) {
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     } 
 }
 
@@ -137,11 +130,11 @@ export const remove = async (model:string,id:string | number):Promise<any> =>{
  */
 export const count = async (model:string):Promise<number> => {
     try {
-        let count:any = await con.query(`SELECT COUNT(id) as total FROM ${model}`);
+        let count:any = await connection.query(`SELECT COUNT(id) as total FROM ${model}`);
         let total = count[0][0].total;
         return total;
     } catch (error) {
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 /**
@@ -152,11 +145,11 @@ export const count = async (model:string):Promise<number> => {
  */
 export const countOther = async (model:string,other:string,id:string | number):Promise<number> =>{
     try {
-        let count:any = await con.query(`SELECT COUNT(id) as total FROM ${other} WHERE ${model}_id = ${id}`);
+        let count:any = await connection.query(`SELECT COUNT(id) as total FROM ${other} WHERE ${model}_id = ${id}`);
         let total = count[0][0].total;
         return total;
     } catch (error) {
-        throw new Error(`Error en conexion con la BD, error: ${other}`);
+        throw new Error(`Error en conexion connection la BD, error: ${other}`);
     }
 }
 
@@ -166,10 +159,10 @@ export const countOther = async (model:string,other:string,id:string | number):P
  */
 export const getUser = async (user:string)=>{
     try {
-        let data:any = await con.query(`SELECT * FROM usuario WHERE login = ?`,[user]);
+        let data:any = await connection.query(`SELECT * FROM usuario WHERE login = ?`,[user]);
         return data[0][0];
     } catch (error) {
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -179,10 +172,10 @@ export const getUser = async (user:string)=>{
  */
 export const empresa = async (id:string)=>{
     try {
-        let empresa:any = await con.query(`SELECT * FROM empresa WHERE id = ?`,[id]);
+        let empresa:any = await connection.query(`SELECT * FROM empresa WHERE id = ?`,[id]);
         return empresa[0];
     } catch (error) {
-        throw new Error(`Error en conexion con la BD, error: ${error}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 

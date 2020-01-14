@@ -1,12 +1,13 @@
 import  {createPool} from 'mysql2/promise';
 import {database} from './keys';
+import { Pool } from 'mysql2/promise';
 
-export async function connect(){
+export var connection:Pool;
+export function connect(){
     try {
-        const connection = await createPool(database);
-        return connection;  
+        connection = createPool(database);
+        if(connection)  console.log(`[DATABASE] connected`);
     } catch (error) {
         console.log(error);
     }
-    
 }

@@ -155,8 +155,10 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
  * Create a new concept
  * @param body data of the concept
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any,file:any): Promise<any> => {
     let { data, data1 } = body;
+    let { fileName } = file;
+    console.log(fileName);
     let newConcepto: IConcepto = data;
     let presentaciones = data1;
     try {
