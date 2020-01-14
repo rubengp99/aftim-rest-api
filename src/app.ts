@@ -39,7 +39,8 @@ export class App {
             destination: path.resolve('public/images'),
             filename: (req, file, cb) => {
                 cb(null, new Date().getTime() + path.extname(file.originalname));
-            }
+            },
+            
         });
     }
 

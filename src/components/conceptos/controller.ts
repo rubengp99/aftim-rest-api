@@ -156,29 +156,29 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
  * @param body data of the concept
  */
 export const create = async (body: any,file:any): Promise<any> => {
-    //let { data, data1 } = body;
-    let { filename } = file;
-    console.log(filename,file);
-    //let newConcepto: IConcepto = data;
-    //let presentaciones = data1;
-    // try {
-    //     let { insertId } = await consult.create(model, newConcepto) as any;
-    //     if(presentaciones){
-    //         presentaciones.forEach(async (element: any) => {
-    //             element.conceptos_id = insertId;
-    //             await consult.create('presentaciones', element);
-    //         });
-    //         newConcepto.presentaciones = presentaciones;
-    //     }
+    let { data, data1 } = body;
+    // let { filename } = file;
+    // console.log(filename,file);
+    let newConcepto: IConcepto = data;
+    let presentaciones = data1;
+    try {
+        let { insertId } = await consult.create(model, newConcepto) as any;
+        if(presentaciones){
+            presentaciones.forEach(async (element: any) => {
+                element.conceptos_id = insertId;
+                await consult.create('presentaciones', element);
+            });
+            newConcepto.presentaciones = presentaciones;
+        }
         
-    //     let link = links.created(model, insertId);
-    //     let response = Object.assign({ message: respuestas.Created.message }, { link: link });
-    //     return { response, code: respuestas.Created.code };
-    // } catch (error) {
-    //     if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-    //     console.log(`Error en el controlador ${model}, error: ${error}`);
-    //     return respuestas.InternalServerError;
-    // }
+        let link = links.created(model, insertId);
+        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        return { response, code: respuestas.Created.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
 }
 /**
  * Update a concept
