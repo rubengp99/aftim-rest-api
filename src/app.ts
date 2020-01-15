@@ -63,8 +63,8 @@ export class App {
     /**
      * Function to start the server
      */
-    public async listen() {
-        await this.app.listen(this.app.get('port'));
+    public listen() {
+        this.app.listen(this.app.get('port'));
         console.log(`[SERVER] running on port ${this.app.get('port')}`);
     }
 }

@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 import  {App}  from'./app';
 dotenv.config();
-async function main(){
+function main(){
     const app = new App();
-    await app.listen();
+    app.listen();
 }
 
 main();
