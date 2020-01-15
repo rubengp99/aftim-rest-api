@@ -58,3 +58,7 @@ export interface IConcepto{
     iva?:boolean | number,
     presentaciones?: any[]
 }
+
+export interface IPresentaciones {
+    
+}
