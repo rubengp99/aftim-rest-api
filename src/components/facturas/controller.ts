@@ -79,3 +79,134 @@ export const create = async (body: any): Promise<any> => {
     }
 }
 
+/**
+ * Update the data of an invoice
+ * @param params params request object
+ * @param body the data of the invoice
+ */
+export const update = async (params: any, body: any): Promise<any> => {
+    const { data } = body;
+    const { id } = params;
+    let newCargo: IFacturas = data;
+    try {
+
+        if(isNaN(id)) return respuestas.InvalidID;
+        
+        let { affectedRows } = await consult.update(model, id, newCargo);
+        let link = links.created(model, id);
+        let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        return { response, code: respuestas.Update.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+/**
+ * Delete a invoice
+ * @param params params request object
+ */
+export const remove = async (params: any): Promise<any> => {
+    let { id } = params;
+    try {
+        if (isNaN(id)) return respuestas.InvalidID;
+
+        const data: IFacturas = await consult.getOne(model, id, { fields: 'id' });
+        if (!data) return respuestas.ElementNotFound;
+
+        const data1: IDetFacturas[] = await consult.getOtherByMe(model, id, submodel, {});
+        for (let index = 0; index < data1.length; index++) {
+            await consult.remove(submodel, data1[index].id as number);
+        }
+        await consult.remove(model, id);
+        return respuestas.Deleted;
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+/**
+ * Add a detail on an invoice
+ * @param params params request object
+ * @param body data of the detail
+ */
+export const addDetail = async (params: any, body: any): Promise<any> => {
+    let { data } = body;
+    let { id } = params;
+    if (isNaN(id)) return respuestas.InvalidID;
+    try {
+        const pedido = await consult.getOne(model, id, { fields: 'id' });
+        if (!pedido) return respuestas.ElementNotFound;
+        const newDetail: IDetFacturas = data;
+        newDetail.enc_facturas_id = id;
+        const { insertId } = await consult.create(submodel, newDetail);
+
+        newDetail.id = insertId;
+
+        const link = links.created(model, insertId);
+        const response = { data: newDetail, message: respuestas.Created.message, link: link }
+        return { response, code: respuestas.Created.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+/**
+ * Update the data of a detail of an invoice
+ * @param params params request object
+ * @param body the data of the detail
+ */
+export const updateDetail = async (params: any, body: any): Promise<any> => {
+    let { data } = body;
+    let { id, id1 } = params;
+    if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
+    try {
+        const pedido = await consult.getOne(model, id, { fields: 'id' });
+        if (!pedido) return respuestas.ElementNotFound;
+
+        const detalle = await consult.getOne(submodel, id1,{ fields: 'id' });
+        if (!detalle) return respuestas.ElementNotFound;
+
+        const newDetail: IDetFacturas = data;
+        
+        await consult.update(submodel, id1, newDetail);
+
+        const link = links.created(model, id);
+        const response = { message: respuestas.Update.message, link: link }
+        return { response, code: respuestas.Update.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+/**
+ * Delete a detail of an invoice
+ * @param params params request object
+ */
+export const deleteDetail = async (params: any): Promise<any> => {
+    let { id, id1 } = params;
+    if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
+    try {
+        const pedido = await consult.getOne(model, id, { fields: 'id' });
+        if (!pedido) return respuestas.ElementNotFound;
+        
+        const detalle = await consult.getOne(submodel,id1,{ fields: 'id' });
+        if (!detalle) return respuestas.ElementNotFound;
+        
+        await consult.remove(submodel, id1);
+
+        return respuestas.Deleted;
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}

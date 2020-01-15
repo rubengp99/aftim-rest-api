@@ -40,7 +40,7 @@ export class App {
             filename: (req, file, cb) => {
                 cb(null, new Date().getTime() + path.extname(file.originalname));
             },
-            
+
         });
     }
 
