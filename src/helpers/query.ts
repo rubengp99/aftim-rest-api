@@ -43,6 +43,10 @@ export function selectSQL(query: any = {}, tabla: string): string {
                     where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
                     index++;
                 }
+            } else if(Array.isArray(query[prop])) {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
+                index++;
             } else {
                 where += (index == 0) ? " WHERE " : " AND ";
                 where += `${tabla}.${prop} like '%${query[prop]}%'`;

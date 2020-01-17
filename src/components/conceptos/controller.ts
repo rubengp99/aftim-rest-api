@@ -11,6 +11,7 @@ const model = 'conceptos';
  */
 export const get = async (query: any): Promise<any> => {
     try {
+        console.log(query)
         let data: IConcepto[] = await consult.get(model, query);// consulto los conceptos
         let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
         let count = data.length;
@@ -147,6 +148,15 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
         return respuestas.InternalServerError;
+    }
+}
+
+export const getMostSold = async (params: any, query: any): Promise<any> =>{
+    const { cant } = params; 
+    try {
+                                       
+    } catch (error) {
+        
     }
 }
 

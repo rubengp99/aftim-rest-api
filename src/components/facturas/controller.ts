@@ -58,6 +58,33 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
     }
 }
 
+export const getTotal = async (query: any):Promise<any> =>{
+    try {
+        query.fields = 'subtotal,subtotal_dolar';
+        query.tipos_facturas_id = ['1','5'];
+        query.estatus_pago = '1';
+        let facturas:IFacturas[] = await consult.get(model,query);
+        let count = facturas.length;
+
+        if (count <= 0) return respuestas.Empty;
+        
+        let data = {
+            subtotal:0,
+            subtotal_dolar:0
+        };
+        for (let index = 0; index < facturas.length; index++) {
+            data.subtotal += parseFloat(facturas[index].subtotal as unknown as string);
+            data.subtotal_dolar += parseFloat(facturas[index].subtotal_dolar as unknown as string);
+        }
+        let response = {data}
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 /**
  * Create a invoice
  * @param body data of the new invoice

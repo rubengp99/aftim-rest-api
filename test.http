@@ -1,3 +1,8 @@
 ## New extended consult
-GET http://localhost:81/api/conceptos/?fields=id,nombre,codigo
+GET http://localhost:81/api/conceptos/?fields=id,nombre,codigo&grupos_id=2&grupos_id=3
+x-access-control : {"user":"admin","password":"123456"}
+
+
+## Total prueba
+GET http://localhost:81/api/factura/total/?fecha_at=2019-07-30
 x-access-control : {"user":"admin","password":"123456"}
