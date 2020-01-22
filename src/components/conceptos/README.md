@@ -291,6 +291,45 @@ This entity representes all the actives inside a company, articles to sell, serv
             "prev": "First Page"
         }
 ---
+- **GET: /api/conceptos/mostsold/** : Get one top of the concepts most sold
+
+        {
+            "totalCount": 6,
+            "count": 6,
+            "data": [
+                {
+                    "conceptos_id": 1,
+                    "nombre": "Jamon de pavo premiere",
+                    "vendidos": "13.00"
+                },
+                {
+                    "conceptos_id": 3,
+                    "nombre": "PESCADO FRESCO",
+                    "vendidos": "7.00"
+                },
+                {
+                    "conceptos_id": 4,
+                    "nombre": "CARNE MOLIDA",
+                    "vendidos": "4.00"
+                },
+                {
+                    "conceptos_id": 2,
+                    "nombre": null,
+                    "vendidos": "3.00"
+                },
+                {
+                    "conceptos_id": 5,
+                    "nombre": "CHORIZO POR BULTO",
+                    "vendidos": "1.00"
+                },
+                {
+                    "conceptos_id": 8,
+                    "nombre": null,
+                    "vendidos": "1.00"
+                }
+            ]
+        }
+---
 - **POST: /api/conceptos/** : Create a new concept 
 
     Request:

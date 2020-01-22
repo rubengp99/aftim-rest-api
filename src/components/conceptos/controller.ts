@@ -151,12 +151,31 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
     }
 }
 
+/**
+ * Get one top of the most sold concepts
+ * @param params params request object
+ * @param query modifier of the consult
+ */
 export const getMostSold = async (params: any, query: any): Promise<any> =>{
-    const { cant } = params; 
+    const { limit , order , } = query; 
     try {
-                                       
-    } catch (error) {
+        let sql = `SELECT conceptos_id,conceptos.nombre AS nombre, SUM(cantidad) AS vendidos FROM det_facturas
+        LEFT JOIN conceptos ON conceptos_id = conceptos.id 
+        ${query['after-fecha_at'] ? `WHERE det_facturas.fecha_at >= '${query['after-fecha_at']}'`: '' }
+        ${query['before-fecha_at'] ? `${query['before-fecha_at'] ? 'AND' : 'WHERE'} det_facturas.fecha_at <= '${query['before-fecha_at']}'`: '' }
+        GROUP BY conceptos_id ORDER BY vendidos ${order ? order : 'desc'} LIMIT ${limit ? limit : 10}`;
+        let data:any[] = await consult.getPersonalized(sql);
+        let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
+        let count = data.length;
+
+        if (count <= 0) return respuestas.Empty;
         
+        let response = { totalCount, count, data }
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 

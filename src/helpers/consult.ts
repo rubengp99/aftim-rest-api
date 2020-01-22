@@ -74,6 +74,19 @@ export const getOtherByMe = async (model:string,id:string | number ,other:string
     }
 }
 
+export const getPersonalized = async (sql:string):Promise<any> => {
+    try {
+        let data = await connection.query(sql);
+        return data[0];
+    } catch (error) {
+        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
+            console.log(error);
+            throw new Error('BD_SYNTAX_ERROR');
+        }
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+    }
+}
+
 /**
  * This function create a new register in the bd
  * @param model model of the table

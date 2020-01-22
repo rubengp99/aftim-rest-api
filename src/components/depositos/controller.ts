@@ -77,7 +77,7 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
         let { limit } = query;
         
         if (count <= 0) return respuestas.Empty;
-        
+        console.log(conceptos);
         let link = links.pages(conceptos, `${model}/${id}/conceptos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data: conceptos }, link);
         return { response, code: respuestas.Ok.code };
