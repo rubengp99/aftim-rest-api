@@ -17,5 +17,5 @@ content-type: application/json
     }
 }
 
-GET https://ducen-rest-api.herokuapp.com/api/conceptos
+GET http://107.152.36.120/api/conceptos/1
 x-access-control : {"user":"admin","password":"123456"}

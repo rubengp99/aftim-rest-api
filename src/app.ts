@@ -47,7 +47,7 @@ export class App {
     private middlewares() {
         this.app.use(cors({ exposedHeaders: 'Authorization' }));
         this.app.use(morgan("dev"));
-        this.app.use(express.static(path.resolve('public')));//carpeta de archivos publicos
+        this.app.use('/api/',express.static(path.resolve('public')));//carpeta de archivos publicos
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
         this.app.use(multer({ storage: this.storage }).single('image'));
