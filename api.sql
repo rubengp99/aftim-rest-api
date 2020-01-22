@@ -13,8 +13,8 @@
 
 
 -- Volcando estructura de base de datos para administra
-CREATE DATABASE IF NOT EXISTS `api` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `api`;
+CREATE DATABASE IF NOT EXISTS `administra` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `administra`;
 
 -- Volcando estructura para tabla administra.abonos
 CREATE TABLE IF NOT EXISTS `abonos` (
@@ -92,30 +92,33 @@ INSERT INTO `backup` (`id`, `usuario_id`, `denominacion`, `tamano`, `archivo`, `
 -- Volcando estructura para tabla administra.banco
 CREATE TABLE IF NOT EXISTS `banco` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cuenta` varchar(25) CHARACTER SET utf8 NOT NULL,
-  `fecha_at` datetime NOT NULL,
+  `cuenta` varchar(25) CHARACTER SET utf8 NOT NULL DEFAULT '1',
+  `fecha_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `entidad_id` int(11) NOT NULL,
   `fecha_apertura` date NOT NULL,
-  `direccion` varchar(250) CHARACTER SET utf8 NOT NULL,
-  `telefono` varchar(25) CHARACTER SET utf8 NOT NULL,
+  `direccion` varchar(250) CHARACTER SET utf8 DEFAULT NULL,
+  `telefono` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
   `tipo_cuenta_id` int(11) NOT NULL,
-  `agencia` varchar(150) CHARACTER SET utf8 NOT NULL,
-  `contacto` varchar(150) CHARACTER SET utf8 NOT NULL,
-  `telefono_contacto` varchar(25) CHARACTER SET utf8 NOT NULL,
+  `agencia` varchar(150) CHARACTER SET utf8 DEFAULT NULL,
+  `contacto` varchar(150) CHARACTER SET utf8 DEFAULT NULL,
+  `telefono_contacto` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
   `email_contacto` varchar(70) CHARACTER SET utf8 DEFAULT NULL,
   `dias_diferidos` int(11) NOT NULL,
   `ult_saldo_conciliado` decimal(30,2) NOT NULL,
-  `saldo_actual` decimal(30,2) DEFAULT NULL,
+  `saldo_actual` decimal(30,2) DEFAULT '1.00',
   `fecha_ult_conciliacion` date DEFAULT NULL,
-  `pto_venta` int(11) DEFAULT NULL,
+  `pto_venta` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_banco_entidad` (`entidad_id`),
   CONSTRAINT `fk_banco_entidad` FOREIGN KEY (`entidad_id`) REFERENCES `entidad` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Mantenimiento Tabla Bancos';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='Mantenimiento Tabla Bancos';
 
--- Volcando datos para la tabla administra.banco: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla administra.banco: ~2 rows (aproximadamente)
 DELETE FROM `banco`;
 /*!40000 ALTER TABLE `banco` DISABLE KEYS */;
+INSERT INTO `banco` (`id`, `cuenta`, `fecha_at`, `entidad_id`, `fecha_apertura`, `direccion`, `telefono`, `tipo_cuenta_id`, `agencia`, `contacto`, `telefono_contacto`, `email_contacto`, `dias_diferidos`, `ult_saldo_conciliado`, `saldo_actual`, `fecha_ult_conciliacion`, `pto_venta`) VALUES
+	(1, '4156454564654654654654', '2020-01-07 11:33:30', 20, '2020-01-07', 'La Asuncion', '02951123503', 1, 'La Asuncion', 'Pedro', '04121802961', 'pedro@gmail.com', 1, 500000.00, 500000.00, '2020-01-07', 0),
+	(2, '545646545', '2020-01-07 11:33:30', 20, '2020-01-07', 'Porlamar', '02951123503', 1, 'Porlamar', 'Claudia', '04121802961', 'pedro@gmail.com', 1, 500000.00, 500000.00, '2020-01-07', 0);
 /*!40000 ALTER TABLE `banco` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.beneficiario
@@ -153,15 +156,19 @@ INSERT INTO `caja` (`id`, `nombre`, `saldo_actual`, `cnt_plan_cuentas`) VALUES
 -- Volcando estructura para tabla administra.cambio
 CREATE TABLE IF NOT EXISTS `cambio` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tasa` decimal(10,2) DEFAULT NULL,
+  `tasa` decimal(10,2) DEFAULT '1.00',
+  `nombre` varchar(255) DEFAULT NULL,
+  `principal` tinyint(2) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla administra.cambio: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla administra.cambio: ~4 rows (aproximadamente)
 DELETE FROM `cambio`;
 /*!40000 ALTER TABLE `cambio` DISABLE KEYS */;
-INSERT INTO `cambio` (`id`, `tasa`) VALUES
-	(1, 15000.00);
+INSERT INTO `cambio` (`id`, `tasa`, `nombre`, `principal`) VALUES
+	(1, 15000.00, 'USD', 0),
+	(2, 70000.00, 'EUR', 0),
+	(3, 1.00, 'Bs', 1);
 /*!40000 ALTER TABLE `cambio` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.cargos
@@ -174,11 +181,19 @@ CREATE TABLE IF NOT EXISTS `cargos` (
   `cantidad` decimal(10,2) NOT NULL,
   `usuario_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla administra.cargos: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla administra.cargos: ~7 rows (aproximadamente)
 DELETE FROM `cargos`;
 /*!40000 ALTER TABLE `cargos` DISABLE KEYS */;
+INSERT INTO `cargos` (`id`, `fecha_at`, `fecha_in`, `conceptos_id`, `depositos_id`, `cantidad`, `usuario_id`) VALUES
+	(1, '2020-01-07 14:56:21', '2020-01-07 14:56:22', 2, 1, 50.00, 3),
+	(2, '2020-01-07 14:56:21', '2020-01-07 14:56:22', 3, 1, 1000.00, 3),
+	(3, '2020-01-07 14:56:21', '2020-01-07 14:56:22', 1, 1, 100.00, 3),
+	(4, '2020-01-07 14:56:21', '2020-01-07 14:56:22', 6, 1, 3.00, 3),
+	(5, '2020-01-07 17:56:21', '2020-01-07 17:56:22', 4, 1, 150.00, 3),
+	(6, '2020-01-07 17:56:21', '2020-01-07 17:56:22', 4, 1, 150.00, 3),
+	(7, '2020-01-07 17:56:21', '2020-01-07 17:56:22', 4, 1, 150.00, 3);
 /*!40000 ALTER TABLE `cargos` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.ciudad
@@ -187,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `ciudad` (
   `estado_id` int(11) NOT NULL,
   `nombre` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=523 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=524 DEFAULT CHARSET=utf8mb4;
 
 -- Volcando datos para la tabla administra.ciudad: ~498 rows (aproximadamente)
 DELETE FROM `ciudad`;
@@ -690,7 +705,8 @@ INSERT INTO `ciudad` (`id`, `estado_id`, `nombre`) VALUES
 	(519, 25, 'Isla de Aves'),
 	(520, 25, 'Isla La Blanquilla'),
 	(521, 25, 'Isla de Patos'),
-	(522, 25, 'Islas Los Hermanos');
+	(522, 25, 'Islas Los Hermanos'),
+	(523, 3, 'Illinois');
 /*!40000 ALTER TABLE `ciudad` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.clave_especial
@@ -745,13 +761,14 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   `empleado` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cedula` (`cedula`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla administra.clientes: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla administra.clientes: ~2 rows (aproximadamente)
 DELETE FROM `clientes`;
 /*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
 INSERT INTO `clientes` (`id`, `nombre`, `nombre_comercial`, `cedula`, `fecha_at`, `fecha_in`, `fecha_nac`, `sexo`, `tipo_estatus_id`, `telefono1`, `telefono2`, `telefono3`, `direccion`, `direccion_fisica`, `horario`, `descuento`, `grupo_cliente_id`, `limite_credito`, `tarifa`, `contribuyente`, `cobrador_id`, `vendedor_id`, `zonas_id`, `correo_electronico`, `correo_electronico2`, `pag_web`, `dias_credito`, `creditos`, `contacto`, `telefono_contacto`, `observacion`, `estado_id`, `ciudad_id`, `empleado`) VALUES
-	(1, 'CONTADO', 'CONTADO', 'V-00000000', '2019-07-03 10:24:28', '2019-07-18 14:44:56', '2000-01-01', 'M', 1, '00000000000000000000', NULL, NULL, 'LA ASUNCIO', NULL, NULL, 0.00, 1, NULL, 'A', 'SI', NULL, NULL, NULL, 'contado@contado.com', NULL, NULL, NULL, NULL, 'CONTACTO', '00000000000', NULL, 16, 331, 1);
+	(1, 'CONTADO', 'CONTADO', 'V-00000000', '2019-07-03 10:24:28', '2019-07-18 14:44:56', '2000-01-01', 'M', 1, '00000000000000000000', NULL, NULL, 'LA ASUNCIO', NULL, NULL, 0.00, 1, NULL, 'A', 'SI', NULL, NULL, NULL, 'contado@contado.com', NULL, NULL, NULL, NULL, 'CONTACTO', '00000000000', NULL, 16, 331, 1),
+	(2, 'Jose Veliz', NULL, 'V-26778376', NULL, NULL, '1998-07-29', 'M', 1, '04121802961', NULL, NULL, 'LA ASUNCION', NULL, NULL, 0.00, 1, NULL, NULL, NULL, NULL, NULL, NULL, 'ducen29@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 16, 331, NULL);
 /*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.cobrador
@@ -795,46 +812,46 @@ DELETE FROM `cobranza`;
 CREATE TABLE IF NOT EXISTS `conceptos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `empresa_id` int(11) NOT NULL DEFAULT '1',
-  `codigo` varchar(255) DEFAULT NULL,
-  `referencia` varchar(255) DEFAULT NULL,
+  `codigo` varchar(255) DEFAULT '0000',
+  `referencia` varchar(255) DEFAULT '000',
   `nombre` varchar(255) NOT NULL,
   `descripcion` mediumtext,
-  `talla` varchar(11) DEFAULT NULL,
-  `color` varchar(50) DEFAULT NULL,
-  `descuento` decimal(10,2) DEFAULT NULL,
+  `talla` varchar(11) DEFAULT '1',
+  `color` varchar(50) DEFAULT 'SIN COLOR',
+  `descuento` decimal(10,2) DEFAULT '0.00',
   `serial_estatico` tinyint(1) DEFAULT NULL,
   `serial_dinamico` tinyint(1) DEFAULT NULL,
-  `existencia_minima` decimal(12,3) DEFAULT NULL,
-  `existencia_maxima` decimal(12,3) DEFAULT NULL,
+  `existencia_minima` decimal(12,3) DEFAULT '1.000',
+  `existencia_maxima` decimal(12,3) DEFAULT '1000.000',
   `tipos_conceptos_id` int(11) NOT NULL DEFAULT '0',
-  `ubicacion_id` int(11) DEFAULT '0',
-  `costo` int(11) DEFAULT NULL COMMENT 'costo de reposicion',
-  `ultimo_costo` decimal(12,2) DEFAULT NULL,
-  `costo_mayor` decimal(12,2) DEFAULT NULL,
-  `costo_promedio` decimal(12,2) DEFAULT NULL,
+  `ubicacion_id` int(11) DEFAULT '1',
+  `costo` int(11) DEFAULT '1' COMMENT 'costo de reposicion',
+  `ultimo_costo` decimal(12,2) DEFAULT '1.00',
+  `costo_mayor` decimal(12,2) DEFAULT '1.00',
+  `costo_promedio` decimal(12,2) DEFAULT '1.00',
   `fecha_at` date DEFAULT NULL,
   `fecha_in` date DEFAULT NULL,
-  `fecha_uc` date NOT NULL COMMENT 'fecha de la ultima compra',
-  `grupos_id` int(11) DEFAULT '0',
-  `subgrupos_id` int(11) DEFAULT '0',
+  `fecha_uc` date DEFAULT NULL COMMENT 'fecha de la ultima compra',
+  `grupos_id` int(11) DEFAULT '1',
+  `subgrupos_id` int(11) DEFAULT '1',
   `presentacion` decimal(10,2) DEFAULT NULL,
-  `unidades_id` int(11) DEFAULT '0',
-  `fecha_hora` int(11) DEFAULT '0',
-  `marcas_id` int(11) DEFAULT '0',
+  `unidades_id` int(11) DEFAULT '1',
+  `fecha_hora` int(11) DEFAULT '1',
+  `marcas_id` int(11) DEFAULT '1',
   `estado` tinyint(1) DEFAULT '0',
-  `pvp` decimal(12,2) DEFAULT NULL,
-  `precio_a` decimal(12,2) NOT NULL,
-  `precio_b` decimal(12,2) DEFAULT NULL,
-  `precio_c` decimal(12,2) DEFAULT NULL,
+  `pvp` decimal(12,2) DEFAULT '1.00',
+  `precio_a` decimal(12,2) NOT NULL DEFAULT '1.00',
+  `precio_b` decimal(12,2) DEFAULT '1.00',
+  `precio_c` decimal(12,2) DEFAULT '1.00',
   `precio_dolar` decimal(12,2) NOT NULL DEFAULT '1.00',
-  `utilidad` decimal(10,2) DEFAULT NULL,
-  `utilidad_a` decimal(12,2) DEFAULT NULL,
-  `utilidad_b` decimal(12,2) DEFAULT NULL,
-  `utilidad_c` decimal(12,2) DEFAULT NULL,
+  `utilidad` decimal(10,2) DEFAULT '0.00',
+  `utilidad_a` decimal(12,2) DEFAULT '0.00',
+  `utilidad_b` decimal(12,2) DEFAULT '0.00',
+  `utilidad_c` decimal(12,2) DEFAULT '0.00',
   `utilidad_dolar` decimal(12,0) NOT NULL DEFAULT '1',
   `costo_dolar` decimal(12,2) NOT NULL DEFAULT '1.00',
   `precio_variable` smallint(6) DEFAULT '0',
-  `retiene` tinyint(1) NOT NULL DEFAULT '0',
+  `retiene` tinyint(1) DEFAULT '0',
   `farm_principio_activo_id` int(11) DEFAULT '0',
   `imagen` varchar(255) DEFAULT 'default.png',
   `costo_adicional` decimal(12,2) DEFAULT NULL,
@@ -861,18 +878,18 @@ CREATE TABLE IF NOT EXISTS `conceptos` (
   KEY `productos_ibfk_6` (`unidades_id`),
   KEY `productos_ibfk_7` (`marcas_id`),
   KEY `empresa_id` (`empresa_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='Productos del Sistema';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='Productos del Sistema';
 
--- Volcando datos para la tabla administra.conceptos: ~5 rows (aproximadamente)
+-- Volcando datos para la tabla administra.conceptos: ~6 rows (aproximadamente)
 DELETE FROM `conceptos`;
 /*!40000 ALTER TABLE `conceptos` DISABLE KEYS */;
 INSERT INTO `conceptos` (`id`, `empresa_id`, `codigo`, `referencia`, `nombre`, `descripcion`, `talla`, `color`, `descuento`, `serial_estatico`, `serial_dinamico`, `existencia_minima`, `existencia_maxima`, `tipos_conceptos_id`, `ubicacion_id`, `costo`, `ultimo_costo`, `costo_mayor`, `costo_promedio`, `fecha_at`, `fecha_in`, `fecha_uc`, `grupos_id`, `subgrupos_id`, `presentacion`, `unidades_id`, `fecha_hora`, `marcas_id`, `estado`, `pvp`, `precio_a`, `precio_b`, `precio_c`, `precio_dolar`, `utilidad`, `utilidad_a`, `utilidad_b`, `utilidad_c`, `utilidad_dolar`, `costo_dolar`, `precio_variable`, `retiene`, `farm_principio_activo_id`, `imagen`, `costo_adicional`, `costo_adicional2`, `cant_ensamblado`, `licor`, `porcentaje`, `visible_pv`, `visible_web`, `rest_areas_id`, `setcortesia`, `exento`, `merma`, `existencia_c`, `obviar_ajuste`, `iva`) VALUES
-	(1, 1, '04010150541', 'C001', 'CARNE DE RES DE PRIMERA', 'Carne de res de primera por kilo', NULL, NULL, NULL, 0, 0, 20.000, 500.000, 2, 1, NULL, 69500.00, 68000.00, 68000.00, '2019-07-11', '2019-08-13', '2019-08-12', 3, 5, NULL, 3, NULL, NULL, 1, NULL, 79925.00, 69500.00, 69500.00, 5.75, NULL, 17.54, 2.21, 2.21, 15, 5.00, 0, 0, NULL, 'res.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, NULL, 0, NULL, 1, NULL, 1, 1),
-	(3, 1, '27323221122', 'C003', 'PESCADO FRESCO', 'Pescado Fresco de tipo small por kg', NULL, NULL, NULL, 0, 0, 30.000, 400.000, 2, 1, NULL, 26400.00, 14960.00, 14960.00, '2019-07-15', '2019-08-13', '2019-08-12', 3, 6, NULL, 3, NULL, NULL, 1, NULL, 29550.00, 30182.37, 30182.37, 1.97, NULL, 20.79, 23.37, 23.37, 12, 1.76, 0, 0, NULL, 'pescado.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, 1, 0, NULL, 0, NULL, 0, 0),
-	(4, 1, '355214235135', 'C004', 'CARNE MOLIDA', 'Carne Molida de Primera por kilo', NULL, NULL, NULL, 0, 0, 50.000, 500.000, 2, 1, NULL, 66150.00, 60000.00, 60000.00, '2019-07-15', '2019-08-13', '2019-08-12', 3, 5, NULL, 3, NULL, NULL, 1, NULL, 75450.00, 76415.76, 76415.76, 5.03, NULL, 23.09, 24.66, 24.66, 14, 4.41, 0, 0, NULL, 'carnemolida.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, NULL, 0, NULL, 0, NULL, 0, 0),
-	(5, 1, '3573676423', 'E001', 'CHORIZO POR BULTO', 'Chorizo Carupanero por bulto', NULL, NULL, NULL, 0, 0, 40.000, 200.000, 2, 1, NULL, 110250.00, 62475.00, 62475.00, '2019-07-15', '2019-08-13', '2019-08-12', 4, NULL, NULL, 1, NULL, NULL, 1, NULL, 123450.00, 162818.21, 162818.21, 8.23, NULL, 20.83, 59.37, 59.37, 12, 7.35, 0, 0, NULL, 'chorizo.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, NULL, 0, NULL, 0, NULL, 0, 0),
-	(6, 1, 'FGHFH', 'dsgeth', 'ENSAMBLADO PRUEBA', 'fgrwghsdf GH', NULL, NULL, NULL, 0, 0, NULL, NULL, 5, 1, NULL, 158400.00, 143616.00, 143616.00, '2019-08-12', '2019-08-13', '2019-08-12', 11, NULL, NULL, 1, NULL, NULL, 1, NULL, 190050.00, 158400.00, 158400.00, 12.67, NULL, 29.48, 7.91, 7.91, 20, 10.56, 0, 0, NULL, 'default.png', 0.00, 0.00, 1.00, 0, NULL, 1, NULL, NULL, 0, NULL, 0, NULL, 0, 0),
-	(7, 1, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, '0000-00-00', 0, 0, NULL, 0, 0, 0, 0, NULL, 0.00, NULL, NULL, 1.00, NULL, NULL, NULL, NULL, 1, 1.00, 0, 0, 0, 'default.png', NULL, NULL, NULL, 0, NULL, 1, 0, NULL, 0, 0, 0, NULL, 0, 0);
+	(1, 1, 'NC001', 'NC001', 'Jamon de pavo premiere', 'Jamon de pavo marca premier por kilo', NULL, NULL, NULL, 0, 0, 20.000, 500.000, 2, 1, NULL, 125000.00, 125000.00, 68000.00, '2020-09-01', '2019-08-13', '2019-08-12', 3, 5, NULL, 3, NULL, NULL, 1, NULL, 79925.00, 69500.00, 69500.00, 5.75, NULL, 17.54, 2.21, 2.21, 15, 5.00, 0, 0, NULL, 'default.png.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, NULL, 0, NULL, 1, NULL, 1, 1),
+	(3, 1, '27323221122', 'C003', 'PESCADO FRESCO', 'Pescado Fresco de tipo small por kg', NULL, NULL, NULL, 0, 0, 30.000, 400.000, 2, 1, NULL, 26400.00, 14960.00, 14960.00, '2019-07-15', '2019-08-13', '2019-08-12', 3, 0, NULL, 3, NULL, NULL, 1, NULL, 29550.00, 30182.37, 30182.37, 1.97, NULL, 20.79, 23.37, 23.37, 12, 1.76, 0, 0, NULL, 'pescado.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, 1, 0, NULL, 0, NULL, 0, 0),
+	(4, 1, '355214235135', 'C004', 'CARNE MOLIDA', 'Carne Molida de Primera por kilo', NULL, NULL, NULL, 0, 0, 50.000, 500.000, 2, 1, NULL, 66150.00, 60000.00, 60000.00, '2019-07-15', '2019-08-13', '2019-08-12', 0, 0, NULL, 3, NULL, NULL, 1, NULL, 75450.00, 76415.76, 76415.76, 5.03, NULL, 23.09, 24.66, 24.66, 14, 4.41, 0, 0, NULL, 'carnemolida.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, NULL, 0, NULL, 0, NULL, 0, 0),
+	(5, 1, '3573676423', 'E001', 'CHORIZO POR BULTO', 'Chorizo Carupanero por bulto', NULL, NULL, NULL, 0, 0, 40.000, 200.000, 2, 1, NULL, 110250.00, 62475.00, 62475.00, '2019-07-15', '2019-08-13', '2019-08-12', 3, 5, NULL, 1, NULL, NULL, 1, NULL, 123450.00, 162818.21, 162818.21, 8.23, NULL, 20.83, 59.37, 59.37, 12, 7.35, 0, 0, NULL, 'chorizo.jpg', 0.00, 0.00, 0.00, 0, NULL, 1, NULL, NULL, 0, NULL, 0, NULL, 0, 0),
+	(6, 1, 'FGHFH', 'dsgeth', 'ENSAMBLADO PRUEBA', 'fgrwghsdf GH', NULL, NULL, NULL, 0, 0, NULL, NULL, 5, 1, NULL, 158400.00, 143616.00, 143616.00, '2019-08-12', '2019-08-13', '2019-08-12', 3, 5, NULL, 1, NULL, NULL, 1, NULL, 190050.00, 158400.00, 158400.00, 12.67, NULL, 29.48, 7.91, 7.91, 20, 10.56, 0, 0, NULL, 'default.png', 0.00, 0.00, 1.00, 0, NULL, 1, NULL, NULL, 0, NULL, 0, NULL, 0, 0),
+	(9, 1, 'NC002', 'NC002', 'Jamon de pavo premiere', 'Jamon de pavo marca premier por kilo', '1', 'SIN COLOR', 0.00, NULL, NULL, 20.000, 500.000, 2, 1, 1, 125000.00, 125000.00, 1.00, '2020-09-01', NULL, NULL, 0, 6, NULL, 3, 1, 1, 0, 1.00, 200000.00, 69500.00, 69500.00, 7.00, 0.00, 17.54, 2.21, 2.21, 15, 6.00, 0, 0, 0, 'default.png.jpg', NULL, NULL, NULL, 0, NULL, 1, 0, NULL, 0, 0, 0, NULL, 0, 1);
 /*!40000 ALTER TABLE `conceptos` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.correlativos
@@ -940,7 +957,7 @@ CREATE TABLE IF NOT EXISTS `depositos` (
   `usuario_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `empresa_id` (`empresa_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- Volcando datos para la tabla administra.depositos: ~4 rows (aproximadamente)
 DELETE FROM `depositos`;
@@ -949,7 +966,8 @@ INSERT INTO `depositos` (`id`, `empresa_id`, `nombre`, `usuario_id`) VALUES
 	(1, 1, 'DEPOSITO 1', 0),
 	(2, 1, 'DEPOSITO TRANSITO', 0),
 	(3, 1, 'DEPOSITO 2', 0),
-	(4, 1, 'Deposito 3', 0);
+	(4, 1, 'Deposito 3', 0),
+	(5, 1, 'DEPOSITO 4', 0);
 /*!40000 ALTER TABLE `depositos` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.det_abonos
@@ -1460,7 +1478,7 @@ CREATE TABLE IF NOT EXISTS `empresa` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `rif` varchar(20) NOT NULL,
   `razon_social` varchar(255) NOT NULL,
-  `nombre_comercial` varchar(255) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
   `fecha_registro` date NOT NULL,
   `direccion` varchar(250) NOT NULL,
   `telefono1` varchar(20) NOT NULL,
@@ -1491,7 +1509,7 @@ CREATE TABLE IF NOT EXISTS `empresa` (
 -- Volcando datos para la tabla administra.empresa: ~0 rows (aproximadamente)
 DELETE FROM `empresa`;
 /*!40000 ALTER TABLE `empresa` DISABLE KEYS */;
-INSERT INTO `empresa` (`id`, `rif`, `razon_social`, `nombre_comercial`, `fecha_registro`, `direccion`, `telefono1`, `telefono2`, `telefono3`, `pag_web`, `correo_electronico`, `correo_electronico2`, `twitter`, `facebook`, `instagram`, `logo`, `firma_digital`, `tipo_imagen`, `licencia_licores`, `nota`, `marca_agua`, `tipo_calculo`, `contribuyente_especial`, `nota2`, `color_presupuesto`, `img_barcode`, `modelo`, `serial_disk`) VALUES
+INSERT INTO `empresa` (`id`, `rif`, `razon_social`, `nombre`, `fecha_registro`, `direccion`, `telefono1`, `telefono2`, `telefono3`, `pag_web`, `correo_electronico`, `correo_electronico2`, `twitter`, `facebook`, `instagram`, `logo`, `firma_digital`, `tipo_imagen`, `licencia_licores`, `nota`, `marca_agua`, `tipo_calculo`, `contribuyente_especial`, `nota2`, `color_presupuesto`, `img_barcode`, `modelo`, `serial_disk`) VALUES
 	(1, 'J0000', 'EMPRESA DEMO', 'EMPRESA DEMO', '2019-02-22', 'PORLAMAR', '04265969440', '', NULL, '', '', NULL, NULL, NULL, NULL, 'logo.jpg', NULL, NULL, 0, '', NULL, 1, 0, '', '#229954', NULL, 4, '      E2034233CRLE6S');
 /*!40000 ALTER TABLE `empresa` ENABLE KEYS */;
 
@@ -1704,7 +1722,7 @@ CREATE TABLE IF NOT EXISTS `enc_facturas` (
   `afecta_factura` varchar(15) DEFAULT NULL,
   `rest_pedidos_id` int(11) DEFAULT NULL,
   `fecha_hora` datetime DEFAULT NULL,
-  `coo` int(18) DEFAULT NULL,
+  `coo` varchar(50) DEFAULT NULL,
   `estatus_entrega` tinyint(4) DEFAULT NULL,
   `fecha_entrega` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1729,9 +1747,9 @@ INSERT INTO `enc_facturas` (`id`, `numero_factura`, `numero_fiscal`, `serial_imp
 	(10, '00000009', '0', NULL, '2019-07-30', NULL, 1, 1, 95155.00, NULL, 0.00, 0.00, 1, 1, 0.00, 0.00, 1, 1, 1, '', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(11, '00000010', '0', NULL, '2019-07-30', NULL, 1, 1, 157880.00, NULL, 0.00, 0.00, 1, 1, 0.00, 0.00, 1, 1, 1, '', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(12, '00000011', '00000047', 'Z1A8137599', '2019-07-30', NULL, 1, 1, 58093.00, NULL, 0.00, 9295.00, 1, 1, 0.00, 0.00, 1, 1, 1, '', 0, 0, NULL, 0.00, 'adtyfrh', NULL, NULL, NULL, NULL, NULL, NULL),
-	(14, '00000001', '0', NULL, '2019-07-30', NULL, 1, 1, 58093.00, NULL, 0.00, 9295.00, 1, 0, 0.00, 0.00, 3, 1, 1, 'saf', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, 0, NULL, NULL),
+	(14, '00000001', '0', NULL, '2019-07-30', NULL, 1, 1, 58093.00, NULL, 0.00, 9295.00, 1, 0, 0.00, 0.00, 3, 1, 1, 'saf', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, '0', NULL, NULL),
 	(15, '00000012', '00000048', 'Z1A8137599', '2019-07-30', NULL, 1, 1, 58093.00, NULL, 0.00, 9295.00, 1, 1, 0.00, 0.00, 1, 1, 1, '', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-	(16, '00000002', '0', NULL, '2019-07-30', NULL, 1, 1, 58093.00, NULL, 0.00, 9295.00, 1, 0, 0.00, 0.00, 3, 1, 1, 'hfsd', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, 0, NULL, NULL),
+	(16, '00000002', '0', NULL, '2019-07-30', NULL, 1, 1, 58093.00, NULL, 0.00, 9295.00, 1, 0, 0.00, 0.00, 3, 1, 1, 'hfsd', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, '0', NULL, NULL),
 	(17, '00000013', '0', NULL, '2019-08-07', NULL, 1, 1, 73050.00, NULL, 0.00, 11688.00, 1, 1, 0.00, 0.00, 1, 1, 1, '', 0, 0, NULL, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 /*!40000 ALTER TABLE `enc_facturas` ENABLE KEYS */;
 
@@ -2042,7 +2060,7 @@ CREATE TABLE IF NOT EXISTS `grupos` (
   `visualizar` tinyint(1) DEFAULT '0',
   `posicion` tinyint(3) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COMMENT='Grupos de Productos';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COMMENT='Grupos de Productos';
 
 -- Volcando datos para la tabla administra.grupos: ~13 rows (aproximadamente)
 DELETE FROM `grupos`;
@@ -2060,7 +2078,8 @@ INSERT INTO `grupos` (`id`, `nombre`, `imagen`, `visualizar`, `posicion`) VALUES
 	(10, 'ENTRADAS', 'default.png', 1, 1),
 	(11, 'PLATOS', 'default.png', 1, 1),
 	(12, 'PRUEBA CREATE API NODEJS', 'default.png', 0, 1),
-	(13, 'PRUEBA 2 CREATE API NODEJS', 'default.png', 0, 1);
+	(13, 'PRUEBA 2 CREATE API NODEJS', 'default.png', 0, 1),
+	(14, 'Verduras', 'default.png', 0, 0);
 /*!40000 ALTER TABLE `grupos` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.grupos_rest_caracteristicas
@@ -2793,19 +2812,17 @@ CREATE TABLE IF NOT EXISTS `movimiento_deposito` (
   UNIQUE KEY `depositos_id` (`depositos_id`,`conceptos_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='tabla que almacena las existencia de los conceptos por deposito';
 
--- Volcando datos para la tabla administra.movimiento_deposito: ~9 rows (aproximadamente)
+-- Volcando datos para la tabla administra.movimiento_deposito: ~8 rows (aproximadamente)
 DELETE FROM `movimiento_deposito`;
 /*!40000 ALTER TABLE `movimiento_deposito` DISABLE KEYS */;
 INSERT INTO `movimiento_deposito` (`id`, `depositos_id`, `conceptos_id`, `existencia`) VALUES
 	(1, 1, 1, 4996.00),
-	(2, 1, 2, 39999.00),
-	(3, 1, 3, 499.00),
+	(3, 1, 3, 493.00),
 	(4, 1, 4, 20002.00),
 	(5, 1, 5, 37670.00),
 	(6, 1, 6, 0.00),
 	(7, 1, 7, 41.00),
 	(8, 2, 1, 50.00),
-	(9, 2, 2, 20000.00),
 	(10, 3, 1, 15000.00);
 /*!40000 ALTER TABLE `movimiento_deposito` ENABLE KEYS */;
 
@@ -4135,16 +4152,16 @@ INSERT INTO `rest_caracteristicas` (`id`, `nombre`) VALUES
 -- Volcando estructura para tabla administra.rest_det_pedidos
 CREATE TABLE IF NOT EXISTS `rest_det_pedidos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `rest_pedidos_id` int(11) NOT NULL,
-  `conceptos_id` int(11) NOT NULL,
-  `cantidad` decimal(12,3) NOT NULL,
-  `precio` decimal(12,3) NOT NULL,
-  `fecha_at` datetime DEFAULT NULL,
-  `fecha_in` datetime DEFAULT NULL,
-  `rest_estatus_id` int(11) NOT NULL,
+  `rest_pedidos_id` int(11) NOT NULL DEFAULT '1',
+  `conceptos_id` int(11) NOT NULL DEFAULT '1',
+  `cantidad` decimal(12,3) NOT NULL DEFAULT '1.000',
+  `precio` decimal(12,3) NOT NULL DEFAULT '1.000',
+  `fecha_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fecha_in` datetime DEFAULT CURRENT_TIMESTAMP,
+  `rest_estatus_id` int(11) NOT NULL DEFAULT '7',
   `estado` varchar(255) NOT NULL DEFAULT 'ACTIVO',
   `observacion` text,
-  `rest_areas_id` int(11) DEFAULT NULL,
+  `rest_areas_id` int(11) DEFAULT '1',
   `motivo` text,
   `autorizo` int(11) DEFAULT NULL,
   `impreso` tinyint(1) DEFAULT '0',
@@ -4153,14 +4170,16 @@ CREATE TABLE IF NOT EXISTS `rest_det_pedidos` (
   `cortesia` tinyint(1) DEFAULT '0',
   `rest_motivo_anul_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Detalles del Pedido';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Detalles del Pedido';
 
--- Volcando datos para la tabla administra.rest_det_pedidos: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla administra.rest_det_pedidos: ~4 rows (aproximadamente)
 DELETE FROM `rest_det_pedidos`;
 /*!40000 ALTER TABLE `rest_det_pedidos` DISABLE KEYS */;
 INSERT INTO `rest_det_pedidos` (`id`, `rest_pedidos_id`, `conceptos_id`, `cantidad`, `precio`, `fecha_at`, `fecha_in`, `rest_estatus_id`, `estado`, `observacion`, `rest_areas_id`, `motivo`, `autorizo`, `impreso`, `entrada`, `usuario_id`, `cortesia`, `rest_motivo_anul_id`) VALUES
 	(1, 1, 1, 1.000, 41400.000, '2019-07-18 15:42:43', '2019-07-18 15:43:20', 7, 'ACTIVO', NULL, NULL, NULL, NULL, 0, 0, 2, NULL, NULL),
-	(2, 1, 3, 1.000, 16755.200, '2019-07-18 15:42:46', '2019-07-18 15:43:23', 7, 'ACTIVO', NULL, 1, NULL, NULL, 0, 0, 2, NULL, NULL);
+	(2, 1, 3, 1.000, 16755.200, '2019-07-18 15:42:46', '2019-07-18 15:43:23', 7, 'ACTIVO', NULL, 1, NULL, NULL, 0, 0, 2, NULL, NULL),
+	(7, 1, 3, 1.000, 1000.000, '2020-01-07 10:57:44', '2020-01-07 10:57:44', 7, 'ACTIVO', NULL, 1, NULL, NULL, 0, 0, NULL, 0, NULL),
+	(8, 1, 3, 1.000, 1000.000, '2020-01-07 10:58:24', '2020-01-07 10:58:24', 7, 'ACTIVO', NULL, 1, NULL, NULL, 0, 0, NULL, 0, NULL);
 /*!40000 ALTER TABLE `rest_det_pedidos` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.rest_estatus
@@ -4189,11 +4208,15 @@ CREATE TABLE IF NOT EXISTS `rest_galeria` (
   `conceptos_id` int(11) NOT NULL,
   `imagen` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
--- Volcando datos para la tabla administra.rest_galeria: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla administra.rest_galeria: ~3 rows (aproximadamente)
 DELETE FROM `rest_galeria`;
 /*!40000 ALTER TABLE `rest_galeria` DISABLE KEYS */;
+INSERT INTO `rest_galeria` (`id`, `conceptos_id`, `imagen`) VALUES
+	(1, 1, 'bistec.png'),
+	(2, 1, 'pedazo.png'),
+	(3, 1, 'kilo.png');
 /*!40000 ALTER TABLE `rest_galeria` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.rest_horarios
@@ -4257,26 +4280,28 @@ INSERT INTO `rest_motivo_anul` (`id`, `nombre`) VALUES
 -- Volcando estructura para tabla administra.rest_pedidos
 CREATE TABLE IF NOT EXISTS `rest_pedidos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `rest_mesas_id` int(11) NOT NULL,
-  `rest_estatus_id` int(11) NOT NULL,
+  `empresa_id` int(11) NOT NULL DEFAULT '1',
+  `rest_mesas_id` int(11) NOT NULL DEFAULT '1',
+  `rest_estatus_id` int(11) NOT NULL DEFAULT '3',
   `estado` varchar(50) NOT NULL DEFAULT 'ACTIVO',
   `cant_personas` int(11) DEFAULT '1',
-  `fecha_at` datetime DEFAULT NULL,
-  `fecha_in` datetime DEFAULT NULL,
-  `usuario_id` int(11) NOT NULL,
+  `fecha_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fecha_in` datetime DEFAULT CURRENT_TIMESTAMP,
+  `usuario_id` int(11) NOT NULL DEFAULT '3',
   `autorizo` int(11) DEFAULT NULL COMMENT 'Usuario que autoriza anulacion',
   `motivo` varchar(200) DEFAULT NULL,
   `observacion` text,
   `clientes_id` int(11) DEFAULT NULL,
   `enc_facturas_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `empresa_id` (`empresa_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla administra.rest_pedidos: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla administra.rest_pedidos: ~1 rows (aproximadamente)
 DELETE FROM `rest_pedidos`;
 /*!40000 ALTER TABLE `rest_pedidos` DISABLE KEYS */;
-INSERT INTO `rest_pedidos` (`id`, `rest_mesas_id`, `rest_estatus_id`, `estado`, `cant_personas`, `fecha_at`, `fecha_in`, `usuario_id`, `autorizo`, `motivo`, `observacion`, `clientes_id`, `enc_facturas_id`) VALUES
-	(1, 1, 3, 'ACTIVO', 5, '2019-07-18 15:42:43', '2019-07-18 15:44:11', 2, NULL, NULL, NULL, 1, NULL);
+INSERT INTO `rest_pedidos` (`id`, `empresa_id`, `rest_mesas_id`, `rest_estatus_id`, `estado`, `cant_personas`, `fecha_at`, `fecha_in`, `usuario_id`, `autorizo`, `motivo`, `observacion`, `clientes_id`, `enc_facturas_id`) VALUES
+	(1, 1, 1, 3, 'ACTIVO', 5, '2019-07-18 15:42:43', '2019-07-18 15:44:11', 2, NULL, NULL, NULL, 1, NULL);
 /*!40000 ALTER TABLE `rest_pedidos` ENABLE KEYS */;
 
 -- Volcando estructura para tabla administra.rest_puntos
