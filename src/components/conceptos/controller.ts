@@ -186,9 +186,8 @@ export const getMostSold = async (params: any, query: any): Promise<any> =>{
  */
 export const create = async (body: any, file: any): Promise<any> => {
     let { data, data1 } = body;
-    console.log(file);
-    let { filename = "default.png" } = file;
-    let newConcepto: IConcepto = data;
+    let { filename = 'default.png' } = file;
+    let newConcepto: IConcepto = typeof data == 'string' ? JSON.parse(data) : data;
     newConcepto.imagen = filename;
     let presentaciones = data1;
     try {
@@ -216,11 +215,12 @@ export const create = async (body: any, file: any): Promise<any> => {
  * @param params params request object
  * @param query data of the concept
  */
-export const update = async (params: any, body: any): Promise<any> => {
+export const update = async (params: any, body: any, file: any): Promise<any> => {
     let { id } = params;
     let { data, data1 } = body;
-    let newGrupo: IConcepto = data;
+    let newGrupo: IConcepto = typeof data == 'string' ? JSON.parse(data) : data;
     let presentaciones = data1;
+    if(file) newGrupo.imagen = file.filename;
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
