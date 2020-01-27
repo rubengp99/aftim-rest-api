@@ -7,14 +7,29 @@ x-access-control : {"user":"admin","password":"123456"}
 GET http://localhost:81/api/conceptos/mostsold/?after-fecha_at=2019-07-18&before-fecha_at=2019-08-07
 x-access-control : {"user":"admin","password":"123456"}
 
-POST http://localhost:81/api/depositos/
+POST http://localhost:81/api/usuario/login
 x-access-control : {"user":"admin","password":"123456"}
 content-type: application/json
 
 {
     "data":{
-        "nombre" : "DEPOSITO PRUEBA",
-        "usuario_id": 0
+        "usuario" : "Ducen",
+        "password": "2423503"
+    }
+}
+
+POST http://localhost:81/api/usuario/signup
+x-access-control : {"user":"admin","password":"123456"}
+content-type: application/json
+
+{
+    "data":{
+        "nombre" : "Jose",
+        "apellido" : "Veliz",
+        "login" : "Ducen",
+        "perfil_id" : 1,
+        "email":"ducen29@gmail.com",
+        "password": "2423503"
     }
 }
 

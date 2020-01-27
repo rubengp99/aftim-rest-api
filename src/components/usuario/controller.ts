@@ -14,10 +14,13 @@ const model = "usuario";
 export const login = async (body: any): Promise<any> => {
     let { usuario, password } = body.data;
     if (usuario === '' || password === '') return respuestas.Unauthorized;
+    console.log(usuario,password);
     try {
         let user: IUsuario = await consult.getUser(usuario);
+        console.log(user);
         if (!user) return respuestas.Unauthorized;
-        if (!encript.validar(password, user.password)) return respuestas.Unauthorized;
+        let valido = await encript.validar(password, user.password);
+        if (!valido) return respuestas.Unauthorized;
         const token: string = jwt.sign({ _id: user.login }, tokenKey || "2423503", { expiresIn: 60 * 60 * 24 });
         const response = { data: user };
         return { response, token, code: respuestas.Ok.code };
@@ -36,10 +39,12 @@ export const login = async (body: any): Promise<any> => {
 export const signUp = async (body: any): Promise<any> => {
     const { data } = body;
     const newUser: IUsuario = data;
+    console.log(data,newUser);
     newUser.password = await encript.encriptar(newUser.password);
     try {
         let { insertId } = await consult.create(model, newUser);
         const token: string = jwt.sign({ _id: newUser.login }, tokenKey || "2423503", { expiresIn: 60 * 60 * 24 });
+        newUser.id = insertId;
         const response = { data: newUser }
         return { token, response, code: respuestas.Created.code };
     } catch (error) {

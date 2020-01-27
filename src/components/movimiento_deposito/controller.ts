@@ -83,7 +83,9 @@ export const update = async (params:any, body: any): Promise<any> => {
     let newMovDep: IMovimientoDeposito = data;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
-        let { affectedRows } = await consult.update(model, id, newMovDep) as any;
+        let data: IMovimientoDeposito[] = await consult.getOtherByMe('conceptos', id, model, {fields:'id'});
+        if(!data) return respuestas.ElementNotFound;
+        let { affectedRows } = await consult.update(model, data[0].id as number, newMovDep) as any;
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
         return { response, code: respuestas.Update.code };
