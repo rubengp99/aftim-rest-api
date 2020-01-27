@@ -172,7 +172,7 @@ export const countOther = async (model:string,other:string,id:string | number):P
  */
 export const getUser = async (user:string)=>{
     try {
-        let data:any = await connection.query(`SELECT * FROM usuario WHERE login = ? or login = ?`,[user,user]);
+        let data:any = await connection.query(`SELECT * FROM usuario WHERE login = ? or email = ?`,[user,user]);
         return data[0][0];
     } catch (error) {
         throw new Error(`Error en conexion connection la BD, error: ${error}`);
