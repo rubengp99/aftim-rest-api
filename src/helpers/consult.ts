@@ -13,7 +13,6 @@ import * as querys from './query';
  * ``` 
  */
 export const get = async (model:string,query?:any):Promise<any> => {
-    
     let sql = querys.selectSQL(query,model);
     try {
         let data = await connection.query(sql);

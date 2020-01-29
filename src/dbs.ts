@@ -11,3 +11,7 @@ export function connect() {
         console.log(error);
     }
 }
+
+export async function disconnect(){
+    await connection.end()
+}

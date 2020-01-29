@@ -14,7 +14,7 @@ export const get = async (query: any): Promise<any> => {
         let data: ICambio[] = await consult.get(model, query);
         let totalCount: number = await consult.count(model);
         let count = data.length;
-        let { limit } = query;
+        let { limit = 10 } = query;
         if (count <= 0) return respuestas.Empty;
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);

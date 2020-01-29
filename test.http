@@ -32,5 +32,5 @@ x-access-control : {"user":"admin","password":"123456"}
     }
 }
 
-DELETE http://localhost:81/api/depositos/6
+DELETE  http://localhost:81/api/subgrupos/15
 x-access-control : {"user":"admin","password":"123456"}
