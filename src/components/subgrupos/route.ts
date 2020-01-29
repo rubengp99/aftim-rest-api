@@ -67,7 +67,7 @@ router.post('/:id', validar, async (req:Request, res:Response):Promise<Response>
 
 router.delete('/:id', validar, async (req:Request, res:Response):Promise<Response> =>{
     try {
-        let {message,code} = await controller.remove(req);
+        let {message,code} = await controller.remove(req.params);
         return res.status(code).json(message);
     } catch (error) {
         console.log(error);

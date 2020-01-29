@@ -126,3 +126,24 @@ This entity represent the diferents physical deposits where the diferents articl
 
 - **POST: /api/depositos/:id** Update the data of one deposit
 
+    Request:
+
+        {
+            "data":{
+                "nombre":"DEPOSITO PRIMERO"
+            }
+        }
+    
+    Response:
+
+        {
+            "message": "Record updated",
+            "link": "http://localhost:81/api/depositos/1"
+        }
+
+---
+- **DELETE: http://localhost:81/api/depositos/6** Delete a deposit
+
+        {
+            "message":"Record deleted"
+        }

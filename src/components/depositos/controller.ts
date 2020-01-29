@@ -116,6 +116,7 @@ export const update = async (params: any, body: any): Promise<any> => {
     let { data } = body;
     let newdeposito: IDeposito = data;
     try {
+        console.log(newdeposito);
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         let { affectedRows } = await consult.update(model, id, newdeposito) as any;

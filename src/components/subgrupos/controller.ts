@@ -92,7 +92,8 @@ export const create = async (body:any): Promise<any> => {
     try {
         let { insertId } = await consult.create(model, newGrupo) as any;
         let link = links.created(model, insertId);
-        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        newGrupo.id = insertId;
+        let response = Object.assign({ message: respuestas.Created.message, data:newGrupo }, { link: link });
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -130,6 +131,7 @@ export const update = async (params:any, body:any): Promise<any> => {
 export const remove = async (params:any): Promise<any> => {
     let { id } = params;
     try {
+        
         if(isNaN(id)) return respuestas.InvalidID;
         await consult.remove(model, id);
         return respuestas.Deleted;

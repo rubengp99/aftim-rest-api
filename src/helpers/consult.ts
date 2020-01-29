@@ -112,6 +112,7 @@ export const  create = async (model:string,object:any):Promise<any> =>{
  */
 export const update = async (model:string,id:string | number,object:any):Promise<any> =>{
     try {
+        
         let updated = await connection.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
         return updated;
     } catch (error) {
