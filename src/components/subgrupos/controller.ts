@@ -88,9 +88,11 @@ export const getConceptosBySubgrupo = async (id: string | number, query: any): P
  */
 export const create = async (body:any,file:any): Promise<any> => {
     let { data } = body;
-    let { filename = 'default.png' } = file;
-    let newGrupo: ISubgrupo = data;
-    newGrupo.imagen = filename;
+    let newGrupo: ISubgrupo = typeof data == 'string' ? JSON.parse(data) : data;
+    if(file){
+        let { filename = 'default.png' } = file;
+        newGrupo.imagen = filename;
+    }
     try {
         let { insertId } = await consult.create(model, newGrupo) as any;
         let link = links.created(model, insertId);
