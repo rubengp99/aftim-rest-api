@@ -57,7 +57,7 @@ router.get('/:id/conceptos/',validar, async (req:Request, res:Response):Promise<
 //crear una grupo
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.create(req.body);
+        let {message,response,code} = await controller.create(req.body,req.file);
         return res.status(code).json(message  || response);
     } catch (error) {
         console.log(error);

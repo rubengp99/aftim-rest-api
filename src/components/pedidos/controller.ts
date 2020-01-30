@@ -64,10 +64,11 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * Create a new order
  * @param body data of the new order
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any,file:any): Promise<any> => {
     let { data, data1 } = body;
-    let newPedido: IPedidos = data;
-    let newDetalles: IDetPedidos[] = data1;
+    let { filename = 'default.png' } = file;
+    let newPedido: IPedidos = typeof data == 'string' ? JSON.parse(data) : data;
+    let newDetalles: IDetPedidos[] = typeof data1 == 'string' ? JSON.parse(data1) : data1;
     try {
         let { insertId } = await consult.create(model, newPedido);
         for (let index = 0; index < newDetalles.length; index++) {

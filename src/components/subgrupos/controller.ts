@@ -86,9 +86,11 @@ export const getConceptosBySubgrupo = async (id: string | number, query: any): P
  * Create a new subgroup
  * @param body 
  */
-export const create = async (body:any): Promise<any> => {
+export const create = async (body:any,file:any): Promise<any> => {
     let { data } = body;
+    let { filename = 'default.png' } = file;
     let newGrupo: ISubgrupo = data;
+    newGrupo.imagen = filename;
     try {
         let { insertId } = await consult.create(model, newGrupo) as any;
         let link = links.created(model, insertId);
@@ -110,6 +112,7 @@ export const create = async (body:any): Promise<any> => {
 export const update = async (params:any, body:any): Promise<any> => {
     let { id } = params;
     let { data } = body;
+    
     let newGrupo: ISubgrupo = data;
     try {
         if(isNaN(id)) return respuestas.InvalidID;

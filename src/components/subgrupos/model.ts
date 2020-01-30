@@ -4,5 +4,6 @@ export interface ISubgrupo{
     grupos_id:number,
     nombre:string,
     visualizar:boolean,
-    posicion:number
+    posicion:number,
+    imagen?:string
 }

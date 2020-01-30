@@ -18,19 +18,15 @@ content-type: application/json
     }
 }
 
-POST http://localhost:81/api/usuario/signup
+POST http://localhost:81/api/movimiento_deposito/1
 x-access-control : {"user":"admin","password":"123456"}
+content-type: application/json
 
 {
     "data":{
-        "nombre" : "Jose",
-        "apellido" : "Veliz",
-        "login" : "Ducen",
-        "perfil_id" : 1,
-        "email":"ducen29@gmail.com",
-        "password": "2423503"
+        "existencia" : 100
     }
 }
 
-DELETE  http://localhost:81/api/subgrupos/15
+GET  http://localhost:81/api/movimiento_deposito/
 x-access-control : {"user":"admin","password":"123456"}
