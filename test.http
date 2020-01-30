@@ -28,5 +28,5 @@ content-type: application/json
     }
 }
 
-GET  http://localhost:81/api/movimiento_deposito/
+GET  http://localhost:81/api/conceptos/
 x-access-control : {"user":"admin","password":"123456"}
