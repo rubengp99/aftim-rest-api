@@ -16,8 +16,7 @@ export const get = async (query:any): Promise<any> =>{
         let count = data.length;
         let { limit } = query;
 
-        if(count <= 0) return respuestas.Empty
-
+        if(count <= 0) return respuestas.Empty;
         let link = links.pages(data, 'areas_atencion', count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
 
@@ -40,11 +39,10 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
 
         let data:IAreasAtencion = await consult.getOne(model,id,query);
         let count:number = await consult.count(model);
-        console.log(data);
         if(!data)  return respuestas.ElementNotFound;
     
         let link = links.records(data,'areas_atencion',count);
-        let response = Object.assign({data},link);
+        let response = {data,link:link};
         return {response,code:respuestas.Ok.code};
             
     } catch (error) {

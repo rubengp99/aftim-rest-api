@@ -16,7 +16,8 @@ export const get = async (model:string,query?:any):Promise<any> => {
     let sql = querys.selectSQL(query,model);
     try {
         let data = await connection.query(sql);
-        return data[0];
+        let response = JSON.parse(JSON.stringify(data[0]));
+        return response;
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
             console.log(error);
@@ -39,7 +40,9 @@ export const getOne = async (model:string,id:string | number ,query:any):Promise
     let sql = querys.selectSQLOne(id,query,model);
     try {
         let data:any = await connection.query(sql);
-        return data[0][0];
+        if(!data[0][0]) return null;
+        let response = JSON.parse(JSON.stringify(data[0][0]));
+        return response;
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
             console.log(error);

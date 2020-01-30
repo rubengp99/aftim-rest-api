@@ -18,7 +18,7 @@ import morgan from 'morgan';
  */
 
 export class App {
-    private app: Application;
+    public app: Application;
     private storage: multer.StorageEngine | undefined;
 
     /**

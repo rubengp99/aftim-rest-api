@@ -199,9 +199,9 @@ export const create = async (body: any, file: any): Promise<any> => {
             });
             newConcepto.presentaciones = presentaciones;
         }
-
+        newConcepto.id = insertId;
         let link = links.created(model, insertId);
-        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        let response = { message: respuestas.Created.message ,data:newConcepto, link: link };
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
