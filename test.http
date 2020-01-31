@@ -28,5 +28,6 @@ content-type: application/json
     }
 }
 
-GET  http://localhost:81/api/empresa/1/pedidos/
+DELETE   http://localhost:81/api/empresa/2
 x-access-control : {"user":"admin","password":"12456"}
+content-type: application/json

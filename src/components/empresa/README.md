@@ -406,3 +406,55 @@ The company is related with the users of the API, this represents the comercial 
             "sig": "Last page",
             "prev": "First Page"
         }
+
+
+---
+- **POST /api/empresa** Create a new company
+
+    Request:
+
+        {
+            "data": {
+                "rif" : "J-21542154",
+                "razon_social" : "EMPRESA DEMO 3",
+                "nombre" : "WAME",
+                "direccion" : "PORLAMAR",
+                "telefono1" : "04120000000",
+                "correo_electronico" : "correo@correo.com",
+            }
+        }
+    
+    Response:
+
+        {
+            "message": "Record created",
+            "link": "http://localhost:81/api/empresa/2"
+        }
+
+---
+- **POST /api/empresa/:id**
+
+    Request:
+
+        {
+            "data": {
+                "rif" : "J-21542154",
+                "direccion" : "PORLAMAR",
+                "telefono1" : "04121212312",
+                "correo_electronico" : "correoedited@correo.com",
+            }
+        }
+    
+    Response:
+
+        {
+            "message": "Record updated",
+            "link": "http://localhost:81/api/empresa/2"
+        }
+
+---
+- **DELETE /api/empresa/:id** Delete a company
+
+        {
+            "message" : "Record deleted"
+        }

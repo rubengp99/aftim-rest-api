@@ -2,6 +2,7 @@ export interface IEmpresa {
     id?: string | number,
     rif: string,
     razon_social:string,
+    nombre:string,
     fecha_registro:string,
     direccion:string,
     telefono1:string,
