@@ -186,9 +186,11 @@ export const getMostSold = async (params: any, query: any): Promise<any> =>{
  */
 export const create = async (body: any, file: any): Promise<any> => {
     let { data, data1 } = body;
-    let { filename = 'default.png' } = file;
     let newConcepto: IConcepto = typeof data == 'string' ? JSON.parse(data) : data;
-    newConcepto.imagen = filename;
+    if(file){
+        let { filename = 'default.png' } = file;
+        newConcepto.imagen = filename;
+    }
     let presentaciones = data1;
     try {
         let { insertId } = await consult.create(model, newConcepto) as any;

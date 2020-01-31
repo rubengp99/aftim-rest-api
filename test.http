@@ -28,6 +28,12 @@ content-type: application/json
     }
 }
 
-DELETE   http://localhost:81/api/empresa/2
+POST   http://localhost:81/api/entidad/
 x-access-control : {"user":"admin","password":"12456"}
 content-type: application/json
+
+{
+    "data" : {
+        "nombre" : "NUEVA ENTIDAD"
+    }
+}
