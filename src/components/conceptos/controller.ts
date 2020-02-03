@@ -190,7 +190,7 @@ export const create = async (body: any, file: any): Promise<any> => {
     if(file){
         let { filename = 'default.png' } = file;
         newConcepto.imagen = filename;
-    }
+    } 
     let presentaciones = data1;
     try {
         let { insertId } = await consult.create(model, newConcepto) as any;
