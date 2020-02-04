@@ -19,7 +19,7 @@ export const get = async (query: any): Promise<any> => {
         if (count <= 0) return respuestas.Empty;
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
-            let pres: IDetFacturas[] = await consult.getOtherByMe(model, id as string, submodel);
+            let pres: IDetFacturas[] = await consult.getOtherByMe(model, id as string, submodel,{});
             data[i].detalles = pres;
         }
         let link = links.pages(data, 'facturas', count, totalCount, limit);
@@ -46,7 +46,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         if (!data) return respuestas.ElementNotFound;
 
-        let pres: IDetFacturas[] = await consult.getOtherByMe(model, id as string, submodel);
+        let pres: IDetFacturas[] = await consult.getOtherByMe(model, id as string, submodel,{});
         data.detalles = pres;
         let link = links.records(data, 'facturas', count);
         let response = Object.assign({ data }, link);
@@ -95,7 +95,11 @@ export const create = async (body: any): Promise<any> => {
     let detalles: IDetFacturas[] = data1;
     try {
         let { insertId } = await consult.create(model, newCargo);
-        await consult.create(submodel,detalles);
+
+        detalles.forEach( async (detalle) =>{
+            detalle.enc_facturas_id = insertId;
+            await consult.create(submodel,detalle);
+        });
         let link = links.created('facturas', insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         return { response, code: respuestas.Created.code };
@@ -120,7 +124,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         if(isNaN(id)) return respuestas.InvalidID;
         
         let { affectedRows } = await consult.update(model, id, newCargo);
-        let link = links.created(model, id);
+        let link = links.created('factura', id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
         return { response, code: respuestas.Update.code };
     } catch (error) {
@@ -173,9 +177,7 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
         const { insertId } = await consult.create(submodel, newDetail);
 
         newDetail.id = insertId;
-
-        const link = links.created(model, insertId);
-        const response = { data: newDetail, message: respuestas.Created.message, link: link }
+        const response = { data: newDetail, message: respuestas.Created.message}
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
