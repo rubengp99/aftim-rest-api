@@ -18,16 +18,16 @@ content-type: application/json
     }
 }
 
-POST http://localhost:81/api/movimiento_deposito/1
+POST http://localhost:81/api/grupos/
 x-access-control : {"user":"admin","password":"123456"}
 content-type: application/json
 
 {
     "data":{
-        "existencia" : 100
+        "nombre" : "GRUPO DE PRUEBA",
     }
 }
 
-DELETE   http://localhost:81/api/factura/19
+GET   http://localhost:81/api/grupos/1/conceptos/?fields=id,nombre,empresa_id,grupos_id
 x-access-control : {"user":"admin","password":"12456"}
 content-type: application/json

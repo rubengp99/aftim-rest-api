@@ -118,9 +118,11 @@ export const getConceptosByGrupo = async (id: string | number, query: any): Prom
  */
 export const create = async (body: any,file:any): Promise<any> => {
     let { data } = body;
-    let { filename = 'default.png' } = file;
     let newGrupo: IGrupo = typeof data == 'string' ? JSON.parse(data) : data;
-    newGrupo.imagen = filename;
+    if(file){
+        let { filename = 'default.png' } = file;
+        newGrupo.imagen = filename;
+    }
     try {
         let { insertId } = await consult.create(model, newGrupo) as any;
         let link = links.created(model, insertId);
