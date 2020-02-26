@@ -1,4 +1,5 @@
 import * as consult from '../../helpers/consult';
+import axios from 'axios';
 import * as links from '../../helpers/links'
 import * as respuestas from '../../errors';
 import { IAreasAtencion } from './model';
@@ -18,7 +19,7 @@ export const get = async (query:any): Promise<any> =>{
 
         if(count <= 0) return respuestas.Empty;
         let link = links.pages(data, 'areas_atencion', count, totalCount, limit);
-        let response = Object.assign({ totalCount, count, data }, link);
+        let response = Object.assign({ totalCount, count, data },link);
 
         return {response,code:respuestas.Ok.code};
     } catch (error) {

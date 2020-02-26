@@ -11,7 +11,6 @@ const model = 'conceptos';
  */
 export const get = async (query: any): Promise<any> => {
     try {
-        console.log(query)
         let data: IConcepto[] = await consult.get(model, query);// consulto los conceptos
         let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
         let count = data.length;

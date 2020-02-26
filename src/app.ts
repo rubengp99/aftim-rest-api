@@ -4,7 +4,6 @@ import express, { Application } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { routes } from './routes';
-import { connect } from './dbs'
 import cors from 'cors';
 import morgan from 'morgan';
 
@@ -29,12 +28,11 @@ export class App {
         this.app = express();
         this.settings();
         this.middlewares();
-        this.conecctions();
         this.routes();
     }
 
     private settings() {
-        this.app.set('port', this.port || process.env.PORT || 80);
+        this.app.set('port', this.port || process.argv[2] || process.env.PORT || 80);
         this.storage = multer.diskStorage({//manejador de archivos como imagenes
             destination: path.resolve('public/images'),
             filename: (req, file, cb) => {
@@ -57,9 +55,6 @@ export class App {
         routes(this.app);
     }
 
-    private conecctions() {
-        connect();
-    }
     /**
      * Function to start the server
      */
