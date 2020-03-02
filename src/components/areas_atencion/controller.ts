@@ -1,5 +1,4 @@
 import * as consult from '../../helpers/consult';
-import axios from 'axios';
 import * as links from '../../helpers/links'
 import * as respuestas from '../../errors';
 import { IAreasAtencion } from './model';

@@ -1,7 +1,6 @@
 import { IAreasAtencion } from './model';
 import { get, getOne, create, update, remove } from './controller';
 import { App } from '../../app';
-import { connect, disconnect } from '../../dbs';
 
 import request from 'supertest';
 
@@ -21,9 +20,6 @@ const onePrueba = {
 
 
 describe('Controller', () => {
-    beforeAll(() => {
-        connect();
-    })
     test('Get all', async () => {
         const data = await get({});
         expect(data).toBeDefined();
@@ -59,24 +55,15 @@ describe('Controller', () => {
     //     expect(data.code).toBe(200);
     //     expect(data.message).toBe('Record deleted');
     // });
-    afterAll(async () => {
-        await disconnect();
-    });
 });
 
 describe('Router', () => {
     const app = new App();
-    beforeAll(() => {
-        connect();
-    });
+    
     test('Get',async ()=>{
         const response = await request(app.app)
                         .get('/api/areas_atencion')
                         .set('x-access-control','{"user":"admin","password":"123456"}');
         expect(response.status).toBe(200);
-    });
-    afterAll(async () => {
-        await disconnect();
-        
     });
 });
