@@ -1,27 +1,18 @@
-import {Request,Response,NextFunction} from 'express';
-import  * as encript from './encript';
-import  * as users from './consult';
+import { Request, Response, NextFunction } from 'express';
+import { authURL } from '../keys';
+import axios from 'axios';
 
-
-export async function validar(req:Request,res:Response,next:NextFunction){
+export async function validar(req: Request, res: Response, next: NextFunction) {
     console.log(`[DATE] ${new Date()}`);
-    let head:string = req.headers['x-access-control'] as string ;
-    if(head){
-        let headerObject = JSON.parse(head);
-        let masterUser = await users.getUser(headerObject.user);
-        if(masterUser){
-            req.userId = masterUser.id;
-            next();
-            // if(encript.validar(password,masterUser.password)){
-                
-            // }else{
-            //     return res.status(401).json({message:"No autorizado"});
-            // }
-        }else{
-            return res.status(400).json({message: "Datos no validos 1"});
-        } 
-    }else{
-        return res.status(400).json({message: "Datos no validos 2"});
+    try {
+        let head: string = req.headers['x-access-control'] as string;
+        let { data } = await axios.post(`${authURL}/validate`, { token: head });
+        if (!data.validado) return res.status(401).json({ message: 'Invalid token' });
+        req.userId = data.id;
+        next();
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
     
 }

@@ -32,7 +32,7 @@ export class App {
     }
 
     private settings() {
-        this.app.set('port', this.port || process.argv[2] || process.env.PORT || 80);
+        this.app.set('port', this.port || process.argv[2] || process.env.PORT || 81);
         this.storage = multer.diskStorage({//manejador de archivos como imagenes
             destination: path.resolve('public/images'),
             filename: (req, file, cb) => {

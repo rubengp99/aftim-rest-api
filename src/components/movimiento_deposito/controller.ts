@@ -16,7 +16,7 @@ export const get = async (query: any): Promise<any> => {
         let count = data.length;
         let { limit } = query;
 
-        if (count > 0) return respuestas.Empty;
+        if (count <=  0) return respuestas.Empty;
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
