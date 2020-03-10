@@ -65,8 +65,8 @@ export const getSubGruposByGrupo = async (id: string | number, query: any): Prom
         let recurso: IGrupo = await consult.getOne(model, id, { fields: 'id' });
         
         if (!recurso) return respuestas.ElementNotFound;
-        let data: any = await consult.getOtherByMe(model, id, 'subgrupos', query);
-        let totalCount = await consult.countOther(model, 'subgrupos', id);
+        let data: any = await consult.getOtherByMe(model, id, 'adm_subgrupos', query);
+        let totalCount = await consult.countOther(model, 'adm_subgrupos', id);
         let count = data.length;
         let { limit } = query;
         
@@ -95,8 +95,8 @@ export const getConceptosByGrupo = async (id: string | number, query: any): Prom
        
         if (!recurso) return respuestas.Empty;
 
-        let data: any = await consult.getOtherByMe(model, id, 'conceptos', query);
-        let totalCount = await consult.countOther(model, 'conceptos', id);
+        let data: any = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
+        let totalCount = await consult.countOther(model, 'adm_conceptos', id);
         let count = data.length;
         let { limit } = query;
         if (count < 0) return respuestas.Empty;

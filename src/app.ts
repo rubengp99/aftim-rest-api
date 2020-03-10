@@ -48,7 +48,7 @@ export class App {
         this.app.use('/api/',express.static(path.resolve('public')));//carpeta de archivos publicos
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(multer({ storage: this.storage }).single('image'));
+        //this.app.use(multer({ storage: this.storage }).single('image'));
     }
 
     private routes() {
