@@ -64,8 +64,8 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'conceptos', query);
-        let totalCount = await consult.countOther(model, 'conceptos', id);
+        let data: any = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
+        let totalCount = await consult.countOther(model, 'adm_conceptos', id);
         let count = data.length;
         let { limit } = query;
 
@@ -94,8 +94,8 @@ export const getDepositsByEmpresa = async (id: string | number, query: any): Pro
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'depositos', query);
-        let totalCount = await consult.countOther(model, 'depositos', id);
+        let data: any = await consult.getOtherByMe(model, id, 'adm_depositos', query);
+        let totalCount = await consult.countOther(model, 'adm_depositos', id);
         let count = data.length;
         let { limit } = query;
 
@@ -125,22 +125,22 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let conceptos: any[] = await consult.getOtherByMe(model, id, 'conceptos', { fields: 'id,grupos_id', orderField: 'grupos_id' });
+        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_grupos_id', orderField: 'grupos_id' });
 
         if (!conceptos) return respuestas.Empty;
 
-        let grp = conceptos[0].grupos_id;
+        let grp = conceptos[0].adm_grupos_id;
         let data:any[]  = [];
-        let data1 = await consult.getOne('grupos', grp, {});
+        let data1 = await consult.getOne('adm_grupos', grp, {});
         data.push(data1);
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].grupos_id !== grp) {
-                let group: any = await consult.getOne('grupos', conceptos[index].grupos_id, {});
+                let group: any = await consult.getOne('adm_grupos', conceptos[index].grupos_id, {});
                 data.push(group);
                 grp = conceptos[index].grupos_id;
             }
         }
-        let totalCount = await consult.count('grupos');
+        let totalCount = await consult.count('adm_grupos');
         let count = data.length;
         let { limit } = query;
 
@@ -171,22 +171,22 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let conceptos: any[] = await consult.getOtherByMe(model, id, 'conceptos', { fields: 'id,subgrupos_id', orderField: 'subgrupos_id' });
+        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_subgrupos_id', orderField: 'subgrupos_id' });
 
         if (!conceptos) return respuestas.Empty;
 
-        let grp = conceptos[0].subgrupos_id;
+        let grp = conceptos[0].adm_subgrupos_id;
         let data: any[] = [];
-        let data1 =  await consult.getOne('subgrupos', grp, {});
+        let data1 =  await consult.getOne('adm_subgrupos', grp, {});
         data.push(data1);
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].subgrupos_id !== grp) {
-                let group: any = await consult.getOne('subgrupos', conceptos[index].subgrupos_id, {});
+                let group: any = await consult.getOne('adm_subgrupos', conceptos[index].subgrupos_id, {});
                 data.push(group);
                 grp = conceptos[index].subgrupos_id;
             }
         }
-        let totalCount = await consult.count('subgrupos');
+        let totalCount = await consult.count('adm_subgrupos');
         let count = data.length;
         let { limit } = query;
         

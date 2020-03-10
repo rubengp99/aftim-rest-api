@@ -66,8 +66,8 @@ export const getConceptosBySubgrupo = async (id: string | number, query: any): P
         let recurso: ISubgrupo = await consult.getOne(model, id, { fields: 'id' });
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'conceptos', query);
-        let totalCount = await consult.countOther(model, 'conceptos', id);
+        let data: any = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
+        let totalCount = await consult.countOther(model, 'adm_conceptos', id);
         let count = data.length;
         let { limit } = query;
 
