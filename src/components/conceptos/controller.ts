@@ -79,8 +79,8 @@ export const getDepositsByConcept = async (id: string | number, query: any): Pro
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'movimiento_deposito', { fields: 'depositos_id,existencia' });
-        let totalCount = await consult.count('depositos');
+        let data: any = await consult.getOtherByMe(model, id, 'adm_movimiento_deposito', { fields: 'adm_depositos_id,existencia' });
+        let totalCount = await consult.count('adm_depositos');
         let count = data.length;
         let { limit } = query;
 
