@@ -2,7 +2,7 @@ import * as consult from '../../helpers/consult';
 import * as respuestas from '../../errors';
 import { IGrupo } from './model';
 import * as links from '../../helpers/links';
-const model = "grupos";
+const model = "adm_grupos";
 
 
 /**

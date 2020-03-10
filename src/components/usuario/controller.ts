@@ -1,7 +1,6 @@
 import * as consult from '../../helpers/consult';
 import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
-import * as auth from '../../helpers/aunthentication';
 import { IUsuario } from './model';
 const model = "usuario";
 

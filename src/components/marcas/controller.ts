@@ -2,7 +2,7 @@ import * as consult from '../../helpers/consult';
 import * as respuestas from '../../errors';
 import {IMarcas} from './model';
 import  * as links from '../../helpers/links';
-const model = "marcas";
+const model = "adm_marcas";
 
 /**
  * Get all brands

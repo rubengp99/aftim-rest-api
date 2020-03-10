@@ -3,7 +3,7 @@ import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IBanco } from './model';
 
-const model = "banco";
+const model = "adm_banco";
 
 /**
  * return all last 50 banks

@@ -3,7 +3,7 @@ import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IEmpresa } from './model';
 
-const model = "empresa";
+const model = "adm_empresa";
 
 /**
  * Get all companies

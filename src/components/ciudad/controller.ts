@@ -3,7 +3,7 @@ import * as links from '../../helpers/links'
 import * as respuestas from '../../errors';
 import { ICiudad } from './model';
 
-const model = "ciudad";
+const model = "adm_ciudad";
 
 
 /**

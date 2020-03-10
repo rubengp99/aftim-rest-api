@@ -3,7 +3,7 @@ import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IEntidad } from './model';
 
-const model = "entidad";
+const model = "adm_entidad";
 
 /**
  * Get all entities

@@ -3,7 +3,7 @@ import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { ITipoConceptos } from './model';
 
-const model_1 = "tipos_conceptos"
+const model_1 = "adm_tipos_conceptos"
 
 /**
  * Get all the types of concepts

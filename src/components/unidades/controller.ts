@@ -2,7 +2,7 @@ import * as consult from '../../helpers/consult';
 import { IUnidades } from './model';
 import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
-const model = "unidades";
+const model = "adm_unidades";
 
 /**
  * Get all units

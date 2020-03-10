@@ -2,7 +2,7 @@ import * as consult from '../../helpers/consult';
 import * as respuestas from '../../errors';
 import { IMovimientoDeposito } from './model';
 import * as links from '../../helpers/links';
-const model = "movimiento_deposito";
+const model = "adm_movimiento_deposito";
 
 
 /**

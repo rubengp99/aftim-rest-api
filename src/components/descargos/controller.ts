@@ -3,8 +3,8 @@ import * as links from '../../helpers/links'
 import * as respuestas from '../../errors';
 import { IDescargo, IDetDescargo } from './model';
 
-const model = "enc_descargos";
-const submodel = "enc_descargos";
+const model = "adm_enc_descargos";
+const submodel = "adm_enc_descargos";
 
 /**
  * Get all descargos

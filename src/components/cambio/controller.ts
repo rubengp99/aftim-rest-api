@@ -3,7 +3,7 @@ import * as links from '../../helpers/links'
 import * as respuestas from '../../errors';
 import { ICambio } from './model';
 
-const model = "cambio";
+const model = "adm_cambio";
 
 /**
  * Get the last 50 currencies data

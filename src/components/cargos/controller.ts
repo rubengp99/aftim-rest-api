@@ -3,7 +3,7 @@ import * as links from '../../helpers/links'
 import * as respuestas from '../../errors';
 import { ICargo } from './model';
 
-const model = "cargos";
+const model = "adm_cargos";
 
 /**
  * Get all last 50 cargos

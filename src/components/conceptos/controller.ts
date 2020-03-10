@@ -3,8 +3,8 @@ import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IConcepto } from './model';
 
-const model = 'conceptos';
-
+const model = 'adm_conceptos';
+const submodel = 'adm_presentaciones';
 /**
  * Get all last concepts
  * @param query modifier of the consult
@@ -20,10 +20,10 @@ export const get = async (query: any): Promise<any> => {
         if (count <= 0) return respuestas.Empty;
         // si no me pasaron campos requeridos o si en los campos estan las presentaciones entonces
         // consulto las presentaciones de ese producto
-        if (!fields || fields.includes('presentaciones')) {
+        if (!fields || fields.includes(submodel)) {
             for (let i = 0; i < data.length; i++) {
                 let { id } = data[i];
-                let pres = await consult.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
+                let pres = await consult.getOtherByMe(model, id as string, submodel, {}) as any[];
                 data[i].presentaciones = pres;
             }
         }
@@ -52,8 +52,8 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         if (!data) return respuestas.ElementNotFound;
 
-        if (!fields || fields.includes('presentaciones')) {
-            let pres = await consult.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
+        if (!fields || fields.includes(submodel)) {
+            let pres = await consult.getOtherByMe(model, id as string, submodel, {}) as any[];
             data.presentaciones = pres;
         }
         let link = links.records(data, model, count);
@@ -135,8 +135,8 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
 
         let recurso: IConcepto = await consult.getOne(model, id, { fields: 'id' });
         if (!recurso) return respuestas.ElementNotFound;
-        let data: any = await consult.getOtherByMe(model, id, 'presentaciones', query);
-        let totalCount = await consult.countOther(model, 'presentaciones', id);
+        let data: any = await consult.getOtherByMe(model, id, submodel, query);
+        let totalCount = await consult.countOther(model, submodel, id);
         let count = data.length;
         let { limit } = query;
         if (count <= 0) return respuestas.Empty;
@@ -196,7 +196,7 @@ export const create = async (body: any, file: any): Promise<any> => {
         if (presentaciones) {
             presentaciones.forEach(async (element: any) => {
                 element.conceptos_id = insertId;
-                await consult.create('presentaciones', element);
+                await consult.create(submodel, element);
             });
             newConcepto.presentaciones = presentaciones;
         }
@@ -228,7 +228,7 @@ export const update = async (params: any, body: any, file: any): Promise<any> =>
         let { affectedRows } = await consult.update(model, id, newGrupo) as any;
         if (presentaciones) {
             presentaciones.forEach(async (element: any) => {
-                await consult.update('presentaciones', element.id, element);
+                await consult.update(submodel, element.id, element);
             });
         }
         let link = links.created(model, id);
@@ -250,9 +250,9 @@ export const remove = async (params: any): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let pres = await consult.getOtherByMe(model, id as string, 'presentaciones', {}) as any[];
+        let pres = await consult.getOtherByMe(model, id as string, submodel, {}) as any[];
         pres.forEach(async (element: any) => {
-            await consult.remove('presentaciones', element.id);
+            await consult.remove(submodel, element.id);
         });
         await consult.remove(model, id);
         return respuestas.Deleted;

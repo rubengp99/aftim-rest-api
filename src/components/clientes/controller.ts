@@ -3,7 +3,7 @@ import * as links from '../../helpers/links'
 import * as respuestas from '../../errors'
 import { ICliente } from './model';
 
-const model = "clientes";
+const model = "adm_clientes";
 
 /**
  * Get all clients

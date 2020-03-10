@@ -3,8 +3,8 @@ import * as consult from '../../helpers/consult';
 import * as respuestas from '../../errors';
 import * as links from '../../helpers/links';
 
-const model = "enc_facturas";
-const submodel = "det_facturas";
+const model = "adm_enc_facturas";
+const submodel = "adm_det_facturas";
 
 /**
  * Get all invoces 
