@@ -234,6 +234,30 @@ export const getPedidosByEmpresa = async (id: string | number, query: any): Prom
     }
 }
 
+export async function getUserByCompany(id: string | number, query: any): Promise<any>{
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+
+        if (!recurso) return respuestas.ElementNotFound;
+
+        let data: any = await consult.getOtherByMe(model, id, 'usuario', query);
+        let totalCount = await consult.countOther(model, 'usuario', id);
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        let link = links.pages(data, `empresa/${id}/usuario`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 /**
  * Create a new company
  * @param body data of the new company

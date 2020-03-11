@@ -5,7 +5,7 @@ import { IUsuario } from './model';
 const model = "usuario";
 
 
-export const getPedidosByUser = async (id: string | number, query: any): Promise<any> => {
+export async function getPedidosByUser (id: string | number, query: any): Promise<any> {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
@@ -31,6 +31,23 @@ export const getPedidosByUser = async (id: string | number, query: any): Promise
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+export async function update(params: any,body:any): Promise<any>{
+    let { id } = params;
+    let { data } = body;
+    let newUser: IUsuario = data;
+    try {
+        if(isNaN(id)) return respuestas.InvalidID;
+        let { affectedRows } = await consult.update(model, id, newUser) as any;
+        let link = links.created(model, id);
+        let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        return { response, code: respuestas.Update.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
         return respuestas.InternalServerError;
     }
 }

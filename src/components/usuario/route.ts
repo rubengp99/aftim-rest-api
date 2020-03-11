@@ -19,6 +19,16 @@ router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Res
     }
 });
 
-
+router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {message,response,code} = await controller.update(req.params,req.body);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
 
 export default router;
