@@ -158,11 +158,11 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
 export const getMostSold = async (params: any, query: any): Promise<any> =>{
     const { limit , order , } = query; 
     try {
-        let sql = `SELECT conceptos_id,conceptos.nombre AS nombre, SUM(cantidad) AS vendidos FROM det_facturas
-        LEFT JOIN conceptos ON conceptos_id = conceptos.id 
-        ${query['after-fecha_at'] ? `WHERE det_facturas.fecha_at >= '${query['after-fecha_at']}'`: '' }
-        ${query['before-fecha_at'] ? `${query['before-fecha_at'] ? 'AND' : 'WHERE'} det_facturas.fecha_at <= '${query['before-fecha_at']}'`: '' }
-        GROUP BY conceptos_id ORDER BY vendidos ${order ? order : 'desc'} LIMIT ${limit ? limit : 10}`;
+        let sql = `SELECT adm_conceptos_id,adm_conceptos.nombre AS nombre, SUM(cantidad) AS vendidos FROM adm_det_facturas
+        LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id 
+        ${query['after-fecha_at'] ? `WHERE adm_det_facturas.fecha_at >= '${query['after-fecha_at']}'`: '' }
+        ${query['before-fecha_at'] ? `${query['before-fecha_at'] ? 'AND' : 'WHERE'} adm_det_facturas.fecha_at <= '${query['before-fecha_at']}'`: '' }
+        GROUP BY adm_conceptos_id ORDER BY vendidos ${order ? order : 'desc'} LIMIT ${limit ? limit : 10}`;
         let data:any[] = await consult.getPersonalized(sql);
         let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
         let count = data.length;

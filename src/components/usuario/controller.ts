@@ -51,3 +51,22 @@ export async function update(params: any,body:any): Promise<any>{
         return respuestas.InternalServerError;
     }
 }
+
+export const get = async (query: any): Promise<any> => {
+    try {
+        let data: IUsuario[] = await consult.get(model, query);
+        let totalCount: number = await consult.count(model);
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        let link = links.pages(data, model, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
