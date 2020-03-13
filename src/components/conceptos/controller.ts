@@ -178,6 +178,29 @@ export const getMostSold = async (params: any, query: any): Promise<any> =>{
     }
 }
 
+export async function sellByConcept(params:any,query:any): Promise<any>{
+    try {
+        let { id } = params;
+        let detalles:any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
+        let count = detalles.length;
+
+        if (count <= 0) return respuestas.Empty;
+        let data:IConcepto = await consult.getOne(model,id,{fields:'id,nombre,codigo,referencia,precio_a,precio_dolar'});
+        if(!data) return respuestas.ElementNotFound;
+        let ventas = 0;
+        detalles.forEach((item)=>{
+            ventas += parseFloat(item.cantidad);
+        });
+        ventas = parseFloat(ventas.toFixed(2));
+        let response = { ventas, data }
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 
 /**
  * Create a new concept
