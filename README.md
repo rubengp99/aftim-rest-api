@@ -3,60 +3,46 @@ API REST of Aftim software, to connection with the suite of aftim apps
 
 ## Usage
 
-><code>npm install --save</code>
+```bash 
+    npm install --save
+```
 
 ## Scripts
 
 - ### Clean
-><code>npm run clean</code>
+```bash
+    npm run clean
+```
 
 run this script to delete the dist folder
 
 - ### Build
-><code>npm run build</code>
+```bash
+    npm run build
+```
 
 run this script to compile the source code and create the dist folder
 
 - ### Start
-><code>npm start</code>
+```bash
+    npm start
+```
 
 run this script to start the server on production
 
 - ### Dev
-><code>npm run dev</code>
+```bash
+    npm run dev
+```
 
 run this script to generate a development server that watch the changes on the code
 
 - ### Deploy
-><code>npm run deploy</code>
+```bash
+    npm run deploy
+```
 
 run this script to do the clean, build and start at the same time
-
-- ### Helper
-><code>npm run helper</code>
-
-with this command you can make a helper script  
-Example: <code>npm run helper -- authentication.js</code>
-
-- ### Component
-><code>npm run component  </code>  
-
-This command make a new component of the api with the respective model, controller and route files
-
-Example: <code>npm run component -- usuarios</code>
-
-- ### seed
-><code>npm run seed</code>
-
-This command mount the database on the MySQL server
-
-- ### Git
-><code>npm run git</code>
-
-with this script you can make a commit on git repository
-
-Example: <code>npm run git -- Fix on authentication</code>
-
 
 
 
@@ -90,7 +76,7 @@ the fields: id, nombre, codigo and  precio_dolar. With a price greater than $1.5
 Route: `GET: http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar&after-precio_dolar=1.5&before-precio_dolar=10`
 
 Code:
-
+```js
         //Request
         fetch('http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar&after-precio_dolar=1.5&before-precio_dolar=10',
         {
@@ -103,11 +89,11 @@ Code:
                 var respuesta = JSON.parse(response);
                 console.log(response.data);
             });
-
+```
 
 Response:
 
-
+```js
         {
             "totalCount": 6,
             "count": 4,
@@ -140,14 +126,14 @@ Response:
             "sig": "http://localhost:81/api/conceptos/?offset=5&limit=4",
             "prev": "First Page"
         }
-
+```
 On the other hand we can also do a request to create data, in this case we'll make a group, the optional fields could be guessed
 
 Route: `POST: http://localhost:81/api/conceptos`
 
 Code: 
-
-        // we make de object with the data
+```js
+        // we make the object with the data
         var data = {
             nombre: 'Lacteos',
             imagen: 'default.png',
@@ -168,13 +154,14 @@ Code:
                 var respuesta = JSON.parse(response);
                 console.log(response.data);
             });
-
+```
 Response:
-
+```js
         {
             "message": "Record created",
             "link": "http://localhost:81/api/grupos/14"
         }
+```
 
 
 ## Responses and errors
