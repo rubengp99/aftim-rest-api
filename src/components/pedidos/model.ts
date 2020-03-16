@@ -58,7 +58,7 @@ export interface IPedidos
 export interface IDetPedidos {
     id?:string | number,
     rest_pedidos_id:string | number,
-    conceptos_id:string | number,
+    adm_conceptos_id:string | number,
     cantidad:number,
     precio:number,
     fecha_at:string,
