@@ -183,16 +183,55 @@ export async function sellByConcept(params:any,query:any): Promise<any>{
         let { id } = params;
         let detalles:any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
         let count = detalles.length;
+        let aux_det:any[] = [];
+
+        detalles.forEach( async (element) => {
+            let encabezado = await consult.getOne('adm_enc_facturas', element.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});
+            if(encabezado.adm_tipos_facturas_id == 1 || encabezado.adm_tipos_facturas_id == 5){
+                aux_det.push(element);
+            }
+        });
 
         if (count <= 0) return respuestas.Empty;
         let data:IConcepto = await consult.getOne(model,id,{fields:'id,nombre,codigo,referencia,precio_a,precio_dolar'});
         if(!data) return respuestas.ElementNotFound;
         let ventas = 0;
-        detalles.forEach((item)=>{
+        aux_det.forEach((item)=>{
             ventas += parseFloat(item.cantidad);
         });
         ventas = parseFloat(ventas.toFixed(2));
         let response = { ventas, data }
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+export async function devolutionsByConcept(params:any, query:any): Promise<any>{
+    try {
+        let { id } = params;
+        let detalles:any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
+        let count = detalles.length;
+        let aux_det:any[] = [];
+
+        detalles.forEach( async (element) => {
+            let encabezado = await consult.getOne('adm_enc_facturas', element.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});
+            if(encabezado.adm_tipos_facturas_id == 3 ){
+                aux_det.push(element);
+            }
+        });
+
+        if (count <= 0) return respuestas.Empty;
+        let data:IConcepto = await consult.getOne(model,id,{fields:'id,nombre,codigo,referencia,precio_a,precio_dolar'});
+        if(!data) return respuestas.ElementNotFound;
+        let devoluciones = 0;
+        aux_det.forEach((item)=>{
+            devoluciones += parseFloat(item.cantidad);
+        });
+        devoluciones = parseFloat(devoluciones.toFixed(2));
+        let response = { devoluciones, data }
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
