@@ -60,16 +60,41 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
     }
 }
 
+export async function getConceptsByOrder(params: any, query: any): Promise<any> {
+    try {
+        let { id } = params;
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let detalles: any[] = await consult.getOtherByMe(model, id, submodel, { fields: 'id,adm_conceptos_id' });
+        let data: any[] = [];
+
+        detalles.forEach(async (element) => {
+            let concept = await consult.getOne('adm_conceptos', element.adm_conceptos_id, query);
+            data.push(concept);
+        });
+        let count = data.length;
+
+        let link = links.records(data, `/pedidos/${id}/conceptos/`, count);
+        let response = Object.assign({ data }, link);
+        return { response, code: respuestas.Ok.code };
+
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 /**
  * Create a new order
  * @param body data of the new order
  */
-export const create = async (body: any,file:any): Promise<any> => {
+export const create = async (body: any, file: any): Promise<any> => {
     let { data, data1 } = body;
-    if(file){
+    if (file) {
         let { filename = 'default.png' } = file;
     }
-    console.log(data,data1);
+    console.log(data, data1);
     let newPedido: IPedidos = typeof data == 'string' ? JSON.parse(data) : data;
     let newDetalles: IDetPedidos[] = typeof data1 == 'string' ? JSON.parse(data1) : data1;
     try {
@@ -109,10 +134,10 @@ export const remove = async (params: any): Promise<any> => {
         const data1: IDetPedidos[] = await consult.getOtherByMe(model, id, submodel, {});
         for (let index = 0; index < data1.length; index++) {
             let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: data1[index].conceptos_id });
-            movDep[0].existencia = parseFloat(movDep[0].existencia) +  parseFloat(data1[index].cantidad as unknown as string);
+            movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(data1[index].cantidad as unknown as string);
             await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
             await consult.remove(submodel, data1[index].id as number);
-            
+
         }
         await consult.remove(model, id);
         return respuestas.Deleted;
@@ -168,11 +193,11 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
         const pedido = await consult.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
 
-        const detalle = await consult.getOne(submodel, id1,{});
+        const detalle = await consult.getOne(submodel, id1, {});
         if (!detalle) return respuestas.ElementNotFound;
 
         const newDetail: IDetPedidos = data;
-        
+
 
         let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: newDetail.conceptos_id });
         movDep[0].existencia = parseFloat(movDep[0].existencia) - (newDetail.cantidad - parseFloat(detalle.cantidad));
@@ -201,7 +226,7 @@ export const deleteDetail = async (params: any): Promise<any> => {
     try {
         const pedido = await consult.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
-        const detalle = await consult.getOne(submodel,id1,{});
+        const detalle = await consult.getOne(submodel, id1, {});
         let movDep: any[] = await consult.get("movimiento_deposito", { conceptos_id: detalle.conceptos_id });
         movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
         await consult.update("movimiento_deposito", movDep[0].id, movDep[0]);
