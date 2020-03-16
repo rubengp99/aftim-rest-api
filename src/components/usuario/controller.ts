@@ -70,3 +70,28 @@ export const get = async (query: any): Promise<any> => {
         return respuestas.InternalServerError;
     }
 }
+
+/**
+ * Get a user 
+ * @param id id of a group
+ * @param query modifier of the consult
+ */
+export const getOne = async (id: string | number, query: any): Promise<any> => {
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let data: IUsuario = await consult.getOne(model, id, query);
+        let count = await consult.count(model);
+
+        if (!data) return respuestas.ElementNotFound;
+
+        let link = links.records(data, model, count);
+        let response = Object.assign({ data }, link);
+        return { response, code: respuestas.Ok.code };
+
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}

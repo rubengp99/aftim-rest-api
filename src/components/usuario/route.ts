@@ -17,6 +17,19 @@ router.get('/',validar, async(req:Request, res:Response): Promise<Response> =>{
     }
 });
 
+router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
+    let {id} = req.params;
+    try {
+        let {message,response,code} = await controller.getOne(id,req.query);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+
 router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Response> =>{
     let {id} = req.params;
     let {query} = req;
