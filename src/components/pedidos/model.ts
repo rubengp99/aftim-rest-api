@@ -19,6 +19,7 @@
 export interface IPedidos 
 {
     id?: string | number,
+    adm_empresa_id: string | number,
     rest_mesas_id?:string | number,
     rest_estatus_id:string | number,
     estado: string,
@@ -29,8 +30,8 @@ export interface IPedidos
     autorizo?:string | number,
     motivo?:string,
     observacion?:string,
-    clientes_id?:string | number,
-    enc_factura_id?: string | number,
+    adm_clientes_id?:string | number,
+    adm_enc_factura_id?: string | number,
     detalles?:IDetPedidos[]
 }
 

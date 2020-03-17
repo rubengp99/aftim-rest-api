@@ -124,20 +124,22 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
         let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
-
-        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_grupos_id', orderField: 'grupos_id' });
+        let limite = await consult.count('adm_conceptos');
+        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_grupos_id', orderField: 'adm_grupos_id', limit: limite || 50 });
 
         if (!conceptos) return respuestas.Empty;
 
         let grp = conceptos[0].adm_grupos_id;
         let data:any[]  = [];
-        let data1 = await consult.getOne('adm_grupos', grp, {});
-        data.push(data1);
+        if(grp != null){
+            let data1 = await consult.getOne('adm_grupos', grp, {}); 
+            data.push(data1);
+        }
         for (let index = 0; index < conceptos.length; index++) {
-            if (conceptos[index].grupos_id !== grp) {
-                let group: any = await consult.getOne('adm_grupos', conceptos[index].grupos_id, {});
+            if (conceptos[index].adm_grupos_id !== grp && conceptos[index].adm_grupos_id !== null) {
+                let group: any = await consult.getOne('adm_grupos', conceptos[index].adm_grupos_id, {});
                 data.push(group);
-                grp = conceptos[index].grupos_id;
+                grp = conceptos[index].adm_grupos_id;
             }
         }
         let totalCount = await consult.count('adm_grupos');
@@ -171,19 +173,21 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_subgrupos_id', orderField: 'subgrupos_id' });
+        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_subgrupos_id', orderField: 'adm_subgrupos_id' });
 
         if (!conceptos) return respuestas.Empty;
 
         let grp = conceptos[0].adm_subgrupos_id;
         let data: any[] = [];
-        let data1 =  await consult.getOne('adm_subgrupos', grp, {});
-        data.push(data1);
+        if(grp!== null){
+            let data1 =  await consult.getOne('adm_subgrupos', grp, {});
+            data.push(data1);
+        }
         for (let index = 0; index < conceptos.length; index++) {
-            if (conceptos[index].subgrupos_id !== grp) {
-                let group: any = await consult.getOne('adm_subgrupos', conceptos[index].subgrupos_id, {});
+            if (conceptos[index].adm_subgrupos_id !== grp && conceptos[index].adm_subgrupos_id !== null) {
+                let group: any = await consult.getOne('adm_subgrupos', conceptos[index].adm_subgrupos_id, {});
                 data.push(group);
-                grp = conceptos[index].subgrupos_id;
+                grp = conceptos[index].adm_subgrupos_id;
             }
         }
         let totalCount = await consult.count('adm_subgrupos');
