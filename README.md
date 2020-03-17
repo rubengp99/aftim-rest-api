@@ -4,42 +4,42 @@ API REST of Aftim software, to connection with the suite of aftim apps
 ## Usage
 
 ```bash 
-    npm install --save
+   $ npm install --save
 ```
 
 ## Scripts
 
 - ### Clean
 ```bash
-    npm run clean
+   $ npm run clean
 ```
 
 run this script to delete the dist folder
 
 - ### Build
 ```bash
-    npm run build
+   $ npm run build
 ```
 
 run this script to compile the source code and create the dist folder
 
 - ### Start
 ```bash
-    npm start
+   $ npm start
 ```
 
 run this script to start the server on production
 
 - ### Dev
 ```bash
-    npm run dev
+   $ npm run dev
 ```
 
 run this script to generate a development server that watch the changes on the code
 
 - ### Deploy
 ```bash
-    npm run deploy
+   $ npm run deploy
 ```
 
 run this script to do the clean, build and start at the same time
