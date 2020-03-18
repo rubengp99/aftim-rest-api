@@ -181,6 +181,7 @@ export const getMostSold = async (params: any, query: any): Promise<any> =>{
 export async function sellByConcept(params:any,query:any): Promise<any>{
     try {
         let { id } = params;
+        query.limit = await consult.count('adm_det_facturas');
         let detalles:any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
         let count = detalles.length;
         let aux_det:any[] = [];
@@ -212,6 +213,7 @@ export async function sellByConcept(params:any,query:any): Promise<any>{
 export async function devolutionsByConcept(params:any, query:any): Promise<any>{
     try {
         let { id } = params;
+        query.limit = await consult.count('adm_det_facturas');
         let detalles:any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
         let count = detalles.length;
         let aux_det:any[] = [];
