@@ -23,7 +23,7 @@ export const get = async (query: any): Promise<any> => {
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`Error en el controlador ${model}, error: ${error}`);
         return respuestas.InternalServerError;
     }
 }
@@ -48,7 +48,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`Error en el controlador ${model}, error: ${error}`);
         return respuestas.InternalServerError;
     }
 }
@@ -77,7 +77,7 @@ export const getSubGruposByGrupo = async (id: string | number, query: any): Prom
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`Error en el controlador ${model}, error: ${error}`);
         return respuestas.InternalServerError;
     }
 }
@@ -107,7 +107,41 @@ export const getConceptosByGrupo = async (id: string | number, query: any): Prom
         
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+export async function getSellByGroups(id:string | number,query:any): Promise<any>{
+    try {
+        if(isNaN(id as number)) return respuestas.InvalidID;
+
+        let data: IGrupo = await consult.getOne(model, id, { fields: 'id,nombre' });
+       
+        if (!data) return respuestas.ElementNotFound;
+        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', {fields:'id'});
+        let aux_det:any[] = [];
+        conceptos.forEach(async (element:any) => {
+            query.limit = await consult.count('adm_det_facturas');
+            let detalles:any[] = await consult.getOtherByMe(model,element.id,'adm_det_facturas',query);
+            detalles.forEach( async (element) => {
+                let encabezado = await consult.getOne('adm_enc_facturas', element.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});
+                if(encabezado.adm_tipos_facturas_id == 1 || encabezado.adm_tipos_facturas_id == 5){
+                    aux_det.push(element);
+                }
+            });
+        });
+
+        let ventas = 0;
+        aux_det.forEach((item)=>{
+            ventas += parseFloat(item.cantidad);
+        });
+        ventas = parseFloat(ventas.toFixed(2));
+        let response = { ventas, data }
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
         return respuestas.InternalServerError;
     }
 }

@@ -54,6 +54,20 @@ router.get('/:id/conceptos/',validar, async (req:Request, res:Response):Promise<
                 .json({message:InternalServerError.message});
     }
 });
+
+router.get('/:id/sell',validar, async (req:Request, res:Response): Promise<Response> =>{
+    let { id } = req.params;
+    let { query } = req;
+    try {
+        let {message,response,code} = await controller.getSellByGroups(id,query);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
 //crear una grupo
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
