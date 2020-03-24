@@ -16,3 +16,12 @@ export async function validar(req: Request, res: Response, next: NextFunction) {
     }
     
 }
+
+export async function encriptar(token:any){
+    try {
+        let { data } = await axios.post(`${authURL}/validate`, { password: token });
+        return data.password;
+    } catch (error) {
+        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+    }
+}
