@@ -91,16 +91,18 @@ export async function getSellBySubgroups(id:string | number,query:any): Promise<
         if (!data) return respuestas.ElementNotFound;
         let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', {fields:'id'});
         let aux_det:any[] = [];
-        conceptos.forEach(async (element:any) => {
+        for (let index = 0; index < conceptos.length; index++) {
+            const element = conceptos[index];
             query.limit = await consult.count('adm_det_facturas');
-            let detalles:any[] = await consult.getOtherByMe(model,element.id,'adm_det_facturas',query);
-            detalles.forEach( async (element) => {
-                let encabezado = await consult.getOne('adm_enc_facturas', element.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});
+            let detalles:any[] = await consult.getOtherByMe('adm_conceptos',element.id,'adm_det_facturas',query);
+            for (let index = 0; index < detalles.length; index++) {
+                const element1 = detalles[index];
+                let encabezado = await consult.getOne('adm_enc_facturas', element1.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});
                 if(encabezado.adm_tipos_facturas_id == 1 || encabezado.adm_tipos_facturas_id == 5){
-                    aux_det.push(element);
+                    aux_det.push(element1);
                 }
-            });
-        });
+            }
+        }
         let ventas = 0;
         aux_det.forEach((item)=>{
             ventas += parseFloat(item.cantidad);
