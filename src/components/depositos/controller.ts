@@ -65,14 +65,14 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'movimiento_deposito', {});
+        let data: any = await consult.getOtherByMe(model, id, 'adm_movimiento_deposito', {});
         let conceptos: any[] = [];
         for (let index = 0; index < data.length; index++) {
-            let concepto = await consult.getOne('conceptos', data[index].conceptos_id, query);
+            let concepto = await consult.getOne('adm_conceptos', data[index].adm_conceptos_id, query);
             conceptos.push(concepto);
         }
 
-        let totalCount = await consult.count('conceptos');
+        let totalCount = await consult.count('adm_conceptos');
         let count = conceptos.length;
         let { limit } = query;
         
