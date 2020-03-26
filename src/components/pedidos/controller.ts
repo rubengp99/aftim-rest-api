@@ -199,7 +199,7 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
         const newDetail: IDetPedidos = data;
 
 
-        let movDep: any[] = await consult.get("adm_movimiento_deposito", { conceptos_id: newDetail.adm_conceptos_id });
+        let movDep: any[] = await consult.get("adm_movimiento_deposito", { adm_conceptos_id: newDetail.adm_conceptos_id });
         movDep[0].existencia = parseFloat(movDep[0].existencia) - (newDetail.cantidad - parseFloat(detalle.cantidad));
         await consult.update("adm_movimiento_deposito", movDep[0].id, movDep[0]);
 
