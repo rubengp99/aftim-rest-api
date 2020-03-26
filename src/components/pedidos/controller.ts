@@ -227,7 +227,7 @@ export const deleteDetail = async (params: any): Promise<any> => {
         const pedido = await consult.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
         const detalle = await consult.getOne(submodel, id1, {});
-        let movDep: any[] = await consult.get("adm_movimiento_deposito", { conceptos_id: detalle.adm_conceptos_id });
+        let movDep: any[] = await consult.get("adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
         movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
         await consult.update("adm_movimiento_deposito", movDep[0].id, movDep[0]);
 
