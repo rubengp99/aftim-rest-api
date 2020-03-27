@@ -1,6 +1,6 @@
 {
   "name": "aftim",
-  "version": "1.1.0",
+  "version": "3.5.23",
   "description": "API de conexion entre las aplicaciones de la suite de administracion y la base de datos madre",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,7 @@
     "Express",
     "Microservice"
   ],
-  "author": "Jose Veliz",
+  "author": "Aftim software",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
