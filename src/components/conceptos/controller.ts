@@ -158,7 +158,7 @@ export const getPresentationsByConcept = async (id: string | number, query: any)
 export const getMostSold = async (params: any, query: any): Promise<any> =>{
     const { limit , order , } = query; 
     try {
-        let sql = `SELECT adm_conceptos_id,adm_conceptos.nombre AS nombre, SUM(cantidad) AS vendidos FROM adm_det_facturas
+        let sql = `SELECT adm_conceptos.*, SUM(cantidad) AS vendidos FROM adm_det_facturas
         LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id 
         ${query['after-fecha_at'] ? `WHERE adm_det_facturas.fecha_at >= '${query['after-fecha_at']}'`: '' }
         ${query['before-fecha_at'] ? `${query['before-fecha_at'] ? 'AND' : 'WHERE'} adm_det_facturas.fecha_at <= '${query['before-fecha_at']}'`: '' }
