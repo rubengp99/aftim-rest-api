@@ -70,28 +70,46 @@ async function insertMainPhoto(req,res){
         return res.status(201).json({message:'Image inserted'});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: 'Internal server error' });s
+        return res.status(500).json({ message: 'Internal server error' });
     }
 }
 
-async function upsertGalleryPhoto(req,res){
+async function deleteGalleryPhoto(req,res){
+    try {
+        const { table, photo } = req.params;
+        let model = tableSelector(table);
+        if (model == '') return res.status(400).json({ message: 'Bad request' });
+        const { data } = await axios.get(`${DATA_URL}/rest_galeria/${photo}/`, { query: { fields: 'id,imagen' } });
+        if(!data) return res.status(404).json({message:'This element not exist'});
+
+        await fs.unlink(path.join(__dirname,'/public/images/'+data.imagen));
+
+        await axios.delete(`${DATA_URL}/rest_galeria/${data.id}`);
+
+        return res.status(201).json({message:'Image inserted'});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+async function deleteMainPhoto(req,res){
     try {
         const { table, id } = req.params;
-        const { filename } = req.file;
         let model = tableSelector(table);
         if (model == '') return res.status(400).json({ message: 'Bad request' });
         const { data } = await axios.get(`${DATA_URL}/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
-
-        await fs.unlink(path.resolve(__dirname,`/public/img/${data.imagen}`));
-
-        await axios.post(`${DATA_URL}/rest_galeria`, {data:{adm_conceptos_id:id,imagen:filename}});
+        await fs.unlink(path.join(__dirname,'/public/images/'+data.imagen));
+        await axios.post(`${DATA_URL}/${model}/${id}/`, {data:{imagen:'default.png'}});
 
         return res.status(201).json({message:'Image inserted'});
     } catch (error) {
-        
+        console.log(error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 function tableSelector(table) {
     let model = '';
@@ -104,5 +122,7 @@ module.exports = {
     getPhotosOfGallery,
     getMainPhoto,
     insertGalleryPhoto,
-    insertMainPhoto
+    insertMainPhoto,
+    deleteGalleryPhoto,
+    deleteMainPhoto
 }
