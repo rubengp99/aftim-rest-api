@@ -68,10 +68,11 @@ export async function getConceptsByOrder(params: any, query: any): Promise<any> 
         let detalles: any[] = await consult.getOtherByMe(model, id, submodel, { fields: 'id,adm_conceptos_id' });
         let data: any[] = [];
 
-        detalles.forEach(async (element) => {
+        for (let index = 0; index < detalles.length; index++) {
+            const element = detalles[index];
             let concept = await consult.getOne('adm_conceptos', element.adm_conceptos_id, query);
             data.push(concept);
-        });
+        }
         let count = data.length;
 
         let link = links.records(data, `/pedidos/${id}/conceptos/`, count);
