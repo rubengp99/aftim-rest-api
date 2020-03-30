@@ -16,7 +16,6 @@ function getForgotTemplate(name,hash){
         <p>You requested for a password reset, your reset code is:</p>
         <div>${hash}<div>
         <br>
-        <p>Cheers!</p>
     </div>
    
 </body>

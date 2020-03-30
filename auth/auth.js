@@ -114,7 +114,7 @@ async function sendRecuperationMail(mail){
         let {messageId} = await transporter.sendMail({
             to:data[0].email,
             from:'teamlead@somossistemas.com',
-            subject:'Prueba',
+            subject:'Password recuperation',
             html:template
         });
 
