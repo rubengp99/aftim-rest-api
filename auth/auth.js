@@ -100,7 +100,7 @@ async function sendRecuperationMail(mail){
         if(!data[0]) return  Unauthorized;
         let hash = crypto.randomBytes(3).toString('hex').toUpperCase();
         let template = getForgotTemplate(data[0].nombre,hash);
-        await axios.post(`${dataURL}/usuario/${data[0].id}`, { data: {recovery:hash, recoverydate:moment().format('YYYY-MM-DD hh:mm:ss')} } );
+        await axios.post(`${DATA_URL}/usuario/${data[0].id}`, { data: {recovery:hash, recoverydate:moment().format('YYYY-MM-DD hh:mm:ss')} } );
         let transporter = nodemailer.createTransport({
             service:'Gmail',
             port:465,
@@ -119,7 +119,7 @@ async function sendRecuperationMail(mail){
         });
 
         if(!messageId) return { code:500, message:'error al enviar correo' };
-        return { code:200, message:hash  }
+        return { code:200, token:hash  }
 
     } catch (error) {
         throw new Error(`Error al mandar el correo, ${error}`);

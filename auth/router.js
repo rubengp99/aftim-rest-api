@@ -59,8 +59,8 @@ router.post('/sesion', async(req, res)=>{
 router.post('/sendmail', async(req,res)=>{
     let { user } = req.body.data;
     try {
-        let { code, message } = await sendRecuperationMail(user);
-        return res.status(code).json(message);
+        let { code, message, token } = await sendRecuperationMail(user);
+        return res.status(code).json( message ? {message} : {token});
     } catch (error) {
         console.log(error);
         return res.status(500).json({message: 'Internal Error'});
