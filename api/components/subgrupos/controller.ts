@@ -117,6 +117,61 @@ export async function getSellBySubgroups(id:string | number,query:any): Promise<
     }
 }
 
+export async function mostSold(query: any): Promise<any> {
+
+    try {
+        let limitConcepts = await consult.count('adm_conceptos');
+        let where = makeWhere(query, 'adm_det_facturas');
+        query.adm_tipos_facturas_id = ['1','5'];
+        let sql = `SELECT adm_conceptos.id,adm_conceptos.nombre, adm_conceptos.adm_grupos_id , SUM(cantidad) AS vendidos FROM adm_det_facturas
+        LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id
+        LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id ${where}
+        GROUP BY adm_conceptos_id ORDER BY vendidos desc  LIMIT ${limitConcepts}`;
+        let conceptos: any[] = await consult.getPersonalized(sql);
+        conceptos.sort((a, b) => parseInt(a.adm_subgrupos_id) - parseInt(b.adm_subgrupos_id));
+        let limitGroups = await consult.count(model);
+        let subgroupos: any[] = await consult.get(model, { limit: limitGroups });
+        for (let i = 0; i < subgroupos.length; i++) {
+            let conceptsBygroup = conceptos.filter(element => element.adm_subgrupos_id == subgroupos[i].id);
+            let venta = conceptsBygroup.reduce((accum, element) => accum + parseFloat(element.vendidos), 0);
+            subgroupos[i].venta = venta.toFixed(2);
+        }
+        subgroupos.sort((a, b) => parseFloat(b.venta) - parseFloat(a.venta));
+        let data = subgroupos.splice(0, parseInt(query.limit || '10'));
+        return { data, code: 200 };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+function makeWhere(query: any, tabla: any) {
+    let where = "";
+    var index = 0;
+    for (const prop in query) {
+        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
+            if (prop.includes('after') || prop.includes('before')) {
+                if (prop.split('-').length > 1) {
+                    where += (index == 0) ? " WHERE " : " AND ";
+                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
+                    index++;
+                }
+            } else if (Array.isArray(query[prop])) {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
+                index++;
+            } else {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} like '%${query[prop]}%'`;
+                index++;
+            }
+        }
+
+    }
+    return where;
+}
+
 /**
  * Create a new subgroup
  * @param body 

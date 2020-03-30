@@ -34,29 +34,7 @@ function selectSQL(query = {}, tabla){
     }
     let field = fields || "*";
     sql += "SELECT " + field + " FROM " + tabla + " " + inner;
-    var where = "";
-    var index = 0;
-
-    for (const prop in query) {
-        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
-            if (prop.includes('after') || prop.includes('before')) {
-                if (prop.split('-').length > 1) {
-                    where += (index == 0) ? " WHERE " : " AND ";
-                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
-                    index++;
-                }
-            } else if(Array.isArray(query[prop])) {
-                where += (index == 0) ? " WHERE " : " AND ";
-                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
-                index++;
-            } else {
-                where += (index == 0) ? " WHERE " : " AND ";
-                where += `${tabla}.${prop} like '%${query[prop]}%'`;
-                index++;
-            }
-        }
-
-    }
+    var where = makeWhere(query,tabla);
     sql += where;
     var meta = "";
 
@@ -64,7 +42,8 @@ function selectSQL(query = {}, tabla){
     let order = query.order || "asc";
     let orderField = query.orderField || "id";
     let offset = query.offset || "0";
-    meta = "  order by " + orderField + " " + order + " limit " + limit + " offset " + offset;
+    let groupField = query.groupField || ""
+    meta = `${ groupField ? " group by "+groupField : ""} order by ${orderField} ${order} limit ${limit} offset ${offset}`;
     sql += meta;
     console.log(`${chalk.green('[CONSULT]')} ${sql}`);
     return sql;
@@ -135,25 +114,7 @@ function selectByFilter(query, tabla, filter, id){
     }
     let field = fields || "*";
     sql += `SELECT ${field} FROM ${tabla} ${inner} WHERE ${filter}_id = ${id}`;
-    var where = "";
-    var index = 0;
-
-    for (const prop in query) {
-        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset') {
-            if (prop.includes('after') || prop.includes('before')) {
-                if (prop.split('_').length > 1) {
-                    where += " AND ";
-                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
-                    index++;
-                }
-            } else {
-                where += " AND ";
-                where += `${tabla}.${prop} like '%${query[prop]}%'`;
-                index++;
-            }
-        }
-
-    }
+    var where = makeWhere(query,tabla);
     sql += where;
     var meta = "";
 
@@ -167,4 +128,31 @@ function selectByFilter(query, tabla, filter, id){
     return sql;
 }
 
-module.exports = { selectSQL, selectSQLOne, selectByFilter };
+function makeWhere(query, tabla) {
+    let where = "";
+    var index = 0;
+    for (const prop in query) {
+        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
+            if (prop.includes('after') || prop.includes('before')) {
+                if (prop.split('-').length > 1) {
+                    where += (index == 0) ? " WHERE " : " AND ";
+                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
+                    index++;
+                }
+            } else if (Array.isArray(query[prop])) {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
+                index++;
+            } else {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} like '%${query[prop]}%'`;
+                index++;
+            }
+        }
+
+    }
+    return where;
+}
+
+
+module.exports = { selectSQL, selectSQLOne, selectByFilter, makeWhere };
