@@ -134,7 +134,7 @@ async function validPasswordHash(mail,hash){
         if(!data[0]) return  Unauthorized;
         if(moment().isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
         if(hash!=data[0].recovery) return Unauthorized;
-        await axios.post(`${dataURL}/usuario/${data[0].id}`, { data: {recovery:''} } );
+        await axios.post(`${DATA_URL}/usuario/${data[0].id}`, { data: {recovery:''} } );
         return { code:200, message:'valid' }
     } catch (error) {
         throw new Error(`Error al validar el hash de recuperacion, ${error}`);
