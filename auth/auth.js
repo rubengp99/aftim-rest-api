@@ -148,7 +148,7 @@ async function resetPassword(usuario,password){
         let { data } = await axios.post(`${DATA_URL}/query`, { sql: sql });
         if (!data[0]) return Unauthorized;
         newpass = await encriptar(password);
-        await axios.post(`${dataURL}/usuario/${data[0].id}`, { data: {password:newpass}} );
+        await axios.post(`${DATA_URL}/usuario/${data[0].id}`, { data: {password:newpass}} );
         return { code:201, message:'password changed' }
     } catch (error) {
         throw new Error(`Error al cambiar la contraseña, ${error}`);
