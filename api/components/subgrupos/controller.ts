@@ -122,10 +122,11 @@ export async function mostSold(query: any): Promise<any> {
     try {
         let limitConcepts = await consult.count('adm_conceptos');
         let where = makeWhere(query, 'adm_det_facturas');
-        query.adm_tipos_facturas_id = ['1','5'];
-        let sql = `SELECT adm_conceptos.id,adm_conceptos.nombre, adm_conceptos.adm_grupos_id , SUM(cantidad) AS vendidos FROM adm_det_facturas
+        let sql = `SELECT adm_conceptos.id,adm_conceptos.nombre, adm_conceptos.adm_subgrupos_id , SUM(cantidad) AS vendidos FROM adm_det_facturas
         LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id
         LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id ${where}
+        ${where == '' ? "WHERE" : "AND"} adm_enc_facturas.adm_tipos_facturas_id = '1' OR 
+        adm_enc_facturas.adm_tipos_facturas_id = '5'
         GROUP BY adm_conceptos_id ORDER BY vendidos desc  LIMIT ${limitConcepts}`;
         let conceptos: any[] = await consult.getPersonalized(sql);
         conceptos.sort((a, b) => parseInt(a.adm_subgrupos_id) - parseInt(b.adm_subgrupos_id));
