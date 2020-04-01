@@ -67,6 +67,12 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
 
         let data: any[] = await consult.getOtherByMe(model, id, 'adm_movimiento_deposito', {});
         let conceptos: any[] = [];
+        let { fields, limit } = query;
+        if(query.fields){
+            let aux = query.fields.split(',');
+            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
+            query.fields = filtrados.join(',');
+        }
         for (let index = 0; index < data.length; index++) {
             let concepto = await consult.getOne('adm_conceptos', data[index].adm_conceptos_id, query);
             concepto.existencia = data[index].existencia;
@@ -75,7 +81,14 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
 
         let totalCount = await consult.count('adm_conceptos');
         let count = conceptos.length;
-        let { limit } = query;
+        
+        for (let i = 0; i < conceptos.length; i++) {
+            let { id } = conceptos[i];
+            if(!fields || fields.includes('presentaciones')){
+                let pres: any[] = await consult.getOtherByMe(model, id as string, 'presentaciones', {});
+                conceptos[i].presentaciones = pres;
+            }
+        }
         
         if (count <= 0) return respuestas.Empty;
         let link = links.pages(conceptos, `${model}/${id}/conceptos`, count, totalCount, limit);

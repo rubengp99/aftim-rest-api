@@ -56,7 +56,8 @@ export interface IConcepto{
     exitencia_c?: number,
     obviar_ajuste?: boolean | number,
     iva?:boolean | number,
-    presentaciones?: any[]
+    presentaciones?: any[],
+    existencias?: any[]
 }
 
 export interface IPresentaciones {

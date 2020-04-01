@@ -11,22 +11,35 @@ const submodel = 'adm_presentaciones';
  */
 export const get = async (query: any): Promise<any> => {
     try {
+        let { fields, limit } = query;
+
+        if(query.fields){
+            let aux = query.fields.split(',');
+            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
+            query.fields = filtrados.join(',');
+        }
+
         let data: IConcepto[] = await consult.get(model, query);// consulto los conceptos
         let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
         let count = data.length;
-        let { fields, limit } = query;
 
         // si se encontraron registros
         if (count <= 0) return respuestas.Empty;
         // si no me pasaron campos requeridos o si en los campos estan las presentaciones entonces
         // consulto las presentaciones de ese producto
-        if (!fields || fields.includes(submodel)) {
-            for (let i = 0; i < data.length; i++) {
-                let { id } = data[i];
-                let pres = await consult.getOtherByMe(model, id as string, submodel, {}) as any[];
+
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
+            if(!fields || fields.includes('presentaciones')){
+                let pres: any[] = await consult.getOtherByMe(model, id as string, submodel, {});
                 data[i].presentaciones = pres;
             }
+            if(!fields || fields.includes('existencias')){
+                let movDep: any[] = await consult.getOtherByMe(model,id as string,'adm_movimiento_deposito',{fields:'adm_depositos_id,existencia'});
+                data[i].existencias = movDep;
+            }
         }
+        
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
         return { response, code: respuestas.Ok.code };

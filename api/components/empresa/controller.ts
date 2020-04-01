@@ -64,12 +64,31 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
 
         if (!recurso) return respuestas.ElementNotFound;
 
+        let { fields, limit } = query;
+
+        if(query.fields){
+            let aux = query.fields.split(',');
+            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
+            query.fields = filtrados.join(',');
+        }
+
         let data: any = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
         let totalCount = await consult.countOther(model, 'adm_conceptos', id);
         let count = data.length;
-        let { limit } = query;
 
         if (count <= 0) return respuestas.Empty;
+
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
+            if(!fields || fields.includes('presentaciones')){
+                let pres: any[] = await consult.getOtherByMe(model, id as string, 'adm_presentaciones', {});
+                data[i].presentaciones = pres;
+            }
+            if(!fields || fields.includes('existencias')){
+                let movDep: any[] = await consult.getOtherByMe(model,id as string,'adm_movimiento_deposito',{fields:'adm_depositos_id,existencia'});
+                data[i].existencias = movDep;
+            }
+        }
 
         let link = links.pages(data, `empresa/${id}/conceptos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);

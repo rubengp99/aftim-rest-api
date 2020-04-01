@@ -28,8 +28,6 @@ function selectSQL(query = {}, tabla){
                     fields[index] = `${tabla}.${fields[index]}`;
                 }
             }
-            fields = fields.filter((e) => e != 'presentaciones');
-            fields = fields.join(',');
         }
     }
     let field = fields || "*";
@@ -73,8 +71,6 @@ function selectSQLOne(id, query, tabla){
                     fields[index] = `${tabla}.${fields[index]}`;
                 }
             }
-            fields = fields.filter((e) => e != 'presentaciones');
-            fields = fields.join(',');
         }
     }
     let field = fields || "*";
@@ -108,8 +104,6 @@ function selectByFilter(query, tabla, filter, id){
                     fields[index] = `${tabla}.${fields[index]}`;
                 }
             }
-            fields = fields.filter((e) => e != 'presentaciones');
-            fields = fields.join(',');
         }
     }
     let field = fields || "*";
