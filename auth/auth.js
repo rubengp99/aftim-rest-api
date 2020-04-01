@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
-const { DATA_URL, TOKEN_KEY } = require("./keys");
+const { DATA_URL, TOKEN_KEY, EMAIL_DATA } = require("./keys");
 const { encriptar, validar } = require("./encript");
 const { getForgotTemplate } = require('./templates');
 
@@ -106,14 +106,14 @@ async function sendRecuperationMail(mail){
             port:465,
             secure:false,
             auth:{
-                user:'teamlead@somossistemas.com',
-                pass:'2979Jose#$'
+                user:EMAIL_DATA.MAIL,
+                pass:EMAIL_DATA.PASSWORD
             }
         });
 
         let {messageId} = await transporter.sendMail({
             to:data[0].email,
-            from:'teamlead@somossistemas.com',
+            from:EMAIL_DATA.MAIL,
             subject:'Password recuperation',
             html:template
         });
