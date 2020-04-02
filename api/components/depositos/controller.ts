@@ -64,41 +64,73 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
         let recurso: IDeposito = await consult.getOne(model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
-
-        let data: any[] = await consult.getOtherByMe(model, id, 'adm_movimiento_deposito', {});
-        let conceptos: any[] = [];
-        let { fields, limit } = query;
         if(query.fields){
             let aux = query.fields.split(',');
             let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
             query.fields = filtrados.join(',');
         }
-        for (let index = 0; index < data.length; index++) {
-            let concepto = await consult.getOne('adm_conceptos', data[index].adm_conceptos_id, query);
-            concepto.existencia = data[index].existencia;
-            conceptos.push(concepto);
-        }
-
+        let f = makeFields('adm_conceptos',query.fields);
+        let where = makeWhere(query,'adm_conceptos',1);
+        let sql = `SELECT ${f}, adm_movimiento_deposito.existencia FROM adm_movimiento_deposito INNER JOIN adm_conceptos 
+        ON adm_conceptos_id = adm_conceptos.id WHERE adm_depositos_id = 1 ${where} 
+        order by adm_conceptos.${query.orderField || 'id'} limit ${query.limit || '50'} offset ${query.offset || '0'}`;
+        let data: any[] = await consult.getPersonalized(sql);
+        console.log(sql);
         let totalCount = await consult.count('adm_conceptos');
-        let count = conceptos.length;
-        
-        for (let i = 0; i < conceptos.length; i++) {
-            let { id } = conceptos[i];
+        let count = data.length;
+        let {limit ,fields} = query; 
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
             if(!fields || fields.includes('presentaciones')){
-                let pres: any[] = await consult.getOtherByMe(model, id as string, 'presentaciones', {});
-                conceptos[i].presentaciones = pres;
+                let pres: any[] = await consult.getOtherByMe('adm_conceptos', id as string, 'adm_presentaciones', {});
+                data[i].presentaciones = pres;
             }
         }
         
         if (count <= 0) return respuestas.Empty;
-        let link = links.pages(conceptos, `${model}/${id}/conceptos`, count, totalCount, limit);
-        let response = Object.assign({ totalCount, count, data: conceptos }, link);
+        let link = links.pages(data, `${model}/${id}/conceptos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
         return respuestas.InternalServerError;
     }
+}
+
+function makeWhere(query: any, tabla: any,ind?:number) {
+    let where = "";
+    var index = ind || 0;
+    for (const prop in query) {
+        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
+            if (prop.includes('after') || prop.includes('before')) {
+                if (prop.split('-').length > 1) {
+                    where += (index == 0) ? " WHERE " : " AND ";
+                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
+                    index++;
+                }
+            } else if (Array.isArray(query[prop])) {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
+                index++;
+            } else {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} like '%${query[prop]}%'`;
+                index++;
+            }
+        }
+
+    }
+    return where;
+}
+
+function makeFields(tabla:string,fields:string){
+    let f = fields.split(',');
+    for (let index = 0; index < f.length; index++) {
+        f[index] = `${tabla}.${f[index]}`;
+    }
+    fields = f.join(',');
+    return fields;
 }
 
 /**

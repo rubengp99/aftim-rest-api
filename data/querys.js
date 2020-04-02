@@ -32,7 +32,7 @@ function selectSQL(query = {}, tabla){
     }
     let field = fields || "*";
     sql += "SELECT " + field + " FROM " + tabla + " " + inner;
-    var where = makeWhere(query,tabla);
+    var where = makeWhere(query,tabla,0);
     sql += where;
     var meta = "";
 
@@ -108,7 +108,7 @@ function selectByFilter(query, tabla, filter, id){
     }
     let field = fields || "*";
     sql += `SELECT ${field} FROM ${tabla} ${inner} WHERE ${filter}_id = ${id}`;
-    var where = makeWhere(query,tabla);
+    var where = makeWhere(query,tabla,1);
     sql += where;
     var meta = "";
 
@@ -122,9 +122,9 @@ function selectByFilter(query, tabla, filter, id){
     return sql;
 }
 
-function makeWhere(query, tabla) {
+function makeWhere(query, tabla, ind) {
     let where = "";
-    var index = 0;
+    var index = ind || 0;
     for (const prop in query) {
         if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
             if (prop.includes('after') || prop.includes('before')) {

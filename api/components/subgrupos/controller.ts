@@ -82,11 +82,11 @@ export const getConceptosBySubgrupo = async (id: string | number, query: any): P
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
             if(!fields || fields.includes('presentaciones')){
-                let pres: any[] = await consult.getOtherByMe(model, id as string, 'adm_presentaciones', {});
+                let pres: any[] = await consult.getOtherByMe('adm_conceptos', id as string, 'adm_presentaciones', {});
                 data[i].presentaciones = pres;
             }
             if(!fields || fields.includes('existencias')){
-                let movDep: any[] = await consult.getOtherByMe(model,id as string,'adm_movimiento_deposito',{fields:'adm_depositos_id,existencia'});
+                let movDep: any[] = await consult.getOtherByMe('adm_conceptos',id as string,'adm_movimiento_deposito',{fields:'adm_depositos_id,existencia'});
                 data[i].existencias = movDep;
             }
         }
