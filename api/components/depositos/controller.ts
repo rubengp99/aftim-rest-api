@@ -72,7 +72,7 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
         let f = makeFields('adm_conceptos',query.fields);
         let where = makeWhere(query,'adm_conceptos',1);
         let sql = `SELECT ${f}, adm_movimiento_deposito.existencia FROM adm_movimiento_deposito INNER JOIN adm_conceptos 
-        ON adm_conceptos_id = adm_conceptos.id WHERE adm_depositos_id = 1 ${where} 
+        ON adm_conceptos_id = adm_conceptos.id WHERE adm_depositos_id = ${id} ${where} 
         order by adm_conceptos.${query.orderField || 'id'} limit ${query.limit || '50'} offset ${query.offset || '0'}`;
         let data: any[] = await consult.getPersonalized(sql);
         console.log(sql);
