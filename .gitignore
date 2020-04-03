@@ -1,6 +1,6 @@
 node_modules
 .env
-public/calculadora
+public/pages/*
 public/images/*
 dist
 .vscode
