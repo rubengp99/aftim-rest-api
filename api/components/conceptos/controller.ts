@@ -2,6 +2,7 @@ import * as consult from '../../helpers/consult';
 import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IConcepto } from './model';
+import { dataURL } from 'keys';
 
 const model = 'adm_conceptos';
 const submodel = 'adm_presentaciones';
@@ -192,29 +193,21 @@ export const getMostSold = async (params: any, query: any): Promise<any> =>{
 }
 
 export async function sellByConcept(params:any,query:any): Promise<any>{
+    const { id } = params;
     try {
-        let { id } = params;
-        query.limit = await consult.count('adm_det_facturas');
-        let detalles:any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
-        let count = detalles.length;
-        let aux_det:any[] = [];
+        let f = makeFields('adm_conceptos',query.fields);
+        let where = makeWhere(query,'adm_det_facturas',1);
+        let sql = `SELECT ${f}, SUM(cantidad) AS ventas FROM adm_det_facturas
+        LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id
+        LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id 
+        WHERE adm_conceptos_id=${id} ${where} AND adm_enc_facturas.adm_tipos_facturas_id = '1' OR 
+        adm_enc_facturas.adm_tipos_facturas_id = '5'`;
 
-        detalles.forEach( async (element) => {
-            let encabezado = await consult.getOne('adm_enc_facturas', element.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});
-            if(encabezado.adm_tipos_facturas_id == 1 || encabezado.adm_tipos_facturas_id == 5){
-                aux_det.push(element);
-            }
-        });
-
-        if (count <= 0) return respuestas.Empty;
-        let data:IConcepto = await consult.getOne(model,id,{fields:'id,nombre,codigo,referencia,precio_a,precio_dolar'});
-        if(!data) return respuestas.ElementNotFound;
-        let ventas = 0;
-        aux_det.forEach((item)=>{
-            ventas += parseFloat(item.cantidad);
-        });
-        ventas = parseFloat(ventas.toFixed(2));
-        let response = { ventas, data }
+        let concepto: any[] = await consult.getPersonalized(sql);
+        if(!concepto[0]) return respuestas.ElementNotFound;
+        let data = concepto[0];
+        data.ventas = parseFloat(data.ventas).toFixed(2);
+        let response = { data }
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -223,30 +216,57 @@ export async function sellByConcept(params:any,query:any): Promise<any>{
     }
 }
 
+function makeWhere(query: any, tabla: any, ind:number) {
+    let where = "";
+    var index = ind || 0;
+    for (const prop in query) {
+        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
+            if (prop.includes('after') || prop.includes('before')) {
+                if (prop.split('-').length > 1) {
+                    where += (index == 0) ? " WHERE " : " AND ";
+                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
+                    index++;
+                }
+            } else if (Array.isArray(query[prop])) {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
+                index++;
+            } else {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} like '%${query[prop]}%'`;
+                index++;
+            }
+        }
+
+    }
+    return where;
+}
+
+function makeFields(tabla:string,fields:string){
+    if(!fields) return `${tabla}.*`;
+    let f = fields.split(',');
+    for (let index = 0; index < f.length; index++) {
+        f[index] = `${tabla}.${f[index]}`;
+    }
+    fields = f.join(',');
+    return fields;
+}
+
 export async function devolutionsByConcept(params:any, query:any): Promise<any>{
     try {
         let { id } = params;
-        query.limit = await consult.count('adm_det_facturas');
-        let detalles:any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
-        let count = detalles.length;
-        let aux_det:any[] = [];
+        let f = makeFields('adm_conceptos',query.fields);
+        let where = makeWhere(query,'adm_det_facturas',1);
+        let sql = `SELECT ${f}, SUM(cantidad) AS devoluciones FROM adm_det_facturas
+        LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id
+        LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id 
+        WHERE adm_conceptos_id=${id} ${where} AND adm_enc_facturas.adm_tipos_facturas_id = '3' `;
 
-        detalles.forEach( async (element) => {
-            let encabezado = await consult.getOne('adm_enc_facturas', element.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});
-            if(encabezado.adm_tipos_facturas_id == 3 ){
-                aux_det.push(element);
-            }
-        });
-
-        if (count <= 0) return respuestas.Empty;
-        let data:IConcepto = await consult.getOne(model,id,{fields:'id,nombre,codigo,referencia,precio_a,precio_dolar'});
-        if(!data) return respuestas.ElementNotFound;
-        let devoluciones = 0;
-        aux_det.forEach((item)=>{
-            devoluciones += parseFloat(item.cantidad);
-        });
-        devoluciones = parseFloat(devoluciones.toFixed(2));
-        let response = { devoluciones, data }
+        let concepto: any[] = await consult.getPersonalized(sql);
+        if(!concepto[0]) return respuestas.ElementNotFound;
+        let data = concepto[0];
+        data.devoluciones = parseFloat(data.devoluciones).toFixed(2);
+        let response = { data }
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
