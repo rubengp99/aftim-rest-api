@@ -84,6 +84,21 @@ export const create = async (model: string, object: any): Promise<any> => {
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
+
+/**
+ * This function create a bunch of new registers in the bd
+ * @param model model of the table
+ * @param object the new object to introduce in the db
+ */
+export const insertMany = async (model: string, object: any): Promise<any> => {
+    try {
+        let { data } = await axios.post(`${dataURL}/${model}/many`, {  data: object });
+        return data;
+    } catch (error) {
+        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+    }
+}
 /**
  * This function update a register in the bd
  * @param model model of the table

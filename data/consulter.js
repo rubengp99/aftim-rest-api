@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 
 const { connect } = require('./database');
-const { selectSQL, selectSQLOne, selectByFilter } = require('./querys');
+const { selectSQL, selectSQLOne, selectByFilter, makeInsert } = require('./querys');
 var connection = connect();
 
 /**
@@ -88,6 +88,24 @@ async function getOtherByMe(model, id, other, query) {
 async function create(model, object) {
     try {
         let inserted = await connection.query(`INSERT INTO ${model} set ?`, [object]);
+        return inserted[0];
+    } catch (error) {
+        if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
+            console.log(`${chalk.red('[ERROR]')} ${error}`);
+            throw new Error('BD_SYNTAX_ERROR');
+        }
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+    }
+}
+
+async function insertMany(model,array){
+    try {
+        let arrVals = [];
+        array.forEach(element => {
+            arrVals.push(Object.values(element));
+        });
+        let fields = makeInsert(array[0]);
+        let inserted = await connection.query(`INSERT INTO ${model} (${fields}) VALUES ?`, [arrVals]);
         return inserted[0];
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
@@ -186,7 +204,8 @@ module.exports = {
     get, 
     getOne, 
     getOtherByMe, 
-    create, 
+    create,
+    insertMany,
     update, 
     remove, 
     query, 

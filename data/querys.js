@@ -148,5 +148,12 @@ function makeWhere(query, tabla, ind) {
     return where;
 }
 
+function makeInsert(object){
+    insert = "";
+    let arrKeys = Object.keys(object);
+    insert += arrKeys.join(',');
+    return insert;
+}
 
-module.exports = { selectSQL, selectSQLOne, selectByFilter, makeWhere };
+
+module.exports = { selectSQL, selectSQLOne, selectByFilter, makeWhere,makeInsert };

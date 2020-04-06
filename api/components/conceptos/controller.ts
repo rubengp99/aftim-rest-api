@@ -292,9 +292,9 @@ export const create = async (body: any, file: any): Promise<any> => {
         let { insertId } = await consult.create(model, newConcepto) as any;
         if (presentaciones) {
             presentaciones.forEach(async (element: any) => {
-                element.conceptos_id = insertId;
-                await consult.create(submodel, element);
+                element.adm_conceptos_id = insertId;
             });
+            await consult.insertMany(submodel, presentaciones);
             newConcepto.presentaciones = presentaciones;
         }
         newConcepto.id = insertId;
