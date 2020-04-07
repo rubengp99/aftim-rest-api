@@ -17,10 +17,10 @@ export const get = async (query: any): Promise<any> => {
         let { limit } = query;
 
         if (count <= 0) return respuestas.Empty;
-        
+
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
-        return {response,code:respuestas.Ok.code};
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
@@ -44,12 +44,87 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
-        return {response,code:respuestas.Ok.code};
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
         return respuestas.InternalServerError;
     }
+}
+
+export async function getBuys(params: any, query: any): Promise<any> {
+    try {
+        let { id } = params;
+        if(isNaN(id)) return respuestas.InvalidID;
+
+        const cliente = await consult.getOne(model,id,{});
+        
+        if(!cliente) return respuestas.ElementNotFound;
+
+        query.adm_tipos_facturas_id = ['5','1'];
+        const limit = await consult.countOther(model,'adm_enc_facturas',id);
+        query.limit = limit;
+        const facturas:any[] = await consult.getOtherByMe(model,id,'adm_enc_facturas',query);
+
+        const compras = facturas.length;
+        const totalCompras = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal),0).toFixed(2);
+        const totalComprasDolar = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal_dolar),0).toFixed(2);
+
+        let response = { data:{cliente, compras,totalCompras,totalComprasDolar} };
+        return { response, code:respuestas.Ok.code };
+    } catch (error) {
+        if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+export async function getMostBuyers(query: any): Promise<any>{
+    try {
+        let where = makeWhere(query,'adm_enc_facturas',1);
+        let sql = `SELECT adm_clientes.*, SUM(subtotal) AS total, SUM(subtotal_dolar) as totalDolar,
+        COUNT(adm_enc_facturas.id) AS compras FROM adm_enc_facturas
+        LEFT JOIN adm_clientes ON adm_clientes_id = adm_clientes.id
+        WHERE adm_tipos_facturas_id IN (5,1) ${where}
+        GROUP BY adm_clientes.id ORDER BY total ${query.order || 'DESC'}  LIMIT ${query.limit || '10'}`;
+        const data:any[] = await consult.getPersonalized(sql);
+        const count = data.length;
+        if(count <= 0) return respuestas.Empty;
+
+        let response = { count, data };
+
+        return { response, code: respuestas.Ok.code};
+    } catch (error) {
+        if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+function makeWhere(query:any,tabla:any,ind:number){
+    let where = "";
+    var index = ind || 0;
+    for (const prop in query) {
+        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
+            if (prop.includes('after') || prop.includes('before')) {
+                if (prop.split('-').length > 1) {
+                    where += (index == 0) ? " WHERE " : " AND ";
+                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
+                    index++;
+                }
+            } else if (Array.isArray(query[prop])) {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
+                index++;
+            } else {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} like '%${query[prop]}%'`;
+                index++;
+            }
+        }
+
+    }
+    return where;
 }
 
 /**
@@ -62,7 +137,7 @@ export const create = async (body: any): Promise<any> => {
     try {
         let { insertId } = await consult.create(model, newCliente);
         let link = links.created(model, insertId);
-        let response = Object.assign({ message: respuestas.Created.message}, { link: link });
+        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;

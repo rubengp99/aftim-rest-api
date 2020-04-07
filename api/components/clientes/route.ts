@@ -16,6 +16,18 @@ router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     }
 });
 
+router.get('/mostbuyers',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let { message, response, code } = await controller.getMostBuyers(req.query);
+        return res.status(code).json(message ? {message} : {response});
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
@@ -28,6 +40,19 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
                 .json({message:InternalServerError.message});
     }
 });
+
+router.get('/:id/buys',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let { message, response, code } = await controller.getBuys(req.params,req.query);
+        return res.status(code).json(message ? {message} : {response});
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+
 
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
