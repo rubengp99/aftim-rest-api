@@ -2,7 +2,7 @@ import * as consult from '../../helpers/consult';
 import * as respuestas from '../../errors';
 import { IMovimientoBanco } from './model';
 import * as links from '../../helpers/links';
-const model = "adm_movimiento_banco";
+const model = "adm_movimientos_bancos";
 
 /**
  * Get all banks moves

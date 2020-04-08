@@ -92,7 +92,7 @@ export async function getBankMovesByOrder(params: any, query: any): Promise<any>
         if (isNaN(id as number)) return respuestas.InvalidID;
         query.origen = 'PEDIDO';
         query.documento = id;
-        const data:any[] = await consult.get('adm_movimiento_banco',query);
+        const data:any[] = await consult.get('adm_movimientos_bancos',query);
         const count = data.length;
 
         if(count <= 0) return respuestas.Empty

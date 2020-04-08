@@ -35,3 +35,118 @@ Every bank action commited to make the trace of the money
 | **estatus** | ------ | *Number* | Optional |
 | **fecha_transaction** | ------ |  *Date* | Optional | 
 | **imagen** | voucher | *String* | Optional |
+
+## Routes
+
+- **GET: /api/movimiento_banco** : Get all bank moves
+
+```js
+
+   {
+        "totalCount": 34803,
+        "count": 5,
+        "data": [
+            {
+                "id": 1,
+                "adm_banco_id": 1,
+                "adm_tipo_pago_id": 3,
+                "credito": "590000.00",
+                "origen": "FACTURA",
+                "documento": "106",
+                "imagen": "default.png"
+            },
+            {
+                "id": 2,
+                "adm_banco_id": 1,
+                "adm_tipo_pago_id": 3,
+                "credito": "675000.00",
+                "origen": "FACTURA",
+                "documento": "107",
+                "imagen": "default.png"
+            },
+            {
+                "id": 3,
+                "adm_banco_id": 1,
+                "adm_tipo_pago_id": 3,
+                "credito": "310000.00",
+                "origen": "FACTURA",
+                "documento": "109",
+                "imagen": "default.png"
+            },
+            {
+                "id": 4,
+                "adm_banco_id": 1,
+                "adm_tipo_pago_id": 3,
+                "credito": "1535000.00",
+                "origen": "FACTURA",
+                "documento": "113",
+                "imagen": "default.png"
+            },
+            {
+                "id": 5,
+                "adm_banco_id": 1,
+                "adm_tipo_pago_id": 3,
+                "credito": "295000.00",
+                "origen": "FACTURA",
+                "documento": "119",
+                "imagen": "default.png"
+            }
+        ],
+        "sig": "http://localhost:81/api/adm_movimientos_bancos/?offset=5&limit=5",
+        "prev": "First Page"
+    }
+
+```
+
+- **GET: api/movimiento_banco/:id** Get one bank move
+
+```js
+
+    {
+        "data": {
+            "id": 1,
+            "adm_banco_id": 1,
+            "adm_tipo_pago_id": 3,
+            "credito": "590000.00",
+            "origen": "FACTURA",
+            "documento": "106",
+            "imagen": "default.png"
+        },
+        "sig": "http://localhost:81/api/adm_movimientos_bancos/2",
+        "prev": "First Record"
+    }
+
+```
+
+- **POST: api/movimiento_banco/** Create a new bank move
+
+    Request:
+    ```js
+
+        "data": {
+            "adm_banco_id": 1,
+            "adm_tipo_pago_id": 3,
+            "credito": "5870000.00",
+            "origen": "PEDIDO",
+            "documento": "202",
+            "imagen": "default.png"
+        }
+
+    ```
+
+    Response:
+    ```js
+        {
+            "message": "Record created",
+            "data": {
+                "adm_banco_id": 1,
+                "adm_tipo_pago_id": 3,
+                "credito": "5870000.00",
+                "origen": "PEDIDO",
+                "documento": "202",
+                "imagen": "default.png",
+                "id": 34805
+            },
+            "link": "http://localhost:81/api/adm_movimientos_bancos/34805"
+        }
+    ```
