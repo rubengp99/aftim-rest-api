@@ -86,6 +86,28 @@ export async function getConceptsByOrder(params: any, query: any): Promise<any> 
     }
 }
 
+export async function getBankMovesByOrder(params: any, query: any): Promise<any>{
+    try {
+        let { id } = params;
+        if (isNaN(id as number)) return respuestas.InvalidID;
+        query.origen = 'PEDIDO';
+        query.documento = id;
+        const data:any[] = await consult.get('adm_movimiento_banco',query);
+        const count = data.length;
+
+        if(count <= 0) return respuestas.Empty
+
+        let response = { count, data };
+
+        return { response, code: respuestas.Ok.code };
+
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 /**
  * Create a new order
  * @param body data of the new order

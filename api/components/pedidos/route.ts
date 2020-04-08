@@ -40,6 +40,18 @@ router.get('/:id/conceptos/',validar, async (req:Request, res:Response):Promise<
     }
 });
 
+router.get('/:id/movimiento_banco/',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {message,response,code}= await controller.getBankMovesByOrder(req.params,req.query);
+        return res.status(code).json(message ? {message} : {response});
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,response,code} = await controller.create(req.body,req.file);
