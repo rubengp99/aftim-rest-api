@@ -36,8 +36,14 @@ async function get(model, query) {
  * @param {string} model model of the table
  * @param {number} id id of the register in the table
  * @param {JSON} query paramaters to modify the consult
- * ```
- * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
+ * ```javascript
+ *- query:{
+ *-      fields:'id',
+ *-      limit:50, 
+ *-      offset:0,
+ *-      order:'asc',
+ *-      orderField:'id'
+ *- }
  * ```
  */
 async function getOne(model, id, query) {

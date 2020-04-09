@@ -21,6 +21,7 @@ import tipos from './components/tipos/route';
 import usuario from './components/usuario/route';
 import facturas from './components/facturas/route';
 import movimientoBanco from './components/movimiento_banco/route';
+import vendedores from './components/vendedor/route';
 
 export const routes = (app: Application) => {
     app.use('/api/grupos', grupo);
@@ -45,6 +46,7 @@ export const routes = (app: Application) => {
     app.use('/api/usuario', usuario);
     app.use('/api/factura', facturas);
     app.use('/api/movimiento_banco', movimientoBanco);
+    app.use('/api/vendedor',vendedores);
     app.use('*', async (req, res, next) => {
         res.status(404).json({ message: "Route not especified" });
     });
