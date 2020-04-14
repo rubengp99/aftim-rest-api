@@ -49,7 +49,7 @@ async function insertGalleryPhoto(req,res){
 
         await axios.post(`${DATA_URL}/rest_galeria`, {data:{adm_conceptos_id:id,imagen:filename}});
 
-        return res.status(201).json({message:'Image inserted'});
+        return res.status(201).json({message:'Image inserted', filename});
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal server error' });s
@@ -67,7 +67,7 @@ async function insertMainPhoto(req,res){
 
         await axios.post(`${DATA_URL}/${model}/${id}/`, {data:{imagen:filename}});
 
-        return res.status(201).json({message:'Image inserted'});
+        return res.status(201).json({message:'Image inserted', filename});
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal server error' });
