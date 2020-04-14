@@ -12,7 +12,7 @@ const app = express();
 // SETTINGS
 dotenv.config();
 const storage = multer.diskStorage({//manejador de archivos como imagenes
-    destination: path.join(__dirname,'public/images'),
+    destination: path.resolve('public/images'),
     filename: (req,file,cb)=>{
         cb(null,new Date().getTime()+path.extname(file.originalname));
     }

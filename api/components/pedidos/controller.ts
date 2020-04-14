@@ -142,6 +142,23 @@ export const create = async (body: any, file: any): Promise<any> => {
     }
 }
 
+export async function update(params: any, body: any): Promise<any> {
+    let { id } = params;
+    let { data } = body;
+    let newPedido: IPedidos = data;
+    try {
+        if (isNaN(id)) return respuestas.InvalidID;
+        let { affectedRows } = await consult.update(model, id, newPedido) as any;
+        let link = links.created(model, id);
+        let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        return { response, code: respuestas.Update.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 /**
  * Delete a order
  * @param params params request object
