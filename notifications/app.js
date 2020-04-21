@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const express = require('express');
 const app = express();
-//const router = require('./router');
+const router = require('./messages/push');
 
 //settings
 dotenv.config();
@@ -17,5 +17,6 @@ app.set('port', process.argv[2] || process.env.NOTIFICATION_PORT || 86);
 
 // Routes
 //router(app);
+app.use(router);
 
 module.exports = app;

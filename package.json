@@ -47,7 +47,8 @@
     "nodemailer": "^6.4.6",
     "rimraf": "^3.0.0",
     "telegraf": "^3.37.0",
-    "twilio": "^3.42.2"
+    "twilio": "^3.42.2",
+    "web-push": "^3.4.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
