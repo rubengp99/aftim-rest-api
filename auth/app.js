@@ -9,7 +9,7 @@ const app = express();
 
 // SETTINGS
 
-app.set('port', process.argv[2] || process.env.AUTH_PORT || 83);
+app.set('port', process.argv[2] || process.env.AUTH_PORT || 82);
 
 
 // MIDDLEWARES 

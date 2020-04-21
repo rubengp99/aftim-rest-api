@@ -6,6 +6,9 @@ import path from 'path';
 import { routes } from './routes';
 import cors from 'cors';
 import morgan from 'morgan';
+import chalk from 'chalk';
+import dotenv from 'dotenv';
+dotenv.config();
 
 /**
  * Class of the principal application of the server
@@ -60,7 +63,7 @@ export class App {
      */
     public listen() {
         this.app.listen(this.app.get('port'));
-        console.log(`[SERVER] running on port ${this.app.get('port')}`);
+        console.log(`${chalk.yellow('[SERVER]')} running on port ${this.app.get('port')}`);
     }
 }
 

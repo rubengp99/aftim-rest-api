@@ -3,6 +3,8 @@ const cors = require('cors');
 const path = require('path');
 const morgan = require('morgan');
 const history = require('connect-history-api-fallback');
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 const app = express();
