@@ -26,7 +26,7 @@ async function apiAccess(token) {
         let parsedToken = JSON.parse(token);
         const sql = `SELECT * FROM usuario WHERE login = '${parsedToken.user}' or email = '${parsedToken.user}'`;
 
-        let { data } = await axios.post(`${DATA_URL}/query`, { sql: sql });
+        let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
         if (!data[0]) return false;
         let valid = await validar(parsedToken.password, data[0].password)
         if (!valid) return false;
@@ -41,7 +41,7 @@ async function login(usuario, password) {
     if (!usuario || !password) return Unauthorized;
     try {
         const sql = `SELECT * FROM usuario WHERE login = '${usuario}' or email = '${usuario}'`;
-        let { data } = await axios.post(`${DATA_URL}/query`, { sql: sql });
+        let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
 
 
         if (!data[0]) return Unauthorized;
@@ -59,7 +59,7 @@ async function login(usuario, password) {
 async function signup(newUser) {
     try {
         newUser.password = await encriptar(newUser.password);
-        let { data } = await axios.post(`${DATA_URL}/usuario`,{data:newUser});
+        let { data } = await axios.post(`${DATA_URL}/mysql/usuario`,{data:newUser});
 
         newUser.id = data.insertId
         const token = jwt.sign({ _id: newUser.login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
@@ -77,7 +77,7 @@ async function validate(user_token) {
         let payload = jwt.verify(user_token, TOKEN_KEY || "2423503");
 
         const sql = `SELECT * FROM usuario WHERE login = '${payload._id}' or email = '${payload._id}'`;
-        let { data } = await axios.post(`${DATA_URL}/query`, { sql: sql });
+        let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
 
         const response = { data: data[0] };
 
@@ -96,7 +96,7 @@ async function encript(password){
 async function sendRecuperationMail(mail){
     try {
         const sql = `SELECT * FROM usuario WHERE login = '${mail}' or email = '${mail}'`;
-        let { data } = await axios.post(`${DATA_URL}/query`, { sql: sql });
+        let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
         if(!data[0]) return  Unauthorized;
         let hash = crypto.randomBytes(3).toString('hex').toUpperCase();
         let template = getForgotTemplate(data[0].nombre,hash);
@@ -130,7 +130,7 @@ async function sendRecuperationMail(mail){
 async function validPasswordHash(mail,hash){
     try {
         const sql = `SELECT * FROM usuario WHERE login = '${mail}' or email = '${mail}'`;
-        let { data } = await axios.post(`${DATA_URL}/query`, { sql: sql });
+        let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
         if(!data[0]) return  Unauthorized;
         if(moment().isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
         if(hash!=data[0].recovery) return Unauthorized;
@@ -145,7 +145,7 @@ async function resetPassword(usuario,password){
     if (!usuario || !password) return Unauthorized;
     try {
         const sql = `SELECT * FROM usuario WHERE login = '${usuario}' or email = '${usuario}'`;
-        let { data } = await axios.post(`${DATA_URL}/query`, { sql: sql });
+        let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
         if (!data[0]) return Unauthorized;
         newpass = await encriptar(password);
         await axios.post(`${DATA_URL}/usuario/${data[0].id}`, { data: {password:newpass}} );

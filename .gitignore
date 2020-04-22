@@ -4,3 +4,4 @@ public/pages/*
 public/images/*
 dist
 .vscode
+db.json

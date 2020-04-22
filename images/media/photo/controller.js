@@ -10,7 +10,7 @@ async function getPhotosOfGallery(req, res) {
         let model = tableSelector(table);
         if (model == '') return res.status(400).json({ message: 'Bad request' });
 
-        const { data } = await axios.get(`${DATA_URL}/${model}/${id}/rest_galeria`);
+        const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/rest_galeria`);
         let imagenes = [];
         for (let index = 0; index < data.length; index++) {
             const element = array[index];
@@ -29,7 +29,7 @@ async function getMainPhoto(req, res) {
         let model = tableSelector(table);
         if (model == '') return res.status(400).json({ message: 'Bad request' });
 
-        const { data } = await axios.get(`${DATA_URL}/${model}/${id}/`, { query: { fields: 'id,imagen' } });
+        const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         data.imagen = 'http://localhost:81/api/img/uploads/' + data.image;
         return res.status(200).json({ data });
     } catch (error) {
@@ -44,7 +44,7 @@ async function insertGalleryPhoto(req,res){
         const { filename } = req.file;
         let model = tableSelector(table);
         if (model == '') return res.status(400).json({ message: 'Bad request' });
-        const { data } = await axios.get(`${DATA_URL}/${model}/${id}/`, { query: { fields: 'id,imagen' } });
+        const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
 
         await axios.post(`${DATA_URL}/rest_galeria`, {data:{adm_conceptos_id:id,imagen:filename}});
@@ -62,7 +62,7 @@ async function insertMainPhoto(req,res){
         const { filename } = req.file;
         let model = tableSelector(table);
         if (model == '') return res.status(400).json({ message: 'Bad request' });
-        const { data } = await axios.get(`${DATA_URL}/${model}/${id}/`, { query: { fields: 'id,imagen' } });
+        const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
 
         await axios.post(`${DATA_URL}/${model}/${id}/`, {data:{imagen:filename}});
@@ -79,7 +79,7 @@ async function deleteGalleryPhoto(req,res){
         const { table, photo } = req.params;
         let model = tableSelector(table);
         if (model == '') return res.status(400).json({ message: 'Bad request' });
-        const { data } = await axios.get(`${DATA_URL}/rest_galeria/${photo}/`, { query: { fields: 'id,imagen' } });
+        const { data } = await axios.get(`${DATA_URL}/mysql/rest_galeria/${photo}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
 
         await fs.unlink(path.join(__dirname,'/public/images/'+data.imagen));
@@ -98,7 +98,7 @@ async function deleteMainPhoto(req,res){
         const { table, id } = req.params;
         let model = tableSelector(table);
         if (model == '') return res.status(400).json({ message: 'Bad request' });
-        const { data } = await axios.get(`${DATA_URL}/${model}/${id}/`, { query: { fields: 'id,imagen' } });
+        const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
         await fs.unlink(path.join(__dirname,'/public/images/'+data.imagen));
         await axios.post(`${DATA_URL}/${model}/${id}/`, {data:{imagen:'default.png'}});

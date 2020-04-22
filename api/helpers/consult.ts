@@ -13,7 +13,7 @@ import { dataURL } from '../keys';
  */
 export const get = async (model: string, query?: any): Promise<any> => {
     try {
-        let { data } = await axios.get(`${dataURL}/${model}`, { params: query });
+        let { data } = await axios.get(`${dataURL}/mysql/${model}`, { params: query });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -32,7 +32,7 @@ export const get = async (model: string, query?: any): Promise<any> => {
  */
 export const getOne = async (model: string, id: string | number, query: any): Promise<any> => {
     try {
-        let { data } = await axios.get(`${dataURL}/${model}/${id}`, { params: query });
+        let { data } = await axios.get(`${dataURL}/mysql/${model}/${id}`, { params: query });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -52,7 +52,7 @@ export const getOne = async (model: string, id: string | number, query: any): Pr
  */
 export const getOtherByMe = async (model: string, id: string | number, other: string, query?: any): Promise<any> => {
     try {
-        let { data } = await axios.get(`${dataURL}/${model}/${id}/${other}`, { params: query });
+        let { data } = await axios.get(`${dataURL}/mysql/${model}/${id}/${other}`, { params: query });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -62,7 +62,7 @@ export const getOtherByMe = async (model: string, id: string | number, other: st
 
 export const getPersonalized = async (sql: string): Promise<any> => {
     try {
-        let { data } = await axios.post(`${dataURL}/query`, { sql: sql  });
+        let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql  });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -77,7 +77,7 @@ export const getPersonalized = async (sql: string): Promise<any> => {
  */
 export const create = async (model: string, object: any): Promise<any> => {
     try {
-        let { data } = await axios.post(`${dataURL}/${model}/`, {  data: object });
+        let { data } = await axios.post(`${dataURL}/mysql/${model}/`, {  data: object });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -92,7 +92,7 @@ export const create = async (model: string, object: any): Promise<any> => {
  */
 export const insertMany = async (model: string, object: any): Promise<any> => {
     try {
-        let { data } = await axios.post(`${dataURL}/${model}/many`, {  data: object });
+        let { data } = await axios.post(`${dataURL}/mysql/${model}/many`, {  data: object });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -108,7 +108,7 @@ export const insertMany = async (model: string, object: any): Promise<any> => {
 export const update = async (model: string, id: string | number, object: any): Promise<any> => {
     try {
 
-        let { data } = await axios.post(`${dataURL}/${model}/${id}`, { data: object } );
+        let { data } = await axios.post(`${dataURL}/mysql/${model}/${id}`, { data: object } );
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -123,7 +123,7 @@ export const update = async (model: string, id: string | number, object: any): P
  */
 export const remove = async (model: string, id: string | number): Promise<any> => {
     try {
-        let { data } = await axios.delete(`${dataURL}/${model}/${id}`);
+        let { data } = await axios.delete(`${dataURL}/mysql/${model}/${id}`);
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -137,7 +137,7 @@ export const remove = async (model: string, id: string | number): Promise<any> =
  */
 export const count = async (model: string): Promise<number> => {
     try {
-        let { data } = await axios.get(`${dataURL}/count/${model}`);
+        let { data } = await axios.get(`${dataURL}/mysql/count/${model}`);
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -152,7 +152,7 @@ export const count = async (model: string): Promise<number> => {
  */
 export const countOther = async (model: string, other: string, id: string | number): Promise<number> => {
     try {
-        let { data } = await axios.get(`${dataURL}/count/${model}/${id}/${other}`);
+        let { data } = await axios.get(`${dataURL}/mysql/count/${model}/${id}/${other}`);
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -167,7 +167,7 @@ export const countOther = async (model: string, other: string, id: string | numb
 export const getUser = async (user: string) => {
     let sql = `SELECT * FROM usuario WHERE login = '${user}' or email = '${user}'`;
     try {
-        let { data } = await axios.post(`${dataURL}/query`, { sql: sql });
+        let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
@@ -182,7 +182,7 @@ export const getUser = async (user: string) => {
 export const empresa = async (id: string) => {
     let sql = `SELECT * FROM empresa WHERE id = ${id}`;
     try {
-        let { data } = await axios.post(`${dataURL}/query`, { sql: sql });
+        let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
         if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');

@@ -23,6 +23,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use('/data/',router);
+router(app);
 
 module.exports = app;

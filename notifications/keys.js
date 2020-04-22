@@ -16,5 +16,6 @@ module.exports = {
     mail:{
         MAIL: process.env.MAIL_SUPPORT,
         PASSWORD: process.env.MAIL_PASSWORD
-    }
+    },
+    DATA_URL: process.env.DATA_URL
 }
