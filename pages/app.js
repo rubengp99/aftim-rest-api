@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
-app.use('/hoyprovoca/',history())
-app.use('/',express.static(path.resolve('public/pages/')));
+app.use(history())
+app.use(express.static(path.resolve('public/pages/hoyprovoca/')));
 
 module.exports = app;

@@ -6,6 +6,7 @@ module.exports = {
         subgrupos:"adm_subgrupos",
         pedidos:"rest_pedidos",
         det_pedidos:"rest_det_pedidos",
-        movimiento_banco:"adm_movimientos_bancos"
+        movimiento_banco:"adm_movimientos_bancos",
+        usuario: "usuario"
     }
 }
