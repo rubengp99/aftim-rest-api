@@ -47,7 +47,7 @@ async function insertGalleryPhoto(req,res){
         const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
 
-        await axios.post(`${DATA_URL}/rest_galeria`, {data:{adm_conceptos_id:id,imagen:filename}});
+        await axios.post(`${DATA_URL}/mysql/rest_galeria`, {data:{adm_conceptos_id:id,imagen:filename}});
 
         return res.status(201).json({message:'Image inserted', filename});
     } catch (error) {
@@ -65,7 +65,7 @@ async function insertMainPhoto(req,res){
         const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
 
-        await axios.post(`${DATA_URL}/${model}/${id}/`, {data:{imagen:filename}});
+        await axios.post(`${DATA_URL}/mysql/${model}/${id}/`, {data:{imagen:filename}});
 
         return res.status(201).json({message:'Image inserted', filename});
     } catch (error) {
@@ -84,7 +84,7 @@ async function deleteGalleryPhoto(req,res){
 
         await fs.unlink(path.join(__dirname,'/public/images/'+data.imagen));
 
-        await axios.delete(`${DATA_URL}/rest_galeria/${data.id}`);
+        await axios.delete(`${DATA_URL}/mysql/rest_galeria/${data.id}`);
 
         return res.status(201).json({message:'Image inserted'});
     } catch (error) {
@@ -101,7 +101,7 @@ async function deleteMainPhoto(req,res){
         const { data } = await axios.get(`${DATA_URL}/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
         await fs.unlink(path.join(__dirname,'/public/images/'+data.imagen));
-        await axios.post(`${DATA_URL}/${model}/${id}/`, {data:{imagen:'default.png'}});
+        await axios.post(`${DATA_URL}/mysql/${model}/${id}/`, {data:{imagen:'default.png'}});
 
         return res.status(201).json({message:'Image inserted'});
     } catch (error) {
