@@ -1,6 +1,6 @@
 {
   "name": "aftim",
-  "version": "3.5.23",
+  "version": "3.6.0",
   "description": "API de conexion entre las aplicaciones de la suite de administracion y la base de datos madre",
   "main": "index.js",
   "scripts": {

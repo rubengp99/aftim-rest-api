@@ -4,7 +4,7 @@ const FileAsync = require('lowdb/adapters/FileAsync');
 
 async function getConnection() {
     try {
-        const adapter = new FileAsync('db.json');
+        const adapter = new FileAsync('server/data/db.json');
         const db = await low(adapter)
         db.defaults({subscriptions: []}).write();
         console.log(`${chalk.green('[DATABASE]')} connected to db.json file`)
