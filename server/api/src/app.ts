@@ -63,6 +63,7 @@ export class App {
      */
     public listen() {
         this.app.listen(this.app.get('port'));
+        console.log('some test');
         console.log(`${chalk.yellow('[SERVER]')} running on port ${this.app.get('port')}`);
     }
 }
