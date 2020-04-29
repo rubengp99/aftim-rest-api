@@ -14,9 +14,11 @@ app.set('port', process.argv[2] || process.env.PAGES_PORT || 85);
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 
-// app.use(history())
-app.use(express.static(path.resolve('public/pages/admin/')));
+app.use('/admin/', history());
+app.use('/admin/', express.static(path.resolve('public/pages/admin/')));
+app.use(history());
+app.use(express.static(path.resolve('public/pages/hoyprovoca/')));
 
 module.exports = app;
