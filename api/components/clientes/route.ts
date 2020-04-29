@@ -53,6 +53,18 @@ router.get('/:id/buys',validar, async (req:Request, res:Response):Promise<Respon
     }
 });
 
+router.get('/:id/devolutions',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let { message, response, code } = await controller.getDevolutions(req.params,req.query);
+        return res.status(code).json(message ? {message} : {response});
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+
 
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {

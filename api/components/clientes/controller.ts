@@ -58,7 +58,7 @@ export async function getBuys(params: any, query: any): Promise<any> {
         if(isNaN(id)) return respuestas.InvalidID;
 
         const cliente = await consult.getOne(model,id,{});
-        
+
         if(!cliente) return respuestas.ElementNotFound;
 
         query.adm_tipos_facturas_id = ['5','1'];
@@ -71,6 +71,33 @@ export async function getBuys(params: any, query: any): Promise<any> {
         const totalComprasDolar = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal_dolar),0).toFixed(2);
 
         let response = { data:{cliente, compras,totalCompras,totalComprasDolar} };
+        return { response, code:respuestas.Ok.code };
+    } catch (error) {
+        if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
+export async function getDevolutions(params: any, query: any): Promise<any> {
+    try {
+        let { id } = params;
+        if(isNaN(id)) return respuestas.InvalidID;
+
+        const cliente = await consult.getOne(model,id,{});
+
+        if(!cliente) return respuestas.ElementNotFound;
+
+        query.adm_tipos_facturas_id = ['2','3'];
+        const limit = await consult.countOther(model,'adm_enc_facturas',id);
+        query.limit = limit;
+        const facturas:any[] = await consult.getOtherByMe(model,id,'adm_enc_facturas',query);
+
+        const devoluciones = facturas.length;
+        const totalDevoluciones = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal),0).toFixed(2);
+        const totalDevolucionesDolar = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal_dolar),0).toFixed(2);
+
+        let response = { data:{cliente, devoluciones,totalDevoluciones,totalDevolucionesDolar} };
         return { response, code:respuestas.Ok.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
