@@ -17,7 +17,18 @@ router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
 });
 router.get('/mostsold',validar, async (req:Request, res:Response): Promise<Response> =>{
     try {
-        let { message, response, code } = await controller.getMostSold(req.params,req.query);
+        let { message, response, code } = await controller.getMostSold(req.query);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+router.get('/mostreturned',validar, async (req:Request, res:Response): Promise<Response> =>{
+    try {
+        let { message, response, code } = await controller.getMostReturned(req.query);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
