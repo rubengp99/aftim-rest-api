@@ -1,6 +1,7 @@
 ////ARCHIVO DE CONFIGURACION DEL SERVIDOR
 //Requerimos los modulos necesarios para la app
 import express, { Application } from 'express';
+import path from 'path';
 import { routes } from './routes';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -40,6 +41,7 @@ export class App {
         this.app.use(morgan("dev"));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
+        this.app.use('/api/images/',express.static(path.resolve('public/images')));
     }
 
     private routes() {

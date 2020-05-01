@@ -25,6 +25,7 @@ bot.command('login', async (ctx)=> {
             }
         });
         if(!data) ctx.reply('Invalid')
+        
         await bot.telegram.deleteMessage(ctx.chat.id,ctx.message.message_id);
         ctx.reply(`Welcome ${data.data.login}!!`);
     } catch (error) {
