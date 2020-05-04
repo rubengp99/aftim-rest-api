@@ -100,7 +100,7 @@ async function sendRecuperationMail(mail){
         if(!data[0]) return  Unauthorized;
         let hash = crypto.randomBytes(3).toString('hex').toUpperCase();
         let template = getForgotTemplate(data[0].nombre,hash);
-        await axios.post(`${DATA_URL}/usuario/${data[0].id}`, { data: {recovery:hash, recoverydate:moment().format('YYYY-MM-DD hh:mm:ss')} } );
+        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: {recovery:hash, recoverydate:moment().format('YYYY-MM-DD hh:mm:ss')} } );
         let transporter = nodemailer.createTransport({
             service:'Gmail',
             port:465,
@@ -134,7 +134,7 @@ async function validPasswordHash(mail,hash){
         if(!data[0]) return  Unauthorized;
         if(moment().isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
         if(hash!=data[0].recovery) return Unauthorized;
-        await axios.post(`${DATA_URL}/usuario/${data[0].id}`, { data: {recovery:''} } );
+        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: {recovery:''} } );
         return { code:200, message:'valid' }
     } catch (error) {
         throw new Error(`Error al validar el hash de recuperacion, ${error}`);
@@ -148,7 +148,7 @@ async function resetPassword(usuario,password){
         let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
         if (!data[0]) return Unauthorized;
         newpass = await encriptar(password);
-        await axios.post(`${DATA_URL}/usuario/${data[0].id}`, { data: {password:newpass}} );
+        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: {password:newpass}} );
         return { code:201, message:'password changed' }
     } catch (error) {
         throw new Error(`Error al cambiar la contraseña, ${error}`);
