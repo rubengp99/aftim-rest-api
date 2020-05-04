@@ -61,7 +61,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 export const getTotal = async (query: any):Promise<any> =>{
     try {
         query.fields = 'subtotal,subtotal_dolar';
-        query.tipos_facturas_id = ['1','5'];
+        query.adm_tipos_facturas_id = ['1','5'];
         query.estatus_pago = '1';
         let facturas:IFacturas[] = await consult.get(model,query);
         let count = facturas.length;
