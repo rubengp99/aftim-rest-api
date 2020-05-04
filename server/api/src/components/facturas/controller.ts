@@ -85,6 +85,7 @@ export const getTotal = async (query: any):Promise<any> =>{
     }
 }
 
+
 /**
  * Create a invoice
  * @param body data of the new invoice
