@@ -24,6 +24,7 @@ import movimientoBanco from './components/movimiento_banco/route';
 import vendedores from './components/vendedor/route';
 import objetivos_ventas from './components/objetivos_ventas/route';
 import compras from './components/compras/route';
+import rutas from './components/servicio_rutas/route';
 
 export const routes = (app: Application) => {
     app.use('/api/grupos', grupo);
@@ -51,6 +52,7 @@ export const routes = (app: Application) => {
     app.use('/api/vendedor',vendedores);
     app.use('/api/objetivos_ventas',objetivos_ventas);
     app.use('/api/compras', compras);
+    app.use('/api/rutas',rutas);
     app.use('*', async (req, res, next) => {
         res.status(404).json({ message: "Route not especified" });
     });
