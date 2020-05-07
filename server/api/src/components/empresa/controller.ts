@@ -2,6 +2,7 @@ import * as consult from '../../helpers/consult';
 import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IEmpresa } from './model';
+import { IConcepto } from 'components/conceptos/model';
 
 const model = "adm_empresa";
 
@@ -266,12 +267,35 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
     try {
       if (isNaN(eId as number) || isNaN(gId as number)) return respuestas.InvalidID;
 
-        let sql =  `SELECT * FROM adm_conceptos WHERE adm_empresa_id=${eId} AND adm_grupos_id=${gId}`;
+        let { fields, limit } = query;
 
+        let sql =  `SELECT * FROM adm_conceptos WHERE adm_empresa_id=${eId} AND adm_grupos_id=${gId} LIMIT ${limit ? limit : 50}`;
+        
         let data = await consult.getPersonalized(sql);
         let totalCount = await consult.count('adm_conceptos');
         let count = data.length;
-        let { limit } = query;
+        
+        if(query.fields){
+            let aux = query.fields.split(',');
+            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
+            query.fields = filtrados.join(',');
+
+            for (let concept of data) {
+                let { id } = concept;
+                if(!fields || fields.includes('presentaciones')){
+                    let sql =  `SELECT * FROM adm_presentaciones WHERE adm_conceptos_id=${id}`;
+                    let pres: any[] = await consult.getPersonalized(sql);
+                    concept.presentaciones = pres;
+                }
+                if(!fields || fields.includes('existencias')){
+                    let sql =  `SELECT adm_depositos_id,existencia FROM adm_movimiento_deposito WHERE adm_conceptos_id=${id}`;
+                    let movDep: any[] = await consult.getPersonalized(sql);
+                    concept.existencias = movDep;
+                }
+            }            
+        }
+
+        
 
         if (count <= 0) return respuestas.Empty;
 
@@ -280,6 +304,7 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(error);
         console.log(`Error en el controlador ${model}, error: ${error}`);
         return respuestas.InternalServerError;
     }

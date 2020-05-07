@@ -189,5 +189,3 @@ export const empresa = async (id: string) => {
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
-
-
