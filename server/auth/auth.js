@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
-const { DATA_URL, TOKEN_KEY, EMAIL_DATA } = require("./keys");
+const { DATA_URL, TOKEN_KEY, NOTS_URL } = require("./keys");
 const { encriptar, validar } = require("./encript");
 const { getForgotTemplate } = require('./templates');
 
@@ -59,12 +59,12 @@ async function login(usuario, password) {
 async function signup(newUser) {
     try {
         newUser.password = await encriptar(newUser.password);
-        let { data } = await axios.post(`${DATA_URL}/mysql/usuario`,{data:newUser});
+        let { data } = await axios.post(`${DATA_URL}/mysql/usuario`, { data: newUser });
 
         newUser.id = data.insertId
         const token = jwt.sign({ _id: newUser.login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
 
-        return { response: {  data: newUser },token, code: 200 };
+        return { response: { data: newUser }, token, code: 200 };
     } catch (error) {
         throw new Error(`Error al hacer signup, ${error}`);
     }
@@ -88,38 +88,27 @@ async function validate(user_token) {
     }
 }
 
-async function encript(password){
+async function encript(password) {
     let pass = await encriptar(password);
     return pass;
 }
 
-async function sendRecuperationMail(mail){
+async function sendRecuperationMail(mail) {
     try {
         const sql = `SELECT * FROM usuario WHERE login = '${mail}' or email = '${mail}'`;
         let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
-        if(!data[0]) return  Unauthorized;
+        if (!data[0]) return Unauthorized;
         let hash = crypto.randomBytes(3).toString('hex').toUpperCase();
-        let template = getForgotTemplate(data[0].nombre,hash);
-        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: {recovery:hash, recoverydate:moment().format('YYYY-MM-DD hh:mm:ss')} } );
-        let transporter = nodemailer.createTransport({
-            service:'Gmail',
-            port:465,
-            secure:false,
-            auth:{
-                user:EMAIL_DATA.MAIL,
-                pass:EMAIL_DATA.PASSWORD
+        let template = getForgotTemplate(data[0].nombre, hash);
+        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: { recovery: hash, recoverydate: moment().format('YYYY-MM-DD hh:mm:ss') } });
+
+        await axios.post(`${NOTS_URL}/sendmail`, {
+            data: {
+                message: template,
+                mail: data[0].email
             }
-        });
-
-        let {messageId} = await transporter.sendMail({
-            to:data[0].email,
-            from:EMAIL_DATA.MAIL,
-            subject:'Password recuperation',
-            html:template
-        });
-
-        if(!messageId) return { code:500, message:'error al enviar correo' };
-        return { code:200, token:hash  }
+        })
+        return { code: 200, token: hash }
 
     } catch (error) {
         throw new Error(`Error al mandar el correo, ${error}`);
@@ -127,32 +116,32 @@ async function sendRecuperationMail(mail){
 }
 
 
-async function validPasswordHash(mail,hash){
+async function validPasswordHash(mail, hash) {
     try {
         const sql = `SELECT * FROM usuario WHERE login = '${mail}' or email = '${mail}'`;
         let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
-        if(!data[0]) return  Unauthorized;
-        if(moment().isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
-        if(hash!=data[0].recovery) return Unauthorized;
-        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: {recovery:''} } );
-        return { code:200, message:'valid' }
+        if (!data[0]) return Unauthorized;
+        if (moment().isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
+        if (hash != data[0].recovery) return Unauthorized;
+        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: { recovery: '' } });
+        return { code: 200, message: 'valid' }
     } catch (error) {
         throw new Error(`Error al validar el hash de recuperacion, ${error}`);
     }
 }
 
-async function resetPassword(usuario,password){
+async function resetPassword(usuario, password) {
     if (!usuario || !password) return Unauthorized;
     try {
         const sql = `SELECT * FROM usuario WHERE login = '${usuario}' or email = '${usuario}'`;
         let { data } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
         if (!data[0]) return Unauthorized;
         newpass = await encriptar(password);
-        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: {password:newpass}} );
-        return { code:201, message:'password changed' }
+        await axios.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: { password: newpass } });
+        return { code: 201, message: 'password changed' }
     } catch (error) {
         throw new Error(`Error al cambiar la contraseña, ${error}`);
     }
 }
 
-module.exports = { apiAccess, login, signup, validate,encript,sendRecuperationMail,resetPassword,validPasswordHash }
+module.exports = { apiAccess, login, signup, validate, encript, sendRecuperationMail, resetPassword, validPasswordHash }

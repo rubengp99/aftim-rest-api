@@ -1,8 +1,7 @@
 var forgotTemplate = ``;
-var passReset = ``;
 
 
-function getForgotTemplate(name,hash){
+function getForgotTemplate(name, hash) {
     forgotTemplate = `
     <html>
 
