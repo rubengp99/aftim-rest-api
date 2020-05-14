@@ -30,8 +30,8 @@ export const get = async (query: any): Promise<any> => {
 
 
 /**
- * Get a subgroup 
- * @param id id of a group
+ * Get a one route 
+ * @param id id of the route
  * @param query modifier of the consult
  */
 export const getOne = async (id: string | number, query: any): Promise<any> => {
