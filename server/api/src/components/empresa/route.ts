@@ -156,7 +156,7 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
     }
 });
 
-/*
+
 router.post('/:id/cargos',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,response,code} = await controller.createCargo(req.body);
@@ -169,7 +169,7 @@ router.post('/:id/cargos',validar, async (req:Request, res:Response):Promise<Res
     }
 });
 
-*/
+
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,code} = await controller.remove(req.params);

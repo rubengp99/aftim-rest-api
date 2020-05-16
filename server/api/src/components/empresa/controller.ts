@@ -438,7 +438,6 @@ export const getCargosByEmpresa = async (id: string | number, query: any): Promi
  * @param query modifier of the consult
  */
 
- /*
 export const createCargo = async (body: any): Promise<any> => {
     try {
         let { adm_empresa_id } = body.data;
@@ -450,8 +449,9 @@ export const createCargo = async (body: any): Promise<any> => {
         let newCargo: ICargo = data;
         let { insertId } = await consult.create('adm_cargos', newCargo) as any;
         
-        let movDep:any[] = await consult.get("movimiento_deposito",{adm_depositos_id:newCargo.adm_depositos_id,adm_conceptos_id:newCargo.adm_conceptos_id});
-        let {affectedRows} = await consult.update("movimiento_deposito",movDep[0].id,movDep[0]);
+        let movDep:any[] = await consult.get("adm_movimiento_deposito",{adm_depositos_id:newCargo.adm_depositos_id,adm_conceptos_id:newCargo.adm_conceptos_id});
+        movDep[0].existencia += +newCargo.cantidad;
+        let {affectedRows} = await consult.update("adm_movimiento_deposito",movDep[0].id,movDep[0]);
 
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message}, { link: link });
@@ -462,4 +462,4 @@ export const createCargo = async (body: any): Promise<any> => {
         console.log(error);
         return respuestas.InternalServerError;
     }
-}*/
+}
