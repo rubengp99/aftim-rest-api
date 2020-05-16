@@ -399,3 +399,34 @@ export const remove = async (params: any): Promise<any> => {
         return respuestas.InternalServerError;
     }
 }
+
+/**
+ * Get all cargos of a company
+ * @param id id of the company 
+ * @param query modifier of the consult
+ */
+export const getCargosByEmpresa = async (id: string | number, query: any): Promise<any> => {
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+
+        if (!recurso) return respuestas.ElementNotFound;
+
+        let data: any = await consult.getOtherByMe(model, id, 'adm_cargos', query);
+        let totalCount = await consult.countOther(model, 'adm_cargos', id);
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        let link = links.pages(data, `empresa/${id}/cargos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
