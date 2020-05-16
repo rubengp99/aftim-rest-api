@@ -86,7 +86,7 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
                 data[i].presentaciones = pres;
             }
             if(!fields || fields.includes('existencias')){
-                let movDep: any[] = await consult.getOtherByMe('adm_conceptos',id as string,'adm_movimiento_deposito',{fields:'adm_depositos_id,existencia'});
+                let movDep: any[] = await consult.getOtherByMe('adm_conceptos',id as string,'adm_movimiento_deposito',{fields:'id,adm_depositos_id,existencia'});
                 data[i].existencias = movDep;
             }
         }
@@ -288,7 +288,7 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
                     concept.presentaciones = pres;
                 }
                 if(!fields || fields.includes('existencias')){
-                    let sql =  `SELECT adm_depositos_id,existencia FROM adm_movimiento_deposito WHERE adm_conceptos_id=${id}`;
+                    let sql =  `SELECT id,adm_depositos_id,existencia FROM adm_movimiento_deposito WHERE adm_conceptos_id=${id}`;
                     let movDep: any[] = await consult.getPersonalized(sql);
                     concept.existencias = movDep;
                 }

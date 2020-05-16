@@ -36,7 +36,7 @@ export const get = async (query: any): Promise<any> => {
                 data[i].presentaciones = pres;
             }
             if(!fields || fields.includes('existencias')){
-                let movDep: any[] = await consult.getOtherByMe(model,id as string,'adm_movimiento_deposito',{fields:'adm_depositos_id,existencia'});
+                let movDep: any[] = await consult.getOtherByMe(model,id as string,'adm_movimiento_deposito',{fields:'id,adm_depositos_id,existencia'});
                 data[i].existencias = movDep;
             }
         }
@@ -93,7 +93,7 @@ export const getDepositsByConcept = async (id: string | number, query: any): Pro
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'adm_movimiento_deposito', { fields: 'adm_depositos_id,existencia' });
+        let data: any = await consult.getOtherByMe(model, id, 'adm_movimiento_deposito', { fields: 'id,adm_depositos_id,existencia' });
         let totalCount = await consult.count('adm_depositos');
         let count = data.length;
         let { limit } = query;
@@ -110,6 +110,38 @@ export const getDepositsByConcept = async (id: string | number, query: any): Pro
         return respuestas.InternalServerError;
     }
 }
+
+/**
+ * Get all the deposit movements where the concept it is
+ * @param id id of the concept
+ * @param query modifier of the consult
+ */
+export const getDepositMovementsByConcept = async (id: string | number, query: any): Promise<any> => {
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let recurso: IConcepto = await consult.getOne(model, id, { fields: 'id' });
+
+        if (!recurso) return respuestas.ElementNotFound;
+
+        let data: any = await consult.getOtherByMe(model, id, 'adm_movimiento_deposito', { fields: 'id,adm_depositos_id,existencia' });
+        let totalCount = await consult.count('adm_depositos');
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        let link = links.pages(data, `conceptos/${id}/depositos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        return { response, code: respuestas.Ok.code };
+
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 
 /**
  * Get all the photos of the concept
