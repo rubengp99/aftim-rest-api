@@ -446,11 +446,12 @@ export const createCargo = async (body: any): Promise<any> => {
         if (!recurso) return respuestas.ElementNotFound;
         
         let { data } = body;
+        let { adm_depositos_id, adm_conceptos_id } = data;
         let newCargo: ICargo = data;
         let { insertId } = await consult.create('adm_cargos', newCargo) as any;
         
-        let movDep:any[] = await consult.get("adm_movimiento_deposito",{adm_depositos_id:newCargo.adm_depositos_id,adm_conceptos_id:newCargo.adm_conceptos_id});
-        movDep[0].existencia += +newCargo.cantidad;
+        let movDep:any[] = await consult.getPersonalized(`SELECT * FROM adm_movimiento_deposito WHERE adm_depositos_id=${adm_depositos_id} AND adm_conceptos_id=${adm_conceptos_id}`)
+        movDep[0].existencia = +newCargo.cantidad + +movDep[0].existencia;
         let {affectedRows} = await consult.update("adm_movimiento_deposito",movDep[0].id,movDep[0]);
 
         let link = links.created(model, insertId);
