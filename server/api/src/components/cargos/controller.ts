@@ -57,7 +57,7 @@ export const create = async (body:any): Promise<any> =>{
     let newCargo: ICargo = data;
     try {
         let {insertId} = await consult.create(model,newCargo);
-        let movDep:any[] = await consult.get("movimiento_deposito",{depositos_id:newCargo.depositos_id,conceptos_id:newCargo.conceptos_id});
+        let movDep:any[] = await consult.get("movimiento_deposito",{depositos_id:newCargo.adm_depositos_id,adm_conceptos_id:newCargo.adm_conceptos_id});
         let {affectedRows} = await consult.update("movimiento_deposito",movDep[0].id,movDep[0]);
         let link = links.created(model,insertId);
         let response = Object.assign({message:respuestas.Created.message},{link:link});

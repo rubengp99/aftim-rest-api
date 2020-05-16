@@ -156,6 +156,20 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
     }
 });
 
+/*
+router.post('/:id/cargos',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {message,response,code} = await controller.createCargo(req.body);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
+
+*/
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,code} = await controller.remove(req.params);

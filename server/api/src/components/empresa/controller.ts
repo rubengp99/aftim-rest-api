@@ -2,6 +2,7 @@ import * as consult from '../../helpers/consult';
 import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IEmpresa } from './model';
+import { ICargo } from '../cargos/model';
 import { IConcepto } from 'components/conceptos/model';
 
 const model = "adm_empresa";
@@ -430,3 +431,35 @@ export const getCargosByEmpresa = async (id: string | number, query: any): Promi
         return respuestas.InternalServerError;
     }
 }
+
+/**
+ * create cargo of a company
+ * @param id id of the company 
+ * @param query modifier of the consult
+ */
+
+ /*
+export const createCargo = async (body: any): Promise<any> => {
+    try {
+        let { adm_empresa_id } = body.data;
+        let recurso: IEmpresa = await consult.getOne(model, adm_empresa_id, { fields: 'id' });
+
+        if (!recurso) return respuestas.ElementNotFound;
+        
+        let { data } = body;
+        let newCargo: ICargo = data;
+        let { insertId } = await consult.create('adm_cargos', newCargo) as any;
+        
+        let movDep:any[] = await consult.get("movimiento_deposito",{adm_depositos_id:newCargo.adm_depositos_id,adm_conceptos_id:newCargo.adm_conceptos_id});
+        let {affectedRows} = await consult.update("movimiento_deposito",movDep[0].id,movDep[0]);
+
+        let link = links.created(model, insertId);
+        let response = Object.assign({ message: respuestas.Created.message}, { link: link });
+        return { response, code: respuestas.Created.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(error);
+        return respuestas.InternalServerError;
+    }
+}*/
