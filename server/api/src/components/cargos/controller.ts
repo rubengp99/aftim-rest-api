@@ -55,10 +55,11 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
 export const create = async (body:any): Promise<any> =>{
     let {data} = body;
     let newCargo: ICargo = data;
+    let { adm_depositos_id, adm_conceptos_id } = data;
     try {
         let {insertId} = await consult.create(model,newCargo);
-        let movDep: any[] = await consult.get("adm_movimiento_deposito",{depositos_id:newCargo.adm_depositos_id,adm_conceptos_id:newCargo.adm_conceptos_id});
-        movDep[0].existencia += +newCargo.cantidad;
+        let movDep:any[] = await consult.getPersonalized(`SELECT * FROM adm_movimiento_deposito WHERE adm_depositos_id=${adm_depositos_id} AND adm_conceptos_id=${adm_conceptos_id}`)
+        movDep[0].existencia = +newCargo.cantidad + +movDep[0].existencia;
         let {affectedRows} = await consult.update("adm_movimiento_deposito",movDep[0].id,movDep[0]);
         let link = links.created(model,insertId);
         let response = Object.assign({message:respuestas.Created.message},{link:link});
