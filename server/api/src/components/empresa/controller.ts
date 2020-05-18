@@ -419,6 +419,12 @@ export const getCargosByEmpresa = async (id: string | number, query: any): Promi
         let count = data.length;
         let { limit } = query;
 
+        for (let cargo of data) {
+            let concepto =  await consult.getPersonalized(`SELECT * FROM adm_conceptos WHERE adm_empresa_id=${id} AND id=${cargo.adm_conceptos_id}`);
+            cargo.concepto = Object.assign({},concepto[0]);
+            delete cargo.adm_conceptos_id;
+        }
+
         if (count <= 0) return respuestas.Empty;
 
         let link = links.pages(data, `empresa/${id}/cargos`, count, totalCount, limit);
