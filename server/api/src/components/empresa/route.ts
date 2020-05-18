@@ -156,10 +156,23 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
     }
 });
 
+router.post('/:id/adjustPrice',validar, async (req:Request, res:Response):Promise<Response> => {
+    let { id } = req.params;
+    try {
+        let {message,response,code} = await controller.adjustPrice(id, req.body);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res
+                .status(InternalServerError.code)
+                .json({message:InternalServerError.message});
+    }
+});
 
 router.post('/:id/cargos',validar, async (req:Request, res:Response):Promise<Response> => {
+    let {id} = req.params;
     try {
-        let {message,response,code} = await controller.createCargo(req.body);
+        let {message,response,code} = await controller.createCargo(id, req.body);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);

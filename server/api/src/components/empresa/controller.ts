@@ -438,10 +438,10 @@ export const getCargosByEmpresa = async (id: string | number, query: any): Promi
  * @param query modifier of the consult
  */
 
-export const createCargo = async (body: any): Promise<any> => {
+export const createCargo = async (id: any, body: any): Promise<any> => {
+    body
     try {
-        let { adm_empresa_id } = body.data;
-        let recurso: IEmpresa = await consult.getOne(model, adm_empresa_id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
         
@@ -457,6 +457,40 @@ export const createCargo = async (body: any): Promise<any> => {
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message}, { link: link });
         return { response, code: respuestas.Created.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(error);
+        return respuestas.InternalServerError;
+    }
+}
+
+/**
+ * create cargo of a company
+ * @param id id of the company 
+ * @param query modifier of the consult
+ */
+
+export const adjustPrice = async (id:  string | number, body:  any): Promise<any> => {
+    try {
+
+        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+
+        if (!recurso) return respuestas.ElementNotFound;
+        
+        let { percent } = body.data;
+        let conceptos: any[] = await consult.getPersonalized(`SELECT * from adm_conceptos WHERE adm_empresa_id=${id}`)
+
+        console.log(conceptos.length);
+
+        for (let concepto  of conceptos) {
+            concepto.precio_a = Math.round(((1 + +percent) * +concepto.precio_a) * 100) / 100;
+            concepto.precio_dolar = Math.round(((1+ +percent) * +concepto.precio_dolar) * 100) / 100;
+            consult.getPersonalized(`UPDATE adm_conceptos SET precio_a=${concepto.precio_a}, precio_dolar=${concepto.precio_dolar} WHERE id=${concepto.id}`)
+        }
+
+        let response = Object.assign({ message: respuestas.Update.message});
+        return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
