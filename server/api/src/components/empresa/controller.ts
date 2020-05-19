@@ -70,11 +70,11 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
 
         if(query.fields){
             let aux = query.fields.split(',');
-            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
+            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
             query.fields = filtrados.join(',');
         }
 
-        let data: any = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
+        let data: IConcepto[] = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
         let totalCount = await consult.countOther(model, 'adm_conceptos', id);
         let count = data.length;
 
@@ -89,6 +89,12 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
             if(!fields || fields.includes('existencias')){
                 let movDep: any[] = await consult.getOtherByMe('adm_conceptos',id as string,'adm_movimiento_deposito',{fields:'id,adm_depositos_id,existencia'});
                 data[i].existencias = movDep;
+            }
+            if(fields && fields.includes('grupo')){
+                data[i].grupo = await consult.getOne('adm_grupos', id as string, {fields:'*'});
+            }
+            if(fields && fields.includes('subgrupo')){
+                data[i].subgrupo = await consult.getOne('adm_subgrupos', id as string, {fields:'*'});
             }
         }
 
@@ -278,7 +284,7 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
         
         if(query.fields){
             let aux = query.fields.split(',');
-            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
+            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
             query.fields = filtrados.join(',');
 
             for (let concept of data) {
@@ -292,6 +298,12 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
                     let sql =  `SELECT id,adm_depositos_id,existencia FROM adm_movimiento_deposito WHERE adm_conceptos_id=${id}`;
                     let movDep: any[] = await consult.getPersonalized(sql);
                     concept.existencias = movDep;
+                }
+                if(fields && fields.includes('grupo')){
+                    concept.grupo = await consult.getOne('adm_grupos', id as string, {fields:'*'});
+                }
+                if(fields && fields.includes('subgrupo')){
+                    concept.subgrupo = await consult.getOne('adm_subgrupos', id as string, {fields:'*'});
                 }
             }            
         }
