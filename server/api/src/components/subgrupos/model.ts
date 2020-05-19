@@ -1,9 +1,11 @@
+import { IGrupo } from "components/grupos/model";
 
 export interface ISubgrupo{
-    id?:number,
-    grupos_id:number,
+    id:number,
+    adm_grupos_id:number,
     nombre:string,
     visualizar:boolean,
     posicion:number,
-    imagen?:string
+    imagen?:string,
+    grupo?: IGrupo
 }

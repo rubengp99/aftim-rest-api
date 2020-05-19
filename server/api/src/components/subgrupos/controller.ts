@@ -11,12 +11,30 @@ const model = "adm_subgrupos";
  */
 export const get = async (query: any): Promise<any> => {
     try {
+        let { limit, fields } = query;
+
+        if(query.fields){
+            let aux = query.fields.split(',');
+            let filtrados = aux.filter((e:any) => e !== 'grupo');
+            query.fields = filtrados.join(',');
+        }
+
+
         let data: ISubgrupo[] = await consult.get(model, query);
         let totalCount: number = await consult.count(model);
         let count = data.length;
-        let { limit } = query;
 
         if (count <= 0) return respuestas.Empty;
+
+        if (fields){
+            for (let i = 0; i < data.length; i++) {
+                let { adm_grupos_id } = data[i];
+                if(!fields || fields.includes('grupo')){
+                    console.log(adm_grupos_id);
+                    data[i].grupo = await consult.getOne('adm_grupos', adm_grupos_id, {fields: '*'});
+                }
+            }
+        }
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
