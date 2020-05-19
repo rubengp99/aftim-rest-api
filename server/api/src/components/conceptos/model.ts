@@ -1,3 +1,6 @@
+import { IGrupo } from "components/grupos/model";
+import { ISubgrupo } from "components/subgrupos/model"
+
 export interface IConcepto{
     id?: string | number | undefined,
     empresa_id:string | number,
@@ -58,6 +61,8 @@ export interface IConcepto{
     iva?:boolean | number,
     presentaciones?: any[],
     existencias?: any[]
+    grupo?: IGrupo,
+    subgrupo?: ISubgrupo,
 }
 
 export interface IPresentaciones {

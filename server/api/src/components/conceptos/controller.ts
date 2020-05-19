@@ -16,7 +16,7 @@ export const get = async (query: any): Promise<any> => {
 
         if(query.fields){
             let aux = query.fields.split(',');
-            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
+            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
             query.fields = filtrados.join(',');
         }
 
@@ -38,6 +38,12 @@ export const get = async (query: any): Promise<any> => {
             if(!fields || fields.includes('existencias')){
                 let movDep: any[] = await consult.getOtherByMe(model,id as string,'adm_movimiento_deposito',{fields:'id,adm_depositos_id,existencia'});
                 data[i].existencias = movDep;
+            }
+            if(fields && fields.includes('grupo')){
+                data[i].grupo = await consult.getOne('adm_grupos', id as string, {fields:'*'});
+            }
+            if(fields && fields.includes('subgrupo')){
+                data[i].subgrupo = await consult.getOne('adm_subgrupos', id as string, {fields:'*'});
             }
         }
         

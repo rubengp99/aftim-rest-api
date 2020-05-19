@@ -30,7 +30,6 @@ export const get = async (query: any): Promise<any> => {
             for (let i = 0; i < data.length; i++) {
                 let { adm_grupos_id } = data[i];
                 if(!fields || fields.includes('grupo')){
-                    console.log(adm_grupos_id);
                     data[i].grupo = await consult.getOne('adm_grupos', adm_grupos_id, {fields: '*'});
                 }
             }
