@@ -121,6 +121,16 @@ export const BadFormat = {
 }
 
 /**
+ * Conflict response, there's a conflict between the resources sent and the existing ones
+ * @field message: This entity already exists
+ * @field code: 409
+ */
+export const Conflict = {
+    message: "This entity already exists",
+    code: 409 
+}
+
+/**
  * Internal server error response, something happened on the server
  * @field message: Internal server error
  * @field code: 500

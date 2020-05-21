@@ -7,7 +7,7 @@ const { DATA_URL, TOKEN_KEY, NOTS_URL } = require("./keys");
 const { encriptar, validar } = require("./encript");
 const { getForgotTemplate } = require('./templates');
 
-
+import * as respuestas from "../api/src/errors"
 
 const Unauthorized = {
     message: "The credentials are invalids",
@@ -18,6 +18,10 @@ const Forbidden = {
     code: 403
 }
 
+const Conflict = {
+    message: "This entity already exists",
+    code: 409
+}
 
 async function apiAccess(token) {
     try {
@@ -58,6 +62,12 @@ async function login(usuario, password) {
 
 async function signup(newUser) {
     try {
+
+        const sql = `SELECT * FROM usuario WHERE login = '${newUser.login}' or email = '${newUser.email}'`;
+        let { check } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
+
+        if(check) return Conflict;
+
         newUser.password = await encriptar(newUser.password);
         let { data } = await axios.post(`${DATA_URL}/mysql/usuario`, { data: newUser });
 
