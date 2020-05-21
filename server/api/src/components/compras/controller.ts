@@ -17,14 +17,18 @@ export const get = async (query: any): Promise<any> => {
         let totalCount: number = await consult.count(model);
         let count = data.length;
         let { limit } = query;
+
         if (count <= 0) return respuestas.Empty;
+
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
             let pres: IDetCompras[] = await consult.getOtherByMe(model, id as string, submodel,{});
             data[i].detalles = pres;
         }
+
         let link = links.pages(data, 'compras', count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -51,6 +55,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
         data.detalles = pres;
         let link = links.records(data, 'compras', count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
