@@ -20,6 +20,7 @@ export const get = async (query: any): Promise<any> => {
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -44,8 +45,8 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
@@ -65,6 +66,7 @@ export const getSubGruposByGrupo = async (id: string | number, query: any): Prom
         let recurso: IGrupo = await consult.getOne(model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
+        
         let data: any = await consult.getOtherByMe(model, id, 'adm_subgrupos', query);
         let totalCount = await consult.countOther(model, 'adm_subgrupos', id);
         let count = data.length;
@@ -74,6 +76,7 @@ export const getSubGruposByGrupo = async (id: string | number, query: any): Prom
 
         let link = links.pages(data, `grupos/${id}/subgrupos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -101,6 +104,7 @@ export const getConceptosByGrupo = async (id: string | number, query: any): Prom
             let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
             query.fields = filtrados.join(',');
         }
+        
         let data: any = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
         let totalCount = await consult.countOther(model, 'adm_conceptos', id);
         let count = data.length;
@@ -121,8 +125,8 @@ export const getConceptosByGrupo = async (id: string | number, query: any): Prom
 
         let link = links.pages(data, `grupos/${id}/conceptos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
@@ -137,8 +141,10 @@ export async function getSellByGroups(id: string | number, query: any): Promise<
         let data: IGrupo = await consult.getOne(model, id, { fields: 'id,nombre' });
 
         if (!data) return respuestas.ElementNotFound;
+        
         let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id' });
         let aux_det: any[] = [];
+        
         for (let index = 0; index < conceptos.length; index++) {
             const element = conceptos[index];
             query.limit = await consult.count('adm_det_facturas');
@@ -158,6 +164,7 @@ export async function getSellByGroups(id: string | number, query: any): Promise<
         });
         ventas = parseFloat(ventas.toFixed(2));
         let response = { ventas, data }
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -182,13 +189,16 @@ export async function mostSold(query: any): Promise<any> {
         conceptos.sort((a, b) => parseInt(a.adm_grupos_id) - parseInt(b.adm_grupos_id));
         let limitGroups = await consult.count(model);
         let grupos: any[] = await consult.get(model, { limit: limitGroups });
+        
         for (let i = 0; i < grupos.length; i++) {
             let conceptsBygroup = conceptos.filter(element => element.adm_grupos_id == grupos[i].id);
             let venta = conceptsBygroup.reduce((accum, element) => accum + parseFloat(element.vendidos), 0);
             grupos[i].venta = venta.toFixed(2);
+        
         }
         grupos.sort((a, b) => parseFloat(b.venta) - parseFloat(a.venta));
         let data = grupos.splice(0, parseInt(query.limit || '10'));
+        
         return { data, code: 200 };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -229,15 +239,18 @@ function makeWhere(query: any, tabla: any) {
 export const create = async (body: any, file: any): Promise<any> => {
     let { data } = body;
     let newGrupo: IGrupo = typeof data == 'string' ? JSON.parse(data) : data;
+    
     if (file) {
         let { filename = 'default.png' } = file;
         newGrupo.imagen = filename;
     }
+    
     try {
         let { insertId } = await consult.create(model, newGrupo) as any;
         let link = links.created(model, insertId);
         newGrupo.id = insertId;
         let response = { message: respuestas.Created.message, data: newGrupo, link: link };
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
