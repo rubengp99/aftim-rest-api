@@ -11,7 +11,7 @@ const model = "rest_areas";
  */
 export const get = async (query:any): Promise<any> =>{
     try {
-        let data:IAreasAtencion[] = await consult.get(model,query);
+        let data: IAreasAtencion[] = await consult.get(model,query);
         let totalCount: number = await consult.count(model);
         let count = data.length;
         let { limit } = query;
