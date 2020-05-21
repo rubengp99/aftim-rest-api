@@ -1,4 +1,4 @@
 export interface IEntidad {
-    id?: string | number,
-    nombre:string
+    id?:    string | number,
+    nombre: string
 }

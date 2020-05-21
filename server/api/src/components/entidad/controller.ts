@@ -20,8 +20,8 @@ export const get = async (query: any): Promise<any> => {
         
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
@@ -45,6 +45,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
         
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return {response,code:respuestas.Ok.code};
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -64,6 +65,7 @@ export const create = async (body: any): Promise<any> => {
         let { insertId } = await consult.create(model, newArea);
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -88,6 +90,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         let { affectedRows } = await consult.update(model, id, newArea);
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -100,7 +103,9 @@ export const remove = async (params: any): Promise<any> => {
     let { id } = params;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
+        
         await consult.remove(model, id);
+        
         return respuestas.Deleted;
     } catch (error) {
         console.log(`Error al consultar la base de datos, error: ${error}`);
