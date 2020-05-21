@@ -20,6 +20,7 @@ export const get = async (query: any): Promise<any> => {
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -44,6 +45,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -98,6 +100,7 @@ export async function getDevolutions(params: any, query: any): Promise<any> {
         const totalDevolucionesDolar = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal_dolar),0).toFixed(2);
 
         let response = { data:{cliente, devoluciones,totalDevoluciones,totalDevolucionesDolar} };
+        
         return { response, code:respuestas.Ok.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -116,6 +119,7 @@ export async function getMostBuyers(query: any): Promise<any>{
         GROUP BY adm_clientes.id ORDER BY total ${query.order || 'DESC'}  LIMIT ${query.limit || '10'}`;
         const data:any[] = await consult.getPersonalized(sql);
         const count = data.length;
+        
         if(count <= 0) return respuestas.Empty;
 
         let response = { count, data };
@@ -165,6 +169,7 @@ export const create = async (body: any): Promise<any> => {
         let { insertId } = await consult.create(model, newCliente);
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -188,6 +193,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         let { affectedRows } = await consult.update(model, id, newCliente);
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -206,6 +212,7 @@ export const remove = async (params: any): Promise<any> => {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         await consult.remove(model, id);
+        
         return respuestas.Deleted;
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
