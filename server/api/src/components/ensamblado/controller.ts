@@ -4,7 +4,7 @@ import * as respuestas from '../../errors';
 import { Request } from 'express';
 import { IEnsamblado } from './model';
 
-const model = "enc_ensamblado";
+const model = "adm_enc_ensamblado";
 
 /**
  * 
@@ -22,7 +22,7 @@ export const get = async (req:Request): Promise<any> =>{
 
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
-            let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
+            let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'adm_det_ensamblado', {});
             data[i].detalles = pres;
         }
         let link = links.pages(data, 'ensamblado', count, totalCount, limit);
