@@ -16,7 +16,9 @@ export const get = async (query: any): Promise<any> => {
         let totalCount: number = await consult.count(model);
         let count = data.length;
         let { limit } = query;
+
         if (count <= 0) return respuestas.Empty;
+
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
             let pres: IDetFacturas[] = await consult.getOtherByMe(model, id as string, submodel,{});
@@ -24,6 +26,7 @@ export const get = async (query: any): Promise<any> => {
         }
         let link = links.pages(data, 'facturas', count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -50,6 +53,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
         data.detalles = pres;
         let link = links.records(data, 'facturas', count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -77,6 +81,7 @@ export const getTotal = async (query: any):Promise<any> =>{
             data.subtotal_dolar += parseFloat(facturas[index].subtotal_dolar as unknown as string);
         }
         let response = {data}
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -102,6 +107,7 @@ export const create = async (body: any): Promise<any> => {
         });
         let link = links.created('facturas', insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -126,6 +132,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         let { affectedRows } = await consult.update(model, id, newCargo);
         let link = links.created('factura', id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -152,6 +159,7 @@ export const remove = async (params: any): Promise<any> => {
             await consult.remove(submodel, data1[index].id as number);
         }
         await consult.remove(model, id);
+        
         return respuestas.Deleted;
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -178,6 +186,7 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
 
         newDetail.id = insertId;
         const response = { data: newDetail, message: respuestas.Created.message}
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -208,6 +217,7 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
 
         const link = links.created(model, id);
         const response = { message: respuestas.Update.message, link: link }
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -249,6 +259,7 @@ export const getCantidad = async (query: any):Promise<any> =>{
         if (count <= 0) return respuestas.Empty;
         
         let response = Object.assign({ totalCount, count });
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
