@@ -20,6 +20,7 @@ export const get = async (query: any): Promise<any> => {
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -44,6 +45,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -64,6 +66,7 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
         let recurso: IDeposito = await consult.getOne(model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
+        
         if(query.fields){
             let aux = query.fields.split(',');
             let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias');
@@ -79,6 +82,7 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
         let totalCount = await consult.count('adm_conceptos');
         let count = data.length;
         let {limit ,fields} = query; 
+        
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
             if(!fields || fields.includes('presentaciones')){
@@ -88,8 +92,10 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
         }
         
         if (count <= 0) return respuestas.Empty;
+        
         let link = links.pages(data, `${model}/${id}/conceptos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -126,10 +132,13 @@ function makeWhere(query: any, tabla: any,ind?:number) {
 
 function makeFields(tabla:string,fields:string){
     let f = fields.split(',');
+    
     for (let index = 0; index < f.length; index++) {
         f[index] = `${tabla}.${f[index]}`;
     }
+    
     fields = f.join(',');
+    
     return fields;
 }
 
@@ -144,6 +153,7 @@ export const create = async (body: any): Promise<any> => {
         let { insertId } = await consult.create(model, newdeposito) as any;
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message}, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -168,6 +178,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         let { affectedRows } = await consult.update(model, id, newdeposito) as any;
         let link = links.created('depositos', id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -186,6 +197,7 @@ export const remove = async (params: any): Promise<any> => {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         await consult.remove(model, id);
+        
         return respuestas.Deleted;
     } catch (error) {
         console.log(`Error al consultar la base de datos, error: ${error}`);
