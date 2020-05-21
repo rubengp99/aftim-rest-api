@@ -17,12 +17,13 @@ export const get = async (query: any): Promise<any> => {
         let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
         let count = data.length;
         let { limit } = query;
+
         if (count <= 0) return respuestas.Empty;
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
@@ -38,14 +39,16 @@ export const get = async (query: any): Promise<any> => {
 export const getOne = async (id: string | number, query: any): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
+        
         let data: IEmpresa = await consult.getOne(model, id, query);
         let count: number = await consult.count(model);
+        
         if (!data) return respuestas.ElementNotFound;
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
@@ -100,6 +103,7 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
 
         let link = links.pages(data, `empresa/${id}/conceptos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -130,6 +134,7 @@ export const getDepositsByEmpresa = async (id: string | number, query: any): Pro
 
         let link = links.pages(data, `empresa/${id}/depositos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -151,6 +156,7 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
         let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
+        
         let limite = await consult.count('adm_conceptos');
         let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_grupos_id', orderField: 'adm_grupos_id', limit: limite || 50 });
 
@@ -158,10 +164,12 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
 
         let grp = conceptos[0].adm_grupos_id;
         let data:any[]  = [];
+
         if(grp != null){
             let data1 = await consult.getOne('adm_grupos', grp, {}); 
             data.push(data1);
         }
+
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].adm_grupos_id !== grp && conceptos[index].adm_grupos_id !== null) {
                 let group: any = await consult.getOne('adm_grupos', conceptos[index].adm_grupos_id, {});
@@ -169,6 +177,7 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
                 grp = conceptos[index].adm_grupos_id;
             }
         }
+
         let totalCount = await consult.count('adm_grupos');
         let count = data.length;
         let { limit } = query;
@@ -177,8 +186,8 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
 
         let link = links.pages(data, `empresa/${id}/grupos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
@@ -206,10 +215,12 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
 
         let grp = conceptos[0].adm_subgrupos_id;
         let data: any[] = [];
+        
         if(grp!== null){
             let data1 =  await consult.getOne('adm_subgrupos', grp, {});
             data.push(data1);
         }
+        
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].adm_subgrupos_id !== grp && conceptos[index].adm_subgrupos_id !== null) {
                 let group: any = await consult.getOne('adm_subgrupos', conceptos[index].adm_subgrupos_id, {});
@@ -217,6 +228,7 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
                 grp = conceptos[index].adm_subgrupos_id;
             }
         }
+        
         let totalCount = await consult.count('adm_subgrupos');
         let count = data.length;
         let { limit } = query;
@@ -225,8 +237,8 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
 
         let link = links.pages(data, `empresa/${id}/subgrupos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: 200 };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
@@ -240,6 +252,7 @@ export const getPedidosByEmpresa = async (id: string | number, query: any): Prom
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        
         if (!recurso) return respuestas.ElementNotFound;
 
         let data: any = await consult.getOtherByMe(model, id, 'rest_pedidos', query);
@@ -257,6 +270,7 @@ export const getPedidosByEmpresa = async (id: string | number, query: any): Prom
 
         let link = links.pages(data, `empresa/${id}/pedidos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -314,6 +328,7 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
 
         let link = links.pages(data, `empresa/${eId}/grupos/${gId}`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -339,6 +354,7 @@ export async function getUserByCompany(id: string | number, query: any): Promise
 
         let link = links.pages(data, `empresa/${id}/usuario`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -358,6 +374,7 @@ export const create = async (body: any): Promise<any> => {
         let { insertId } = await consult.create(model, newCliente);
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message}, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -384,6 +401,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         let { affectedRows } = await consult.update(model, id, newCliente);
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -404,6 +422,7 @@ export const remove = async (params: any): Promise<any> => {
         if(isNaN(id as number)) return respuestas.InvalidID;
 
         await consult.remove(model, id);
+        
         return respuestas.Deleted;
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -441,6 +460,7 @@ export const getCargosByEmpresa = async (id: string | number, query: any): Promi
 
         let link = links.pages(data, `empresa/${id}/cargos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -474,6 +494,7 @@ export const createCargo = async (id: any, body: any): Promise<any> => {
 
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message}, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -508,6 +529,7 @@ export const adjustPrice = async (id:  string | number, body:  any): Promise<any
         }
 
         let response = Object.assign({ message: respuestas.Update.message});
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
