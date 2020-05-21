@@ -7,8 +7,6 @@ const { DATA_URL, TOKEN_KEY, NOTS_URL } = require("./keys");
 const { encriptar, validar } = require("./encript");
 const { getForgotTemplate } = require('./templates');
 
-import * as respuestas from "../api/src/errors"
-
 const Unauthorized = {
     message: "The credentials are invalids",
     code: 401
