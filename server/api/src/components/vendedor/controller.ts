@@ -15,10 +15,12 @@ export async function get(query:any): Promise<any>{
         let totalCount: number = await consult.count(model);
         let count = data.length;
         let { limit } = query;
+        
         if(count <= 0)  return respuestas.Empty;
         
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return {response, code:respuestas.Ok.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -43,8 +45,8 @@ export async function getOne(id:string | number ,query:any): Promise<any>{
         
         let link = links.records(data,model,count);    
         let response = Object.assign({data},link);
+        
         return {response,code:respuestas.Ok.code};
-    
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
@@ -60,9 +62,11 @@ export async function getOne(id:string | number ,query:any): Promise<any>{
 export async function getSellsBySeller(params:any, query:any): Promise<any>{
     try {
         let { id } = params;
+        
         if(isNaN(id)) return respuestas.InvalidID;
 
         let data = await consult.getOne(model,id,{});
+        
         if(!data) return respuestas.ElementNotFound;
 
         let ventas_det: any[] = await consult.getOtherByMe(model,id,'adm_det_facturas',query);
@@ -73,7 +77,6 @@ export async function getSellsBySeller(params:any, query:any): Promise<any>{
         let response = { data, ventas,total_ventas, total_ventas_dolar };
 
         return { response, code:respuestas.Ok.code };
-
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error en el controlador ${model}, error: ${error}`);
@@ -93,6 +96,7 @@ export async function getTopSellers(query:any):Promise<any>{
         GROUP BY  adm_det_facturas.adm_vendedor_id ORDER BY venta_total ${query.order || 'DESC'} LIMIT ${query.limit || '10'}`;
         const data: any[] = await consult.getPersonalized(sql);
         const count = data.length;
+        
         if(count <= 0) return respuestas.Empty;
 
         let response = { data };
@@ -143,6 +147,7 @@ export async function  create(body:any): Promise<any>{
         let link = links.created('banco',insertId);
         newArea.id = insertId;
         let response = Object.assign({message:respuestas.Created.message, data:newArea},{link:link});
+        
         return {response,code:respuestas.Created.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -162,9 +167,11 @@ export  async function update(params:any,body:any): Promise<any>{
     let newArea:IVendedor = data;
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
+        
         let {affectedRows}  = await consult.update(model,id,newArea);
         let link = links.created('banco',id);
         let response = Object.assign({message:respuestas.Update.message,affectedRows},{link:link});
+       
         return {response,code:respuestas.Update.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -181,7 +188,9 @@ export async function remove(params:any):Promise<any> {
     let {id} = params;
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
+        
         await consult.remove(model,id);
+        
         return respuestas.Deleted;   
     } catch (error) {
         console.log(`Error en el controlador ${model}, error: ${error}`);
