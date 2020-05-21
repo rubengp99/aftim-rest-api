@@ -4,6 +4,7 @@ import { InternalServerError } from '../../errors';
 import  { Router,Request,Response } from 'express';
 const router = Router();
 
+//obtener todos los usarios
 router.get('/',validar, async(req:Request, res:Response): Promise<Response> =>{
     let {query} = req;
     try {
@@ -11,12 +12,11 @@ router.get('/',validar, async(req:Request, res:Response): Promise<Response> =>{
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res
-                .status(InternalServerError.code)
-                .json({message:InternalServerError.message});
+        return res.status(InternalServerError.code).json({message:InternalServerError.message});
     }
 });
 
+//obtener un usuario en concreto
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
@@ -24,12 +24,11 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res
-                .status(InternalServerError.code)
-                .json({message:InternalServerError.message});
+        return res.status(InternalServerError.code).json({message:InternalServerError.message});
     }
 });
 
+//obtener los pedidos de un usuario
 router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Response> =>{
     let {id} = req.params;
     let {query} = req;
@@ -38,21 +37,18 @@ router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Res
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res
-                .status(InternalServerError.code)
-                .json({message:InternalServerError.message});
+        return res.status(InternalServerError.code).json({message:InternalServerError.message});
     }
 });
 
+//actualizar un usuario
 router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,response,code} = await controller.update(req.params,req.body);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res
-                .status(InternalServerError.code)
-                .json({message:InternalServerError.message});
+        return res.status(InternalServerError.code).json({message:InternalServerError.message});
     }
 });
 

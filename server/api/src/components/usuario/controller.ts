@@ -10,6 +10,7 @@ export async function getPedidosByUser (id: string | number, query: any): Promis
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         let recurso: IUsuario = await consult.getOne(model, id, { fields: 'id' });
+        
         if (!recurso) return respuestas.ElementNotFound;
 
         let data: any = await consult.getOtherByMe(model, id, 'rest_pedidos', query);
@@ -27,6 +28,7 @@ export async function getPedidosByUser (id: string | number, query: any): Promis
 
         let link = links.pages(data, `usuario/${id}/pedidos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -41,9 +43,11 @@ export async function update(params: any,body:any): Promise<any>{
     let newUser: IUsuario = data;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
+        
         let { affectedRows } = await consult.update(model, id, newUser) as any;
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -63,6 +67,7 @@ export const get = async (query: any): Promise<any> => {
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -87,8 +92,8 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
