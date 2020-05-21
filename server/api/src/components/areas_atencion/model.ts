@@ -1,5 +1,5 @@
 export interface IAreasAtencion {
-    id?: string | number,
-    nombre: string,
-    impresora?:string
+    id?:        string | number,
+    nombre:     string,
+    impresora?: string
 }
