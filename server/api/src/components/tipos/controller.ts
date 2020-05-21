@@ -15,9 +15,12 @@ export const getTiposConceptos = async (query: any): Promise<any> => {
         let totalCount: number = await tipos.count(model_1);
         let count = data.length;
         let { limit } = query;
+        
         if (count <= 0) return respuestas.Empty;
+        
         let link = links.pages(data, 'tipos/conceptos', count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -37,9 +40,12 @@ export const getOneTipoConcepto = async (id: string | number, query: any): Promi
 
         let data: ITipoConceptos = await tipos.getOne(model_1, id, query);
         let count: number = await tipos.count(model_1);
+        
         if (!data) return respuestas.ElementNotFound;
+        
         let link = links.records(data, 'tipos/conceptos', count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
