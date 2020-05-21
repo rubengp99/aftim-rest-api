@@ -1,10 +1,15 @@
 import * as ensamblado from '../../helpers/consult';
 import * as links from '../../helpers/links'
+import * as respuestas from '../../errors';
 import { Request } from 'express';
 import { IEnsamblado } from './model';
 
 const model = "enc_ensamblado";
 
+/**
+ * 
+ * @param req params of the request
+ */
 export const get = async (req:Request): Promise<any> =>{
     try {
         const { query } = req;
@@ -12,61 +17,75 @@ export const get = async (req:Request): Promise<any> =>{
         let totalCount: number = await ensamblado.count(model);
         let count = data.length;
         let { limit } = query;
-        if(count > 0){
-            for (let i = 0; i < data.length; i++) {
-                let { id } = data[i];
-                let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
-                data[i].detalles = pres;
-            }
-            let link = links.pages(data, 'ensamblado', count, totalCount, limit);
-            let response = Object.assign({ totalCount, count, data }, link);
-            return response;
-        }else{
-            return { message: "No se encontraron registros" }
+
+        if(count > 0) return respuestas.ElementNotFound;
+
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
+            let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
+            data[i].detalles = pres;
         }
+        let link = links.pages(data, 'ensamblado', count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
+/**
+ * 
+ * @param id id of the entity
+ * @param query modifier of the consulter
+ */
 export const getOne = async (id:string | number ,query:any): Promise<any> =>{
     try {
-        if(isNaN(id as number)){
-            return {message:`${id} no es un ID valido`};
-        }
+        if(isNaN(id as number)) return respuestas.InvalidID
+
         let data:IEnsamblado[] = await ensamblado.getOne(model,id,query);
         let count:number = await ensamblado.count(model);
-        if(data[0]){
-            let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
-            data[0].detalles = pres;
-            let link = links.records(data,'ensamblado',count);
-            let response = Object.assign({data},link);
-            return response;
-        }else{
-            return {message:"No se encontro el recurso indicado"};
-        }
+        
+        if(!data[0]) return respuestas.ElementNotFound;
+
+        let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
+        data[0].detalles = pres;
+        let link = links.records(data,'ensamblado',count);
+        let response = Object.assign({ data }, link);
+        
+        return { response, code: respuestas.Ok.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
 
+/**
+ * 
+ * @param req body of the request
+ */
 export const create = async (req:Request): Promise<any> =>{
     let {data,data1} = req.body;
     let newCargo: IEnsamblado = data;
     let detalles = data1;
     try {
+
         let {insertId} = await ensamblado.create(model,newCargo);
         detalles.forEach(async (element: any) => {
             element.enc_ensamblado_id=insertId;
             await ensamblado.create('det_ensamblado',element);
         });
-        if(insertId){
-            let link = links.created('ensamblado',insertId);
-            let response = Object.assign({message:"Registro insertado en la base de datos"},{link:link});
-            return {response,code:201};
-        }
-        return {response:"Error al crear entidad"};
+
+        let link = links.created('ensamblado',insertId);
+        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        
+        return { response, code: respuestas.Created.code };
     } catch (error) {
-        throw new Error(`Error al consultar la base de datos, error: ${error}`);
+        if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
     }
 }
