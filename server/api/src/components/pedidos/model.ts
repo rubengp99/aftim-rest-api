@@ -18,21 +18,21 @@
 
 export interface IPedidos 
 {
-    id?: string | number,
-    adm_empresa_id: string | number,
-    rest_mesas_id?:string | number,
-    rest_estatus_id:string | number,
-    estado: string,
-    cant_personas: number,
-    fecha_at:string,
-    fecha_in:string,
-    usuario_id:string | number,
-    autorizo?:string | number,
-    motivo?:string,
-    observacion?:string,
-    adm_clientes_id?:string | number,
-    adm_enc_factura_id?: string | number,
-    detalles?:IDetPedidos[]
+    id?:                    string | number,
+    adm_empresa_id:         string | number,
+    rest_mesas_id?:         string | number,
+    rest_estatus_id:        string | number,
+    estado:                 string,
+    cant_personas:          number,
+    fecha_at:               string,
+    fecha_in:               string,
+    usuario_id:             string | number,
+    autorizo?:              string | number,
+    motivo?:                string,
+    observacion?:           string,
+    adm_clientes_id?:       string | number,
+    adm_enc_factura_id?:    string | number,
+    detalles?:              IDetPedidos[]
 }
 
 /** 
@@ -57,22 +57,22 @@ export interface IPedidos
 * @property  {string | number} motivo_anul_id: motive of the annulment
 */
 export interface IDetPedidos {
-    id?:string | number,
-    rest_pedidos_id:string | number,
-    adm_conceptos_id:string | number,
-    cantidad:number,
-    precio:number,
-    fecha_at:string,
-    fecha_in:string,
-    estatus_id:string | number,
-    estado: string,
-    observacion?:string,
-    areas_id?:string | number,
-    autorizo?:string | number,
-    motivo?:string,
-    impreso?:number | boolean,
-    entrada?:number | boolean,
-    usuario_id?: string | number,
-    cortesia?:number | boolean,
-    motivo_anul_id?: string | number
+    id?:                string | number,
+    rest_pedidos_id:    string | number,
+    adm_conceptos_id:   string | number,
+    cantidad:           number,
+    precio:             number,
+    fecha_at:           string,    
+    fecha_in:           string,
+    estatus_id:         string | number,
+    estado:             string,
+    observacion?:       string,
+    areas_id?:          string | number,
+    autorizo?:          string | number,
+    motivo?:            string,
+    impreso?:           number | boolean,
+    entrada?:           number | boolean,
+    usuario_id?:        string | number,
+    cortesia?:          number | boolean,
+    motivo_anul_id?:    string | number
 }

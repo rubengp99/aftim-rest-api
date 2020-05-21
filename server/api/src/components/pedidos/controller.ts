@@ -16,6 +16,7 @@ export const get = async (query: any): Promise<any> => {
         let totalCount: number = await consult.count(model);
         let count = data.length;
         let { limit } = query;
+
         if (count <= 0) return respuestas.Empty;
 
         for (let i = 0; i < data.length; i++) {
@@ -25,6 +26,7 @@ export const get = async (query: any): Promise<any> => {
         }
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -51,8 +53,8 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
         data.detalles = pres;
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
@@ -63,6 +65,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 export async function getConceptsByOrder(params: any, query: any): Promise<any> {
     try {
         let { id } = params;
+        
         if (isNaN(id as number)) return respuestas.InvalidID;
 
         let detalles: any[] = await consult.getOtherByMe(model, id, submodel, { fields: 'id,adm_conceptos_id' });
@@ -73,12 +76,13 @@ export async function getConceptsByOrder(params: any, query: any): Promise<any> 
             let concept = await consult.getOne('adm_conceptos', element.adm_conceptos_id, query);
             data.push(concept);
         }
+        
         let count = data.length;
 
         let link = links.records(data, `/pedidos/${id}/conceptos/`, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
@@ -89,7 +93,9 @@ export async function getConceptsByOrder(params: any, query: any): Promise<any> 
 export async function getBankMovesByOrder(params: any, query: any): Promise<any>{
     try {
         let { id } = params;
+        
         if (isNaN(id as number)) return respuestas.InvalidID;
+        
         query.origen = 'PEDIDO';
         query.documento = id;
         const data:any[] = await consult.get('adm_movimientos_bancos',query);
@@ -100,7 +106,6 @@ export async function getBankMovesByOrder(params: any, query: any): Promise<any>
         let response = { count, data };
 
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
@@ -120,8 +125,10 @@ export const create = async (body: any, file: any): Promise<any> => {
     console.log(data, data1);
     let newPedido: IPedidos = typeof data == 'string' ? JSON.parse(data) : data;
     let newDetalles: IDetPedidos[] = typeof data1 == 'string' ? JSON.parse(data1) : data1;
+    
     try {
         let { insertId } = await consult.create(model, newPedido);
+        
         for (let index = 0; index < newDetalles.length; index++) {
             newDetalles[index].rest_pedidos_id = insertId;
             let inserted = await consult.create(submodel, newDetalles[index]);
@@ -130,10 +137,12 @@ export const create = async (body: any, file: any): Promise<any> => {
             movDep[0].existencia = movDep[0].existencia - newDetalles[index].cantidad;
             await consult.update("adm_movimiento_deposito", movDep[0].id, movDep[0]);
         }
+        
         let link = links.created(model, insertId);
         newPedido.detalles = newDetalles;
         newPedido.id = insertId;
         let response = Object.assign({ data: newPedido, message: respuestas.Created.message }, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -148,9 +157,11 @@ export async function update(params: any, body: any): Promise<any> {
     let newPedido: IPedidos = data;
     try {
         if (isNaN(id)) return respuestas.InvalidID;
+        
         let { affectedRows } = await consult.update(model, id, newPedido) as any;
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -169,9 +180,11 @@ export const remove = async (params: any): Promise<any> => {
         if (isNaN(id)) return respuestas.InvalidID;
 
         const data: IPedidos = await consult.getOne(model, id, { fields: 'id' });
+        
         if (!data) return respuestas.ElementNotFound;
 
         const data1: IDetPedidos[] = await consult.getOtherByMe(model, id, submodel, {});
+        
         for (let index = 0; index < data1.length; index++) {
             let movDep: any[] = await consult.get("adm_movimiento_deposito", { adm_conceptos_id: data1[index].adm_conceptos_id });
             movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(data1[index].cantidad as unknown as string);
@@ -179,7 +192,9 @@ export const remove = async (params: any): Promise<any> => {
             await consult.remove(submodel, data1[index].id as number);
 
         }
+        
         await consult.remove(model, id);
+        
         return respuestas.Deleted;
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -196,10 +211,14 @@ export const remove = async (params: any): Promise<any> => {
 export const addDetail = async (params: any, body: any): Promise<any> => {
     let { data } = body;
     let { id } = params;
+    
     if (isNaN(id)) return respuestas.InvalidID;
+    
     try {
         const pedido = await consult.getOne(model, id, { fields: 'id' });
+        
         if (!pedido) return respuestas.ElementNotFound;
+        
         const newDetail: IDetPedidos = data;
         newDetail.rest_pedidos_id = id;
         const { insertId } = await consult.create(submodel, newDetail);
@@ -208,10 +227,12 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
 
         let movDep: any[] = await consult.get("adm_movimiento_deposito", { adm_conceptos_id: newDetail.adm_conceptos_id });
         movDep[0].existencia = movDep[0].existencia - newDetail.cantidad;
+        
         await consult.update("adm_movimiento_deposito", movDep[0].id, movDep[0]);
 
         const link = links.created(model, insertId);
         const response = { data: newDetail, message: respuestas.Created.message, link: link }
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -231,9 +252,11 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
     if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
     try {
         const pedido = await consult.getOne(model, id, { fields: 'id' });
+        
         if (!pedido) return respuestas.ElementNotFound;
 
         const detalle = await consult.getOne(submodel, id1, {});
+        
         if (!detalle) return respuestas.ElementNotFound;
 
         const newDetail: IDetPedidos = data;
@@ -247,6 +270,7 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
 
         const link = links.created(model, id);
         const response = { message: respuestas.Update.message, link: link }
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -262,13 +286,18 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
  */
 export const deleteDetail = async (params: any): Promise<any> => {
     let { id, id1 } = params;
+   
     if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
+    
     try {
         const pedido = await consult.getOne(model, id, { fields: 'id' });
+        
         if (!pedido) return respuestas.ElementNotFound;
+        
         const detalle = await consult.getOne(submodel, id1, {});
         let movDep: any[] = await consult.get("adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
         movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
+        
         await consult.update("adm_movimiento_deposito", movDep[0].id, movDep[0]);
 
         await consult.remove(submodel, id1);
