@@ -3,6 +3,7 @@ import * as links from "../../helpers/links";
 import * as respuestas from "../../errors";
 import { IConcepto } from "./model";
 import { dataURL } from "keys";
+import Axios from "axios";
 
 const model = "adm_conceptos";
 const submodel = "adm_presentaciones";
@@ -505,6 +506,11 @@ export const create = async (body: any, file: any): Promise<any> => {
             data: newConcepto,
             link: link,
         };
+
+        if (newConcepto.tipos_conceptos_id === 2){
+            await consult.create("adm_movimiento_deposito", { adm_depositos_id: 1, adm_conceptos_id: newConcepto.id}) as any;
+        }
+
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === "BD_SYNTAX_ERROR") return respuestas.BadRequest;
