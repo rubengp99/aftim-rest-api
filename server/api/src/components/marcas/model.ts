@@ -1,4 +1,4 @@
 export interface IMarcas {
-    id?: string | number,
+    id?:    string | number,
     nombre: string
 }
