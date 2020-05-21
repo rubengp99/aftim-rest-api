@@ -1,5 +1,5 @@
 export interface IGaleria {
-    id?:string | number,
-    conceptos_id: string | number,
-    imagen: string
+    id?:            string | number,
+    conceptos_id:   string | number,
+    imagen:         string
 }
