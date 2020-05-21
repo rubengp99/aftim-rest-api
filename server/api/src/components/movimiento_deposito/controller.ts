@@ -45,6 +45,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return response;
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -64,6 +65,7 @@ export const create = async (body: any): Promise<any> => {
         let { insertId } = await consult.create(model, newMovDep) as any;
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -83,11 +85,15 @@ export const update = async (params:any, body: any): Promise<any> => {
     let newMovDep: IMovimientoDeposito = data;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
+        
         let data: IMovimientoDeposito[] = await consult.getOtherByMe('adm_conceptos', id, model, {fields:'id'});
+        
         if(!data) return respuestas.ElementNotFound;
+        
         let { affectedRows } = await consult.update(model, data[0].id as number, newMovDep) as any;
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
+        
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -104,7 +110,9 @@ export const remove = async (params: any): Promise<any> => {
     let { id } = params;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
+        
         await consult.remove(model, id);
+        
         return respuestas.Deleted
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
