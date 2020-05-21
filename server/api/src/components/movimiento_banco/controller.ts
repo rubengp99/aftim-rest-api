@@ -19,8 +19,8 @@ export async function get(query: any): Promise<any> {
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
@@ -44,6 +44,7 @@ export async function getOne(id: string | number, query: any): Promise<any> {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
@@ -64,6 +65,7 @@ export async function create(body: any): Promise<any> {
         newGrupo.id = insertId; 
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message, data:newGrupo }, { link: link });
+        
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
