@@ -3,19 +3,19 @@ import { validar } from '../../helpers/aunthentication';
 import { InternalServerError } from '../../errors';
 import { Router, Request, Response } from 'express';
 const router = Router();
-//obtener todos los conceptos
+
+//obtener todas las ciudades
 router.get('/', validar, async (req: Request, res: Response): Promise<Response> => {
     try {
         let { message, response, code } = await controller.get(req.query);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res
-            .status(InternalServerError.code)
-            .json({ message: InternalServerError.message });
+        return res.status(InternalServerError.code).json({ message: InternalServerError.message });
     }
 });
 
+//obtener una ciudad en concreto
 router.get('/:id', validar, async (req: Request, res: Response): Promise<Response> => {
     let { id } = req.params;
     try {
@@ -23,21 +23,18 @@ router.get('/:id', validar, async (req: Request, res: Response): Promise<Respons
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res
-            .status(InternalServerError.code)
-            .json({ message: InternalServerError.message });
+        return res.status(InternalServerError.code).json({ message: InternalServerError.message });
     }
 });
 
+//crear un registro de ciudad
 router.post('/', validar, async (req: Request, res: Response): Promise<Response> => {
     try {
         let { message, response, code } = await controller.create(req.body);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
-        return res
-            .status(InternalServerError.code)
-            .json({ message: InternalServerError.message });
+        return res.status(InternalServerError.code).json({ message: InternalServerError.message });
     }
 });
 
