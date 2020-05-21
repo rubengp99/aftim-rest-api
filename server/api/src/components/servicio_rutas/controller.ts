@@ -19,8 +19,8 @@ export const get = async (query: any): Promise<any> => {
 
         let link = links.pages(data, model, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
@@ -45,8 +45,8 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
         let link = links.records(data, model, count);
         let response = Object.assign({ data }, link);
+        
         return { response, code: respuestas.Ok.code };
-
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`Error al consultar la base de datos, error: ${error}`);
