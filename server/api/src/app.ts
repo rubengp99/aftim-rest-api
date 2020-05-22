@@ -7,8 +7,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import chalk from 'chalk';
 import dotenv from 'dotenv';
-import fs from "fs"
-import https from "https"
 dotenv.config();
 
 /**
@@ -54,17 +52,7 @@ export class App {
      * Function to start the server
      */
     public listen() {
-        try {
-            let privateKey = fs.readFileSync( process.env.SSL_KEY+"" );
-            let certificate = fs.readFileSync( process.env.SSL_CERT+"" );
-            https.createServer({
-                key: privateKey,
-                cert: certificate
-            },this. app).listen(this.app.get('port'));
-        } catch (e) {
-            this.app.listen(this.app.get('port'));
-        }
-        
+        this.app.listen(this.app.get('port'));
         console.log(`${chalk.yellow('[SERVER]')} running on port ${this.app.get('port')}`);
     }
 }
