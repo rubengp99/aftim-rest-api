@@ -20,7 +20,7 @@ dotenv.config();
 
 export class App {
     public app: Application;
-
+    
     /**
      * 
      * @param port the number of the port where the app is started to listen
@@ -56,5 +56,3 @@ export class App {
         console.log(`${chalk.yellow('[SERVER]')} running on port ${this.app.get('port')}`);
     }
 }
-
-
