@@ -18,6 +18,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/admin/', history());
 app.use('/admin/', express.static(path.resolve('public/pages/admin/')));
+app.use('/reporteador/', history());
+app.use('/reporteador/', express.static(path.resolve('public/pages/reporteador/')));
 app.use(history());
 app.use(express.static(path.resolve('public/pages/hoyprovoca/')));
 
