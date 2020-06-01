@@ -24,7 +24,7 @@ const Conflict = {
 async function apiAccess(token) {
     try {
         if (!token) return false;
-
+        console.log(token);
         let parsedToken = JSON.parse(token);
         const sql = `SELECT * FROM usuario WHERE login = '${parsedToken.user}' or email = '${parsedToken.user}'`;
 
@@ -64,7 +64,7 @@ async function signup(newUser) {
         const sql = `SELECT * FROM usuario WHERE login = '${newUser.login}' or email = '${newUser.email}'`;
         let { check } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
 
-        if(check) return Conflict;
+        if (check) return Conflict;
 
         newUser.password = await encriptar(newUser.password);
         let { data } = await axios.post(`${DATA_URL}/mysql/usuario`, { data: newUser });

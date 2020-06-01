@@ -17,7 +17,7 @@ router.post('/subscribe', async (req, res) => {
 });
 
 router.post("/new-message", async (req, res) => {
-    const { message, userId } = req.body;
+    const { message, userId } = req.body.data;
     const response = await axios.get(`${DATA_URL}/mysql/usuario/${userId}`);
     const { data } = await axios.get(`${DATA_URL}/low/subscription/${response.data.subscription_id}`);
     // Payload Notification

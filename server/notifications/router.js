@@ -3,7 +3,7 @@ const pushRouter = require('./controllers/client/push');
 const chatRouter = require('./controllers/messages/router');
 
 module.exports = app => {
-    app.use('/mail/', mailRouter);
-    app.use('/push/', pushRouter);
-    app.use('/chat/', chatRouter);
+    app.use('/nots/mail/', mailRouter);
+    app.use('/nots/push/', pushRouter);
+    app.use('/nots/chat/', chatRouter);
 }

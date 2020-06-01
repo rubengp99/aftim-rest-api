@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { sendMessageTo } = require('./controller');
 
 
-router.post('/', async (req, res) => {
+router.post('/new-message', async (req, res) => {
     try {
         let { data } = req.body;
         const { code, message } = await sendMessageTo(data.id, data.message);
