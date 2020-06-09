@@ -2,9 +2,9 @@ import * as mongoose from "mongoose";
   
 export const conceptoSchema = new mongoose.Schema({
     
-    multitenant_key:{ 
-        type: String , 
-        required: true 
+    tenantId:{//index de la instacia 
+        type:String,
+        required:true,
     },
     codigo:{//codigo del producto (unico)
         type: String, 
