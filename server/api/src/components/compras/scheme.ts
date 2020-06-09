@@ -1,6 +1,49 @@
 import * as mongoose from "mongoose";
+import { IDetCompras } from "./model";
 
-export const Compras = new mongoose.Schema({
+export const IDetComprasScheme = new mongoose.Schema({
+    id: {
+        required: false,
+        type: String || Number,
+    },
+    adm_enc_compra_id: {
+        required: false,
+        type: String || Number
+    },
+    adm_depositos_id: {
+        required: false,
+        type: String || Number
+    },
+    adm_conceptos_id: {
+        required: false,
+        type: String || Number,
+    },
+    costo: {
+        required: false,
+        type: String || Number,
+    },
+    descuento: {
+        required: false,
+        type: String || Number,
+    },
+    cantidad: {
+        required: false,
+        type: String || Number,
+    },
+    iva: {
+        required: false,
+        type: String || Number,
+    },
+    serial_inicial: {
+        required: false,
+        type: String,
+    },
+    serial_final: {
+        required: false,
+        type: String,
+    }
+})
+export const ComprasScheme = new mongoose.Schema({
     id: {
         required: false,
         type: String || Number,
@@ -14,7 +57,7 @@ export const Compras = new mongoose.Schema({
         type: Number,
     },
     adm_enc_orden_compra_id: {
-        required:false,
+        required: false,
         type: Number,
     },
     adm_enc_recepcion_id: {
@@ -98,50 +141,10 @@ export const Compras = new mongoose.Schema({
         required: false,
         type: String,
     },
-    detalles: []
+    detalles: { type: [IDetComprasScheme]},
 })
 
-export const IDetCompras = new mongoose.Schema({
-    id: {
-        required: false,
-        type: String || Number,
-    },
-    adm_enc_compra_id: {
-        required: false,
-        type: String || Number
-    },
-    adm_depositos_id: {
-        required: false,
-        type: String || Number
-    },
-    adm_conceptos_id: {
-        required: false,
-        type: String || Number,
-    },
-    costo: {
-        required: false,
-        type: String || Number,
-    },
-    descuento: {
-        required: false,
-        type: String || Number,
-    },
-    cantidad: {
-        required: false,
-        type: String || Number,
-    },
-    iva: {
-        required: false,
-        type: String || Number,
-    },
-    serial_inicial: {
-        required: false,
-        type: String,
-    },
-    serial_final: {
-        required: false,
-        type: String,
-    }})
-    const model = mongoose.model("compras",Compras,"compras");
+export const IDetComprasModel = mongoose.model("IDetCompras", IDetComprasScheme, "IDetCompras");
+const model = mongoose.model("compras", ComprasScheme, "compras");
 
-    export default model;
+export default model;

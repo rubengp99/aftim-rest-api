@@ -1,39 +1,7 @@
 import * as mongoose from "mongoose";
-export const IDescargo = new mongoose.Schema({
-    id: {
-        type: String || Number,
-        required: false,
-        default: null,
-    },
-    fecha_at: {
-        type: String,
-        required: true,
-        default: null,
-    },
-    descripcion: {
-        type: String,
-        required: true,
-        default: null,
-    },
-    tipo_descargo_id: {
-        type: String || Number,
-        required: true,
-        default: null,
-    },
-    responsable: {
-        type: String || Number,
-        required: true,
-        default: null,
-    },
-    autorizador: {
-        type: String || Number,
-        required: true,
-        default: null,
-    },
-    detalles: []
-});
+import {IDetDescargo} from "./model";
 
-export const IDetDescargo = new mongoose.Schema({
+export const IDetDescargoSchema = new mongoose.Schema({
     id: {
          type: String || Number, 
          required: false, 
@@ -64,6 +32,43 @@ export const IDetDescargo = new mongoose.Schema({
     },
 });
 
-const model = mongoose.model("descargo", IDescargo,"descargo");
+export const IDescargoSchema = new mongoose.Schema({
+    id: {
+        type: String || Number,
+        required: false,
+        default: null,
+    },
+    fecha_at: {
+        type: String,
+        required: true,
+        default: null,
+    },
+    descripcion: {
+        type: String,
+        required: true,
+        default: null,
+    },
+    tipo_descargo_id: {
+        type: String || Number,
+        required: true,
+        default: null,
+    },
+    responsable: {
+        type: String || Number,
+        required: true,
+        default: null,
+    },
+    autorizador: {
+        type: String || Number,
+        required: true,
+        default: null,
+    },
+
+    detalles:{type:[IDetDescargoSchema]},
+
+});
+
+export const IDetDescargoModel = mongoose.model("IDetDescargo", IDetDescargoSchema,"IDetDescargo");
+const model = mongoose.model("descargo", IDescargoSchema,"descargo");
 
 export default model;
