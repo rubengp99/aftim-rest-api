@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-export const banco = new mongoose.Schema({
+export const bancoScheme = new mongoose.Schema({
     id: { 
         required: false, 
         type: String || Number,
@@ -89,5 +89,5 @@ export const banco = new mongoose.Schema({
         default:true
      }
 })
-const model = mongoose.model("banco", banco, "banco");
+const model = mongoose.model("banco", bancoScheme, "banco");
 export default model;

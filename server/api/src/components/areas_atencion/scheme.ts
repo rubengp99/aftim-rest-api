@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-export const areas_atencion = new mongoose.Schema({
+export const areas_atencionScheme = new mongoose.Schema({
     id:{
         required:false,        
         type:String || Number,
@@ -14,5 +14,5 @@ export const areas_atencion = new mongoose.Schema({
         type:String
     }
 })
-const model = mongoose.model("areas_atencion", areas_atencion, "areas_atencion");
+const model = mongoose.model("areas_atencion", areas_atencionScheme, "areas_atencion");
 export default model;
