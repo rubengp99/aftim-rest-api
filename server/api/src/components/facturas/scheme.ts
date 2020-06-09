@@ -51,6 +51,8 @@ export const DetalleFacturaSchema = new mongoose.Schema({
         default: null
     },
 
+},{//indica los valores de ultima actualizacion y creacion
+    timestamps:true
 });
 
 const submodel = mongoose.model("detalles_fac", DetalleFacturaSchema, "detalles_fac")
