@@ -2,6 +2,10 @@ import * as mongoose from "mongoose";
 
 export const CargosSchema = new mongoose.Schema({
 
+    tenantId:{//index de la instacia 
+        type:String,
+        required:true,
+    },
     cantidad:{//cantidad agregada
         type:Number,
         required:true,
@@ -18,10 +22,6 @@ export const CargosSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    multitenant_key:{//index de la instacia 
-        type:String,
-        required:true,
-    }
     
 },{//indica los valores de ultima actualizacion y creacion
     timestamps:true

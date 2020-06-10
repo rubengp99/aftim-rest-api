@@ -10,7 +10,7 @@ export const CambioSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    multitenant_key:{
+    tenantId:{
         type:String,
         required:true,
     }
