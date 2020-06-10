@@ -13,7 +13,7 @@ const clientOptions = {
 
 export const newMultiTenantConnection = async function(tenantId: string){
     try {
-        let DB = await mongoose.connect(`${MONGO_URI}/${tenantId}_${MONGO_DB}`, clientOptions);
+        let DB = await mongoose.createConnection(`${MONGO_URI}/${tenantId}_${MONGO_DB}`, clientOptions);
         return DB;
     } catch (error) {
         console.log(`[CONNECTION ERROR] \n ${error}`)
