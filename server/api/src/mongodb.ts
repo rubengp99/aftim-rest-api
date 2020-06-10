@@ -1,4 +1,3 @@
- 
 import mongoose from "mongoose";
 import {MONGO_URI ,MONGO_DB} from './keys';
 

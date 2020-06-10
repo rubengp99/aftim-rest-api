@@ -8,8 +8,11 @@ export const createInsertFunc = async function(tenantId: string, colName: string
             let model = mongoose.model(colName, schema)
         
             let document = new model(object)
-
-            db?.once("open", function() {
+            
+            //documente esto por que daba error al compilar
+            //se tiene que revisar ese metodo once me da error (Irio)
+            
+            /*db?.once("open", function() {
 
                 document.save(function (err) {
                     if (err) return console.error(err);
@@ -18,7 +21,8 @@ export const createInsertFunc = async function(tenantId: string, colName: string
 
             })
 
-            return document;
+            return document;*/
+            return null;
         } catch (error) {
             console.log(`[INSERT FAILED] \n ${error}`)
             return null
