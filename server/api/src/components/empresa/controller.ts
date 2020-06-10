@@ -3,7 +3,7 @@ import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { IEmpresa } from './model';
 import { ICargo } from '../cargos/model';
-import { IConcepto } from 'components/conceptos/model';
+import { IConcepto } from '../conceptos/model';
 
 const model = "adm_empresa";
 
