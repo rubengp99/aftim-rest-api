@@ -59,7 +59,10 @@ const submodel = mongoose.model("detalles_fac", DetalleFacturaSchema, "detalles_
 
 
 export const FacturasSchema = new mongoose.Schema({
-
+    tenantId:{
+        type: String,
+        required: true,
+    },
     numero_factura:{//cantidad agregada
         type: Number,
         required: true,

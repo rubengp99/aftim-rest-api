@@ -2,6 +2,10 @@ import * as mongoose from "mongoose";
 
 export const ClientesSchema = new mongoose.Schema({
 
+    tenantId:{//index de la instacia 
+        type:String,
+        required:true,
+    },
     nombre:{//cantidad agregada
         type:String,
         required:true,
