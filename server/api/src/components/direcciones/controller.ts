@@ -45,14 +45,13 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 		if (isNaN(id as number)) return respuestas.InvalidID;
 
 		let data: IEstados = await consult.getOne(model, id, query);
-		let count: number = await consult.count(model);
 
-		if (!data) return respuestas.Empty;
+		if (!data) return respuestas.ElementNotFound;
 
 		let pres: IMunicipios[] = await consult.getOtherByMe(model, id as string, submodel, {});
 		data.detalles = pres;
-		let link = links.records(data, model, count);
-		let response = Object.assign({ data }, link);
+
+		let response = Object.assign({ data });
 
 		return { response, code: respuestas.Ok.code };
 	} catch (error) {
@@ -66,7 +65,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * Create a new state
  * @param body data of the new state
  */
-export const create = async (body: any, file: any): Promise<any> => {
+export const create = async (body: any): Promise<any> => {
 	let { data, data1 } = body;
 	
 	let newEstado: IEstados = typeof data == "string" ? JSON.parse(data) : data;
