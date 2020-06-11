@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { newMultiTenantConnection } from "../mongoConn"
 
-export const createInsertFunc = async function(tenantId: string, colName: string) {
-    return async function (schema: mongoose.Schema, object: Object){
+export const createInsertFunc = async function(tenantId: string, colName: string):Promise<any> {
+    return async function (schema: mongoose.Schema, object: Object):Promise<any>{
         try {
             let db = await newMultiTenantConnection(tenantId);
 
