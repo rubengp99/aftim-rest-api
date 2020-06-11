@@ -1,12 +1,12 @@
 export interface IEstados
 {
-    id?:                    string | number,
+    id?:                    number,
     estado?:                string,
     detalles?:              IMunicipios[]
 }
 
 export interface IMunicipios {
-    id?:                string | number,
+    id?:                number,
     municipio?:         string,
-    estado_id?:         string | number,
+    estado_id?:         number,
 }

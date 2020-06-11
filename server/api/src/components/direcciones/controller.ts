@@ -21,7 +21,7 @@ export const get = async (query: any): Promise<any> => {
 
 		for (let i = 0; i < data.length; i++) {
 			let { id } = data[i];
-			let pres: IMunicipios[] = await consult.getOtherByMe(model, id as string, submodel, {});
+			let pres: IMunicipios[] = await consult.get(submodel, { estado_id : id });
 			data[i].detalles = pres;
 		}
 		let link = links.pages(data, model, count, totalCount, limit);
@@ -70,19 +70,23 @@ export const create = async (body: any, file: any): Promise<any> => {
 	let { data, data1 } = body;
 	
 	let newEstado: IEstados = typeof data == "string" ? JSON.parse(data) : data;
-	let newMunicipios: IMunicipios[] = typeof data1 == "string" ? JSON.parse(data1) : data1;
+
+	var newMunicipios: IMunicipios[]
 
 	try {
 		let { insertId } = await consult.create(model, newEstado);
 
-		for (let index = 0; index < newMunicipios.length; index++) {
-			newMunicipios[index].estado_id = insertId;
-			let inserted = await consult.create(submodel, newMunicipios[index]);
-			newMunicipios[index].id = inserted.insertId;
+		if (typeof data1 !== "undefined") {
+			newMunicipios = typeof data1 == "string" ? JSON.parse(data1) : data1;
+			for (let index = 0; index < newMunicipios.length; index++) {
+				newMunicipios[index].estado_id = insertId;
+				let inserted = await consult.create(submodel, newMunicipios[index]);
+				newMunicipios[index].id = inserted.insertId;
+			}
+			newEstado.detalles = newMunicipios;
 		}
-
 		let link = links.created(model, insertId);
-		newEstado.detalles = newMunicipios;
+		
 		newEstado.id = insertId;
 		let response = Object.assign({ data: newEstado, message: respuestas.Created.message }, { link: link });
 
@@ -154,12 +158,14 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
 	if (isNaN(id)) return respuestas.InvalidID;
 
 	try {
+		console.log(id)
 		const estado = await consult.getOne(model, id, { fields: "id" });
 
 		if (!estado) return respuestas.ElementNotFound;
 
 		const newMunicipio: IMunicipios = data;
-		newMunicipio.estado_id = id;
+		newMunicipio.estado_id = +id;
+		console.log(newMunicipio)
 		const { insertId } = await consult.create(submodel, newMunicipio);
 
 		newMunicipio.id = insertId;
