@@ -97,3 +97,4 @@ export const createDeleteOneFunc = async function(tenantId: string, colName: str
         }
     }
 }
+
