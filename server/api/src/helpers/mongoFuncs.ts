@@ -98,3 +98,25 @@ export const createDeleteOneFunc = async function(tenantId: string, colName: str
     }
 }
 
+export const createUpdateFunc = async function(tenantId: string, colName: string):Promise<any>{
+    return async function (schema: mongoose.Schema, id: string, data: object):Promise<any>{
+        try {
+            let db = await newMultiTenantConnection(tenantId);
+
+            if (db === null) return null;
+
+            let model = db.model(colName, schema);
+            
+            if (typeof model === 'undefined') return null;
+
+            let document : any 
+            
+            document = model.findByIdAndUpdate(id, data);
+
+            return document;
+        } catch (error) {
+            console.log(`[INSERT FAILED] \n ${error}`)
+            return null
+        }
+    }
+}
