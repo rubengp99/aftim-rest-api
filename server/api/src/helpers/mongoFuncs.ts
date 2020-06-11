@@ -51,3 +51,26 @@ export const createRetrieveFunc = async function(tenantId: string, colName: stri
         }
     }
 }
+
+export const createRetrieveOneFunc = async function(tenantId: string, colName: string):Promise<any>{
+    return async function (schema: mongoose.Schema, id: string):Promise<any>{
+        try {
+            let db = await newMultiTenantConnection(tenantId);
+
+            if (db === null) return null;
+
+            let model = db.model(colName, schema);
+            
+            if (typeof model === 'undefined') return null;
+
+            let document : any 
+            
+            document = model.findById(id);
+
+            return document;
+        } catch (error) {
+            console.log(`[INSERT FAILED] \n ${error}`)
+            return null
+        }
+    }
+}
