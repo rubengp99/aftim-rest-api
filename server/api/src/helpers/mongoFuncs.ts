@@ -74,3 +74,26 @@ export const createRetrieveOneFunc = async function(tenantId: string, colName: s
         }
     }
 }
+
+export const createDeleteOneFunc = async function(tenantId: string, colName: string):Promise<any>{
+    return async function (schema: mongoose.Schema, opts: object):Promise<any>{
+        try {
+            let db = await newMultiTenantConnection(tenantId);
+
+            if (db === null) return null;
+
+            let model = db.model(colName, schema);
+            
+            if (typeof model === 'undefined') return null;
+
+            let document : any 
+            
+            document = model.deleteOne(opts);
+
+            return document;
+        } catch (error) {
+            console.log(`[INSERT FAILED] \n ${error}`)
+            return null
+        }
+    }
+}
