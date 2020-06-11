@@ -1,4 +1,4 @@
-import { selectByFilter, selectSQL, selectSQLOne } from './query';
+/*import { selectByFilter, selectSQL, selectSQLOne } from './query';
 import { get,getOne } from './consult';
 import { connect, disconnect } from '../dbs';
 describe('querys',()=>{
@@ -34,4 +34,4 @@ describe('consults',()=>{
     afterAll(async()=>{
         await disconnect();
     });
-});
+});*/

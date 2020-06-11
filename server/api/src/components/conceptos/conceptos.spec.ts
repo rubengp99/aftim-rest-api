@@ -1,19 +1,21 @@
 const request = require('supertest')
-import {App} from "../../app";
-
-describe('probando enpoint de ruta conceptos #conceptos #endpointTest ', () => {
-    describe('probando rutas Post de conceptos #conceptos #post #endpointTest', () => {
-        it('deberia crear un nuevo concepto', async () => {
-            const test = new App;
-            const res = await request(test)
-                .post('/api/conceptos')
-                .send({
-                    userId: 1,
-                    title: 'test is cool',
-                })
-             //   console.log(res);
-            expect(res.status).toEqual(201)
-            expect(res.body).toHaveProperty('post')
+import { App } from "./../../app";
+import dotenv from 'dotenv';
+dotenv.config();
+describe('probando enpoints  #endpointTest ', () => {
+    describe('probando endpoints de ruta conceptos #endpointTest #conceptos', () => {
+        describe('probando rutas Post de conceptos #endpointTest #conceptos #post ', () => {
+            it('deberia crear un nuevo concepto', async () => {
+                const { app } = new App();
+                //const req  = new Request;
+                const res = await request(app).get(`/api/conceptos`)
+                    .set('x-access-control', '{"user":"admin","password":"123456"}')
+                    .send({ query: { fields: 1, limit: "" } })
+                console.log(res);
+                expect(res.status).toEqual(401);
+                // expect(res.body).toHaveProperty('post')
+            })
         })
     })
+
 })

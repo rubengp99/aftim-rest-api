@@ -5,12 +5,14 @@ module.exports = {
     },
     globals:{
       'ts-jest':{
-        diagnostics:true,
         tsConfig:{
-          esModuleInterop: true  
-        }
+          esModuleInterop: true,
+        baseUrl:'./server/api/src'
+        },
+        
       }
     },
+    
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 }
