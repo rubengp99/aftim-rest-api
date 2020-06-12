@@ -1,6 +1,7 @@
 /*import { selectByFilter, selectSQL, selectSQLOne } from './query';
 import { get,getOne } from './consult';
 import { connect, disconnect } from '../dbs';
+
 describe('querys',()=>{
     test('Select general', async ()=>{
         const sql = selectSQL({},'conceptos');

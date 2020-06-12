@@ -376,7 +376,9 @@ export async function devolutionsByConcept(params: any, query: any): Promise<any
  * @param body data of the concept
  */
 export const create = async (body: any, file: any): Promise<any> => {
+	
 	let { data, data1 } = body;
+	
 	let newConcepto: IConcepto = typeof data == "string" ? JSON.parse(data) : data;
 	if (file) {
 		let { filename = "default.png" } = file;
