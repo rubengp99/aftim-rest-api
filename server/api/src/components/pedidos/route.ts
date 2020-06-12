@@ -108,20 +108,6 @@ router.post(
 	}
 );
 
-//eliminar un pedido
-router.delete(
-	"/:id",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
-		try {
-			let { message, code } = await controller.remove(req.params);
-			return res.status(code).json(message);
-		} catch (error) {
-			console.log(error);
-			return res.status(InternalServerError.code).json({ message: InternalServerError.message });
-		}
-	}
-);
 
 //actualizar los detalles de un pedido
 router.post(
@@ -160,6 +146,20 @@ router.delete(
 	async (req: Request, res: Response): Promise<Response> => {
 		try {
 			let { message, code } = await controller.deleteDetail(req.params);
+			return res.status(code).json(message);
+		} catch (error) {
+			console.log(error);
+			return res.status(InternalServerError.code).json({ message: InternalServerError.message });
+		}
+	}
+);
+//eliminar un pedido
+router.delete(
+	"/:id",
+	validar,
+	async (req: Request, res: Response): Promise<Response> => {
+		try {
+			let { message, code } = await controller.remove(req.params);
 			return res.status(code).json(message);
 		} catch (error) {
 			console.log(error);

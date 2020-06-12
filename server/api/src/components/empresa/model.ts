@@ -2,7 +2,7 @@ export interface IEmpresa {
     id?:                    string | number,
     rif:                    string,
     razon_social:           string,
-    nombre:                 string,
+    nombre_comercial:       string,
     fecha_registro:         string,
     direccion:              string,
     telefono1:              string,
@@ -14,7 +14,8 @@ export interface IEmpresa {
     twitter:                string,
     facebook:               string,
     instagram:              string,
-    logo:                   string,
+ //   logo:                   string,
+    imagen:string,
     firma_digital:          string,
     tipo_imagen:            string,
     licencia_licores:       boolean | number,
@@ -25,6 +26,5 @@ export interface IEmpresa {
     nota2:                  string,
     color_presupuesto:      string,
     img_barcode:            string,
-    modelo:                 number,
-    serial_disk:            string
+    modelo:                 number
 }

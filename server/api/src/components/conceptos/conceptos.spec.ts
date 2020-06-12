@@ -84,7 +84,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).post(`/api/conceptos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send(onePrueba);
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -94,7 +93,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).post(`/api/conceptos/2`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send(onePrueba)
-            console.log(res);
             expect(res.status).toEqual(200);
             // expect(res.body).toHaveProperty('post')
 
@@ -113,7 +111,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -123,7 +120,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/mostsold`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -132,7 +128,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/mostreturned`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -141,7 +136,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/3/sell`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -150,7 +144,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/3/devolutions`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -159,7 +152,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/4/issold`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -168,7 +160,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/4`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -177,7 +168,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/7/depositos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -186,7 +176,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/7/photos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
 
@@ -195,7 +184,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/7/presentaciones`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            console.log(res);
             expect(res.status).toEqual(200);
         })
     })

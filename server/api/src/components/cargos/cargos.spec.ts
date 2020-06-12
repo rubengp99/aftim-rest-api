@@ -17,10 +17,11 @@ const datoPrueba: ICargo = {
 describe('testing get endpoint routes #cargos #endpoint #get', () => {
     it(' todos los cargos #conceptos #get #All', async () => {
         const { app } = new App();
+        //execute
         const res = await request(app).get(`/api/cargos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
-        console.log(res);
+        
         expect(res.status).toEqual(200);
     })
     it('un cargo en concreto status 200 #conceptos #get #one', async () => {
@@ -28,7 +29,6 @@ describe('testing get endpoint routes #cargos #endpoint #get', () => {
         const res = await request(app).get(`/api/cargos/3`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
-        console.log(res);
         expect(res.status).toEqual(200);
     })
 })
