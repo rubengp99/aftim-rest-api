@@ -139,7 +139,7 @@ router.post(
 	}
 );
 
-//eliminar un pedido
+//eliminar detalles de  un pedido
 router.delete(
 	"/:id/detalles/:id1",
 	validar,

@@ -97,6 +97,9 @@ describe('testing get routes #pedidos #get', () => {
         expect(res.status).toEqual(200);
     })
 })
+const elementToUpdate ={
+    id:103
+}
 describe('testing post endpoints  #endpoint #post', () => {
     it('crea un nuevo pedido #post #create #pedido', async () => {
         const { app } = new App();
@@ -111,7 +114,7 @@ describe('testing post endpoints  #endpoint #post', () => {
     it('actualiza un  pedido #post #update #pedido', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/pedidos/103`)
+        const res = await request(app).post(`/api/pedidos/${elementToUpdate.id}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ data: datosPrueba, data1: detallesPrueba });
         expect(res.body.message).toBeDefined()
@@ -122,23 +125,36 @@ describe('testing post endpoints  #endpoint #post', () => {
     it('actualiza detalles de un  pedido #post #update #pedido #details', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/pedidos/103/detalles/`)
+        const res = await request(app).post(`/api/pedidos/${elementToUpdate.id}/detalles/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
-            .send({data: detallesPrueba })
+            .send({ data: detallesPrueba })
         expect(res.body.message).toBeDefined();
         expect(res.status).toEqual(201);
     })
 })
-
-describe('testing delete endpoints #endpoint #delete', ()=>{
-    it('borra un pedido #delete #one', async ()=>{
+const elementsToDelete ={
+    id1:65,
+    id2:2
+}
+describe('testing delete endpoints #endpoint #delete', () => {
+    it('borra un pedido #delete #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/pedidos`)
+        const res = await request(app).delete(`/api/pedidos/${elementsToDelete.id1}`)//recive el id del elemento a borrar mediante la ruta 
             .set('x-access-control', '{"user":"admin","password":"123456"}')
-            .send({})
-        console.log(res)
+            .send({ })
         expect(res.body).toEqual('Record deleted');
-        expect(res.status).toEqual(201);
+        expect(res.status).toEqual(200);
+    })
+
+    it('borra detalles de un  pedido #delete #one #details', async () => {
+        const { app } = new App();
+        //execute
+        const res = await request(app).delete(`/api/pedidos/${elementsToDelete.id2}/detalles/1`) //recive el id del elemento a borrar mediante la ruta pimero el id del pedido 
+            .set('x-access-control', '{"user":"admin","password":"123456"}')//luego el id del detalle
+            .send({ })
+        console.log(res);
+        expect(res.body).toEqual('Record deleted');
+        expect(res.status).toEqual(200);
     })
 })

@@ -2,76 +2,85 @@ const request = require('supertest')
 import { App } from "./../../app";
 
 import { IConcepto } from './model';
+import { IGrupo } from "./../grupos/model";
+import { ISubgrupo } from "./../subgrupos/model";
+const grupoPrueba: IGrupo = {
+    nombre: '',
+    imagen: '',
+    visualizar: true,
+    posicion: true,
+}
+const subgrupoPrueba: ISubgrupo = {
+    id: 80,
+    adm_grupos_id: 1,
+    nombre: '',
+    visualizar: true,
+    posicion: 1,
+    imagen: 'default.png',
+    grupo: grupoPrueba
+}
 
-const nuevoDataPrueba: IConcepto = {
+let nuevoDataPrueba: IConcepto = {
     // id: 10040,
     adm_empresa_id: 1,
     nombre: 'mercado',
-    tipos_conceptos_id: 2,
+    adm_tipos_conceptos_id: 2,
     fecha_at: '2018-03-01',
     precio_a: 5000.00,
     precio_dolar: 10,
     costo_dolar: 10,
-    codigo: '00111111111',
+    codigo: '0013243242343242',
     // id?: string | number | undefined;
-    referencia: null,
-    descripcion: null,
-    talla: null,
-    color: null,
-    descuento: null,
-    serial_estatico: null,
-    serial_dinamico: null,
-    existencia_minima: null,
-    existencia_maxima: null,
-    ubicacion_id: 1,
+    referencia: '',
+    descripcion: '',
+    talla: 'n',
+    color: '',
+    descuento: 10,
+    serial_estatico: 1,
+    serial_dinamico: 2,
+    existencia_minima: 1,
+    existencia_maxima: 80,
+    adm_ubicacion_id: 1,
     costo: 200,
     ultimo_costo: 100,
     costo_mayor: 200,
     costo_promedio: 200,
     fecha_in: '2018-03-01',
     fecha_uc: '2018-03-01',
-    grupos_id: '1',
-    subgrupos_id: null,
-    presentacion: null,
-    unidades_id: null,
+    adm_grupos_id: '1',
+    adm_subgrupos_id: '',
+    presentacion: 2,
+    adm_unidades_id: '',
     fecha_hora: 100,
-    marcas_id: null,
+    adm_marcas_id: '',
     estado: false,
-    pvp: null,
-    precion_b: null,
-    utilidad: null,
-    utiliad_a: null,
-    utilidad_b: null,
-    utilidad_c: null,
-    utilidad_dolar: null,
-    precio_variante: null,
-    retiene: null,
-    farm_principio_activo_id: null,
-    imagen: null,
-    costo_adicional: null,
-    costo_adicional2: null,
-    cant_ensamblado: null,
-    licor: null,
-    porcentaje: null,
-    visible_pv: null,
-    visible_web: null,
-    rest_areas_id: null,
-    setcortesia: null,
-    exento: null,
-    merma: null,
-    exitencia_c: null,
-    obviar_ajuste: null,
-    iva: null,
-    presentaciones: null,
-    existencias: null,
-    grupo: null,
-    subgrupo: null,
-    isSold: false
+    pvp: 2,
+    precio_b: 2,
+    utilidad: 2,
+    utilidad_a: 2,
+    utilidad_b: 2,
+    utilidad_c: 2,
+    utilidad_dolar: 2,
+    precio_variable: 2,
+    retiene: 2,
+    farm_principio_activo_id: 2,
+    imagen: '',
+    costo_adicional: 2,
+    costo_adicional2: 2,
+    cant_ensamblado: 2,
+    licor: 2,
+    porcentaje: 2,
+    visible_pv: 2,
+    visible_web: 2,
+    rest_areas_id: '',
+    setcortesia: 2,
+    exento: 2,
+    merma: 2,
+    existencia_c: 2,
+    obviar_ajuste: 2,
+   // presentaciones: [],
 }
-const onePrueba = {
-    data: nuevoDataPrueba,
-    data1: [{}, {}]
-}
+
 
 //    probando endpoints
 
@@ -79,26 +88,38 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
     describe('Post  #conceptos #post ', () => {
 
-        /*it('ruta de crear un nuevo concepto deberia devolver status200 #post #crear', async () => {
+
+        it('ruta de crear un nuevo concepto deberia devolver status200 #post #crear', async () => {
             const { app } = new App();
+            const onePrueba = {// aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
+                data: Object.assign(nuevoDataPrueba,{codigo:`${Math.random()}` ,referencia:`${Math.random()}` }),
+                data1: [{}, {}]
+            }
+         //   nuevoDataPrueba.codigo =`${Math.random()}` // para crear un codigo unico y no de error
+         //   nuevoDataPrueba.referencia = `${Math.random()}`
             const res = await request(app).post(`/api/conceptos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send(onePrueba);
-            expect(res.status).toEqual(200);
+            expect(res.body.message).toBeDefined();
+            expect(res.status).toEqual(201);
         })
 
 
         it('deberia actualizar un concepto devolver 200 #post #actualizar', async () => {
             const { app } = new App();
+            const onePrueba = { // aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
+                data: Object.assign(nuevoDataPrueba,{codigo:`${Math.random()}` ,referencia:`${Math.random()}` }),
+                data1: [{}, {}]
+            }
+                // para crear un codigo unico y no de error
             const res = await request(app).post(`/api/conceptos/2`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send(onePrueba)
-            expect(res.status).toEqual(200);
-            // expect(res.body).toHaveProperty('post')
-
-
+            console.log(res);
+            expect(res.body.message).toBeDefined();
+            expect(res.status).toEqual(201);
         })
-*/
+
 
     })
 

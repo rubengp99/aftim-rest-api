@@ -49,7 +49,7 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver una empresa #get #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/2`)
+        const res = await request(app).get(`/api/empresa/3`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
 
