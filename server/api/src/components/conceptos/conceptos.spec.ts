@@ -84,47 +84,7 @@ let nuevoDataPrueba: IConcepto = {
 
 describe(' ruta conceptos #endpointTest #conceptos', () => {
 
-    describe('Post  #conceptos #post ', () => {
-
-
-        it('ruta de crear un nuevo concepto deberia devolver status200 #post #crear', async () => {
-            const { app } = new App();
-            const onePrueba = {// aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
-                //data: Object.assign(nuevoDataPrueba, { id:Math.random() * ((9000 -800) + 800), codigo: `${Math.random()}`, referencia: `${Math.random()}` }),
-                data1: [{}, {}],
-                data: nuevoDataPrueba,
-            }
-            //   nuevoDataPrueba.codigo =`${Math.random()}` // para crear un codigo unico y no de error
-            //   nuevoDataPrueba.referencia = `${Math.random()}`
-            const res = await request(app).post(`/api/conceptos`)
-                .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .send(onePrueba);
-            expect(res.body.message).toBeDefined();
-            expect(res.status).toEqual(201);
-        })
-
-
-        it('deberia actualizar un concepto devolver 200 #post #actualizar', async () => {
-            const { app } = new App();
-            const onePrueba = { // aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
-                data: nuevoDataPrueba,
-                data1: [{}, {},{}]
-            }
-            // para crear un codigo unico y no de error
-            const res = await request(app).post(`/api/conceptos/3`)
-                .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .send(onePrueba)
-            console.log(res);
-            const ifDontExistExeption = (message) => {
-                return message === 'The element not exist' ? 404 : 201
-            }
-            //check
-            expect(res.status).toEqual(ifDontExistExeption(res.body));
-        })
-
-    })
-
-
+    
     describe('get #conceptos #get ', () => {
 
 
@@ -240,5 +200,46 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
                 expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
     })
+    describe('Post  #conceptos #post ', () => {
+
+
+        it('ruta de crear un nuevo concepto deberia devolver status200 #post #crear', async () => {
+            const { app } = new App();
+            const onePrueba = {// aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
+                //data: Object.assign(nuevoDataPrueba, { id:Math.random() * ((9000 -800) + 800), codigo: `${Math.random()}`, referencia: `${Math.random()}` }),
+                data1: [{}, {}],
+                data: nuevoDataPrueba,
+            }
+            //   nuevoDataPrueba.codigo =`${Math.random()}` // para crear un codigo unico y no de error
+            //   nuevoDataPrueba.referencia = `${Math.random()}`
+            const res = await request(app).post(`/api/conceptos`)
+                .set('x-access-control', '{"user":"admin","password":"123456"}')
+                .send(onePrueba);
+            expect(res.body.message).toBeDefined();
+            expect(res.status).toEqual(201);
+        })
+
+
+        it('deberia actualizar un concepto devolver 200 #post #actualizar', async () => {
+            const { app } = new App();
+            const onePrueba = { // aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
+                data: nuevoDataPrueba,
+                data1: [{}, {},{}]
+            }
+            // para crear un codigo unico y no de error
+            const res = await request(app).post(`/api/conceptos/3`)
+                .set('x-access-control', '{"user":"admin","password":"123456"}')
+                .send(onePrueba)
+            console.log(res);
+            const ifDontExistExeption = (message) => {
+                return message === 'The element not exist' ? 404 : 201
+            }
+            //check
+            expect(res.status).toEqual(ifDontExistExeption(res.body));
+        })
+
+    })
+
+
 })
 
