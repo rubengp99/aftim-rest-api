@@ -52,19 +52,26 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
         const res = await request(app).get(`/api/empresa/3`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
-
-        expect(res.status).toEqual(200);
+            const ifDontExistExeption = (message) => {
+                return message === 'The element not exist' ? 404 : 200
+            }
+            //check
+            expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
     it('ver conceptos de una empresa #get #oneConcept', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/2/conceptos`)
+        const res = await request(app).get(`/api/empresa/1/conceptos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
 
-        expect(res.status).toEqual(200);
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
@@ -73,19 +80,28 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
         //execute
         const res = await request(app).get(`/api/empresa/3/grupos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
-            .send({ query: { fields: 1, limit: "" } })
-        expect(res.status).toEqual(200);
+            .send({ query: { fields: 1, limit: "" } });
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
+
     })
 
 
     it('ver depositos de una empresa #get #oneDepositos', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/depositos`)
+        const res = await request(app).get(`/api/empresa/2/depositos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
-        console.log(res);
-        expect(res.status).toEqual(200);
+
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //execute
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
@@ -95,8 +111,25 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
         const res = await request(app).get(`/api/empresa/3/cargos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //execute
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
+    })
 
-        expect(res.status).toEqual(200);
+
+    it('ver conceptos de un grupo de una empresa #get #oneConceptGroup', async () => {
+        const { app } = new App();
+        //execute
+        const res = await request(app).get(`/api/empresa/3/grupos/2/conceptos`)
+            .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .send({ query: { fields: 1, limit: "" } })
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //execute
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
@@ -107,18 +140,11 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
 
-        expect(res.status).toEqual(200);
-    })
-
-
-    it('ver conceptos de un grupo de una empresa #get #oneConceptGroup', async () => {
-        const { app } = new App();
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
         //execute
-        const res = await request(app).get(`/api/empresa/3/grupos/2/conceptos`)
-            .set('x-access-control', '{"user":"admin","password":"123456"}')
-            .send({ query: { fields: 1, limit: "" } })
-
-        expect(res.status).toEqual(200);
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
@@ -129,7 +155,11 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
 
-        expect(res.status).toEqual(200);
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
@@ -140,7 +170,11 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
 
-        expect(res.status).toEqual(200);
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
@@ -151,7 +185,11 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
 
-        expect(res.status).toEqual(200);
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 })
@@ -163,8 +201,9 @@ describe('testing post endpoints #post #endpoint', () => {
         const res = await request(app).post(`/api/empresa/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send(envio)
-            expect(res.body.message).toBeDefined()
-            expect(res.status).toEqual(201);
+
+        //check
+        expect(res.status).toEqual(201);
     })
 
 
@@ -174,33 +213,42 @@ describe('testing post endpoints #post #endpoint', () => {
         const res = await request(app).post(`/api/empresa/1`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send(envio);
-        expect(res.body.message).toBeDefined()
-        expect(res.status).toEqual(201);
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 201
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 
 
     it('actualiza el precio de todos los conceptos de una empresa #post #one #update  #concepts', async () => {
         const { app } = new App();
-        
+
         //execute
         const res = await request(app).post(`/api/empresa/3/adjustPrice`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
-            .send({data:{percent:10}})
-        
-        expect(res.body.message).toBeDefined()
-        expect(res.status).toEqual(201);
+            .send({ data: { percent: 10 } })
+
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 201
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 })
-describe('testing delete endpoint #endoint #delete',()=>{
-    it('eliminar una empresa #delete #one #empresa', async ()=>{
+describe('testing delete endpoint #endoint #delete', () => {
+    it('eliminar una empresa #delete #one #empresa', async () => {
         const { app } = new App();
         //execute
         const res = await request(app).delete(`/api/empresa/2`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
-            .send({data:{percent:10}})
+            .send({ data: { percent: 10 } })
 
-            console.log(res)
-        expect(res.body).toEqual("Record deleted")
-        expect(res.status).toEqual(200);
+        console.log(res)
+        const ifDontExistExeption = (message) => {
+            return message === 'The element not exist' ? 404 : 200
+        }
+        //check
+        expect(res.status).toEqual(ifDontExistExeption(res.body));
     })
 })

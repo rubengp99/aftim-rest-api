@@ -5,6 +5,7 @@ import { IConcepto } from './model';
 import { IGrupo } from "./../grupos/model";
 import { ISubgrupo } from "./../subgrupos/model";
 const grupoPrueba: IGrupo = {
+    id: 80,
     nombre: '',
     imagen: '',
     visualizar: true,
@@ -21,7 +22,6 @@ const subgrupoPrueba: ISubgrupo = {
 }
 
 let nuevoDataPrueba: IConcepto = {
-    // id: 10040,
     adm_empresa_id: 1,
     nombre: 'mercado',
     adm_tipos_conceptos_id: 2,
@@ -29,9 +29,7 @@ let nuevoDataPrueba: IConcepto = {
     precio_a: 5000.00,
     precio_dolar: 10,
     costo_dolar: 10,
-    codigo: '0013243242343242',
     // id?: string | number | undefined;
-    referencia: '',
     descripcion: '',
     talla: 'n',
     color: '',
@@ -47,12 +45,12 @@ let nuevoDataPrueba: IConcepto = {
     costo_promedio: 200,
     fecha_in: '2018-03-01',
     fecha_uc: '2018-03-01',
-    adm_grupos_id: '1',
-    adm_subgrupos_id: '',
+    adm_grupos_id: 1,
+    adm_subgrupos_id: 1,
     presentacion: 2,
-    adm_unidades_id: '',
+    adm_unidades_id: 1,
     fecha_hora: 100,
-    adm_marcas_id: '',
+    adm_marcas_id: 1,
     estado: false,
     pvp: 2,
     precio_b: 2,
@@ -72,13 +70,13 @@ let nuevoDataPrueba: IConcepto = {
     porcentaje: 2,
     visible_pv: 2,
     visible_web: 2,
-    rest_areas_id: '',
+    rest_areas_id: 2,
     setcortesia: 2,
     exento: 2,
     merma: 2,
     existencia_c: 2,
     obviar_ajuste: 2,
-   // presentaciones: [],
+  //   presentaciones: [],
 }
 
 
@@ -92,11 +90,12 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
         it('ruta de crear un nuevo concepto deberia devolver status200 #post #crear', async () => {
             const { app } = new App();
             const onePrueba = {// aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
-                data: Object.assign(nuevoDataPrueba,{codigo:`${Math.random()}` ,referencia:`${Math.random()}` }),
-                data1: [{}, {}]
+                //data: Object.assign(nuevoDataPrueba, { id:Math.random() * ((9000 -800) + 800), codigo: `${Math.random()}`, referencia: `${Math.random()}` }),
+                data1: [{}, {}],
+                data: nuevoDataPrueba,
             }
-         //   nuevoDataPrueba.codigo =`${Math.random()}` // para crear un codigo unico y no de error
-         //   nuevoDataPrueba.referencia = `${Math.random()}`
+            //   nuevoDataPrueba.codigo =`${Math.random()}` // para crear un codigo unico y no de error
+            //   nuevoDataPrueba.referencia = `${Math.random()}`
             const res = await request(app).post(`/api/conceptos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send(onePrueba);
@@ -108,18 +107,20 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
         it('deberia actualizar un concepto devolver 200 #post #actualizar', async () => {
             const { app } = new App();
             const onePrueba = { // aqui seteamos datos que deben ser irrepetibles para que los est no den error por culpa de los otros test
-                data: Object.assign(nuevoDataPrueba,{codigo:`${Math.random()}` ,referencia:`${Math.random()}` }),
-                data1: [{}, {}]
+                data: nuevoDataPrueba,
+                data1: [{}, {},{}]
             }
-                // para crear un codigo unico y no de error
-            const res = await request(app).post(`/api/conceptos/2`)
+            // para crear un codigo unico y no de error
+            const res = await request(app).post(`/api/conceptos/3`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send(onePrueba)
             console.log(res);
-            expect(res.body.message).toBeDefined();
-            expect(res.status).toEqual(201);
+            const ifDontExistExeption = (message) => {
+                return message === 'The element not exist' ? 404 : 201
+            }
+            //check
+            expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
-
 
     })
 
@@ -132,6 +133,7 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
+            expect(res.body.data).toBeDefined();
             expect(res.status).toEqual(200);
         })
 
@@ -140,7 +142,8 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const { app } = new App();
             const res = await request(app).get(`/api/conceptos/mostsold`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .send({ query: { fields: 1, limit: "" } })
+                .send({ query: { fields: 1, limit: "" } });
+            expect(res.body.data).toBeDefined();
             expect(res.status).toEqual(200);
         })
 
@@ -149,6 +152,7 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/mostreturned`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
+            expect(res.body.data).toBeDefined();
             expect(res.status).toEqual(200);
         })
 
@@ -157,7 +161,11 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/3/sell`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            expect(res.status).toEqual(200);
+                const ifDontExistExeption = (message) => {
+                    return message === 'The element not exist' ? 404 : 200
+                }
+                //check
+                expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
 
         it('devolver devoluciones de un concepto #conceptos #get #devoluciones', async () => {
@@ -165,7 +173,11 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/3/devolutions`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            expect(res.status).toEqual(200);
+                const ifDontExistExeption = (message) => {
+                    return message === 'The element not exist' ? 404 : 200
+                }
+                //check
+                expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
 
         it('si un concepto se ha vendido alguna vez #conceptos #get #wasSoldSometime', async () => {
@@ -173,7 +185,11 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/4/issold`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            expect(res.status).toEqual(200);
+                const ifDontExistExeption = (message) => {
+                    return message === 'The element not exist' ? 404 : 200
+                }
+                //check
+                expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
 
         it('Obtener un concepto particular #conceptos #get #one', async () => {
@@ -181,7 +197,11 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/4`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            expect(res.status).toEqual(200);
+                const ifDontExistExeption = (message) => {
+                    return message === 'The element not exist' ? 404 : 200
+                }
+                //check
+                expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
 
         it('Obtener depositos de un concepto #conceptos #get #one #depositos', async () => {
@@ -189,15 +209,23 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/7/depositos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            expect(res.status).toEqual(200);
+                const ifDontExistExeption = (message) => {
+                    return message === 'The element not exist' ? 404 : 200
+                }
+                //check
+                expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
 
         it('Obtener foto de un concepto #conceptos #get #one #imagen', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/7/photos`)
+            const res = await request(app).get(`/api/conceptos/3/photos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            expect(res.status).toEqual(200);
+                const ifDontExistExeption = (message) => {
+                    return message === 'The element not exist' ? 404 : 200
+                }
+                //check
+                expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
 
         it('Obtener presentacion de un concepto #conceptos #get #one #presentaciones', async () => {
@@ -205,7 +233,11 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).get(`/api/conceptos/7/presentaciones`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send({ query: { fields: 1, limit: "" } })
-            expect(res.status).toEqual(200);
+                const ifDontExistExeption = (message) => {
+                    return message === 'The element not exist' ? 404 : 200
+                }
+                //check
+                expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
     })
 })

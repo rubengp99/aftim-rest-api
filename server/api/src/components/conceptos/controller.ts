@@ -402,7 +402,7 @@ export const create = async (body: any, file: any): Promise<any> => {
 			link: link,
 		};
 
-		if (newConcepto.tipos_conceptos_id === 2) {
+		if (newConcepto.adm_tipos_conceptos_id === 2) {
 			(await consult.create("adm_movimiento_deposito", { adm_depositos_id: 1, adm_conceptos_id: newConcepto.id })) as any;
 		}
 

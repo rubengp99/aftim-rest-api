@@ -1,7 +1,7 @@
 const request = require('supertest')
 import { App } from "./../../app";
-//import { IFacturas } from "./model";
-const datoPrueba = {
+import { IFacturas,IDetFacturas } from "./model";
+const datoPrueba : IFacturas= {
     numero_factura: '121212312',
     numero_fiscal: '23213',
     serial_impresora: '213',
@@ -32,26 +32,27 @@ const datoPrueba = {
     estatus_entrega: 1,
     fecha_entrega: '10-10-1010',
 }
+const subDato : IDetFacturas = {
+    //     id:               null,
+    adm_enc_facturas_id: 1,
+    adm_conceptos_id: 2,
+    adm_vendedor_id: 2,
+    costo: 100,
+    costo_dolar: 2.00,
+    precio: 2,
+    precio_dolar: 1.00,
+    descuentopro: 2,
+    fecha_at: '10-10-1001',
+    cantidad: 1,
+    despachado: 1,
+    devuelto: 0,
+    adm_seriales_id: 1,
+    monto_documento: 2,
+    adm_lotes_id: 2
+}
 const envio = {
     data: datoPrueba,
-    data1: [{
-        //     id:               null,
-        adm_enc_facturas_id: 1,
-        adm_conceptos_id: 2,
-        adm_vendedor_id: 2,
-        costo: 100,
-        costo_dolar: 2.00,
-        precio: 2,
-        precio_dolar: 1.00,
-        descuentopro: 2,
-        fecha_at: '10-10-1001',
-        cantidad: 1,
-        despachado: 1,
-        devuelto: 0,
-        adm_seriales_id: 1,
-        monto_documento: 2,
-        adm_lotes_id: 2
-    }]
+    data1:[subDato]
 }
 
 
