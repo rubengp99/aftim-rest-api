@@ -102,7 +102,7 @@ export const create = async (body: any): Promise<any> => {
         let { insertId } = await consult.create(model, newCargo);
 
         detalles.forEach( async (detalle) =>{
-            detalle.enc_facturas_id = insertId;
+            detalle.adm_enc_facturas_id = insertId;
             await consult.create(submodel,detalle);
         });
         let link = links.created('facturas', insertId);
@@ -181,7 +181,7 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
         const pedido = await consult.getOne(model, id, { fields: 'id' });
         if (!pedido) return respuestas.ElementNotFound;
         const newDetail: IDetFacturas = data;
-        newDetail.enc_facturas_id = id;
+        newDetail.adm_enc_facturas_id = id;
         const { insertId } = await consult.create(submodel, newDetail);
 
         newDetail.id = insertId;

@@ -31,7 +31,8 @@ export interface IPedidos
     motivo?:                string,
     observacion?:           string,
     adm_clientes_id?:       string | number,
-    adm_enc_factura_id?:    string | number,
+    adm_enc_facturas_id?:    string | number,
+    imagen:string,
     detalles?:              IDetPedidos[]
 }
 
@@ -64,15 +65,15 @@ export interface IDetPedidos {
     precio:             number,
     fecha_at:           string,    
     fecha_in:           string,
-    estatus_id:         string | number,
+    rest_estatus_id:         string | number,
     estado:             string,
     observacion?:       string,
-    areas_id?:          string | number,
+    rest_areas_id?:          string | number,
     autorizo?:          string | number,
     motivo?:            string,
     impreso?:           number | boolean,
     entrada?:           number | boolean,
     usuario_id?:        string | number,
     cortesia?:          number | boolean,
-    motivo_anul_id?:    string | number
+    rest_motivo_anul_id?:    string | number
 }

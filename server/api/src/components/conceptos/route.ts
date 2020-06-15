@@ -126,7 +126,7 @@ router.post("/", validar, async (req: Request, res: Response): Promise<Response>
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
-		return res.status(InternalServerError.code).json({ message: InternalServerError.message });
+		return res.status(InternalServerError.code).json({ message: InternalServerError.message + ' holi' });
 	}
 });
 
