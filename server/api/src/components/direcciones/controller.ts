@@ -3,7 +3,7 @@ import * as links from "../../helpers/links";
 import * as respuestas from "../../errors";
 import { IEstados, IMunicipios } from "./model";
 
-const model = "adm_estados";
+const model = "adm_estado";
 const submodel = "adm_municipios";
 
 /**
@@ -21,7 +21,7 @@ export const get = async (query: any): Promise<any> => {
 
 		for (let i = 0; i < data.length; i++) {
 			let { id } = data[i];
-			let pres: IMunicipios[] = await consult.get(submodel, { estado_id : id });
+			let pres: IMunicipios[] = await consult.get(submodel, { estado_id: id });
 			data[i].detalles = pres;
 		}
 		let link = links.pages(data, model, count, totalCount, limit);
@@ -67,7 +67,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  */
 export const create = async (body: any): Promise<any> => {
 	let { data, data1 } = body;
-	
+
 	let newEstado: IEstados = typeof data == "string" ? JSON.parse(data) : data;
 
 	var newMunicipios: IMunicipios[]
@@ -85,7 +85,7 @@ export const create = async (body: any): Promise<any> => {
 			newEstado.detalles = newMunicipios;
 		}
 		let link = links.created(model, insertId);
-		
+
 		newEstado.id = insertId;
 		let response = Object.assign({ data: newEstado, message: respuestas.Created.message }, { link: link });
 
@@ -225,8 +225,8 @@ export const deleteDetail = async (params: any): Promise<any> => {
 	try {
 		const estado = await consult.getOne(model, id, { fields: "id" });
 
-        if (!estado) return respuestas.ElementNotFound;
-        
+		if (!estado) return respuestas.ElementNotFound;
+
 		await consult.remove(submodel, id1);
 
 		return respuestas.Deleted;
