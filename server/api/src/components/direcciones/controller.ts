@@ -48,7 +48,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
 
 		if (!data) return respuestas.ElementNotFound;
 
-		let pres: IMunicipios[] = await consult.getOtherByMe(model, id as string, submodel, {});
+		let pres: IMunicipios[] = await consult.get(submodel, { estado_id: id });
 		data.detalles = pres;
 
 		let response = Object.assign({ data });
@@ -129,7 +129,7 @@ export const remove = async (params: any): Promise<any> => {
 
 		if (!data) return respuestas.ElementNotFound;
 
-		const data1: IMunicipios[] = await consult.getOtherByMe(model, id, submodel, {});
+		const data1: IMunicipios[] = await consult.get(submodel, { estado_id: id });
 
 		for (let index = 0; index < data1.length; index++) {
 			await consult.remove(submodel, data1[index].id as number);

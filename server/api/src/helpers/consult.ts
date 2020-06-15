@@ -16,7 +16,7 @@ export const get = async (model: string, query?: any): Promise<any> => {
         let { data } = await axios.get(`${dataURL}/mysql/${model}`, { params: query });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -35,7 +35,7 @@ export const getOne = async (model: string, id: string | number, query: any): Pr
         let { data } = await axios.get(`${dataURL}/mysql/${model}/${id}`, { params: query });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -55,17 +55,17 @@ export const getOtherByMe = async (model: string, id: string | number, other: st
         let { data } = await axios.get(`${dataURL}/mysql/${model}/${id}/${other}`, { params: query });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
 
 export const getPersonalized = async (sql: string): Promise<any> => {
     try {
-        let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql  });
+        let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -77,10 +77,10 @@ export const getPersonalized = async (sql: string): Promise<any> => {
  */
 export const create = async (model: string, object: any): Promise<any> => {
     try {
-        let { data } = await axios.post(`${dataURL}/mysql/${model}/`, {  data: object });
+        let { data } = await axios.post(`${dataURL}/mysql/${model}/`, { data: object });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -92,10 +92,10 @@ export const create = async (model: string, object: any): Promise<any> => {
  */
 export const insertMany = async (model: string, object: any): Promise<any> => {
     try {
-        let { data } = await axios.post(`${dataURL}/mysql/${model}/many`, {  data: object });
+        let { data } = await axios.post(`${dataURL}/mysql/${model}/many`, { data: object });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -108,10 +108,10 @@ export const insertMany = async (model: string, object: any): Promise<any> => {
 export const update = async (model: string, id: string | number, object: any): Promise<any> => {
     try {
 
-        let { data } = await axios.post(`${dataURL}/mysql/${model}/${id}`, { data: object } );
+        let { data } = await axios.post(`${dataURL}/mysql/${model}/${id}`, { data: object });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -126,7 +126,7 @@ export const remove = async (model: string, id: string | number): Promise<any> =
         let { data } = await axios.delete(`${dataURL}/mysql/${model}/${id}`);
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -140,7 +140,7 @@ export const count = async (model: string): Promise<number> => {
         let { data } = await axios.get(`${dataURL}/mysql/count/${model}`);
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -155,7 +155,7 @@ export const countOther = async (model: string, other: string, id: string | numb
         let { data } = await axios.get(`${dataURL}/mysql/count/${model}/${id}/${other}`);
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -170,7 +170,7 @@ export const getUser = async (user: string) => {
         let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
@@ -185,7 +185,7 @@ export const empresa = async (id: string) => {
         let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
-        if(error.response.status ==='400') throw new Error('BD_SYNTAX_ERROR');
+        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
         throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
     }
 }
