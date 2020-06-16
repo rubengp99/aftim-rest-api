@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 
-export const pago = new mongoose.Schema({
+export const pagoSchema = new mongoose.Schema({
 
     emisor:{//cantidad agregada
         type:String,
@@ -35,6 +35,6 @@ export const pago = new mongoose.Schema({
     timestamps:true
 });
 
-const model = mongoose.model("usuario", pago, "usuario");
+const model = mongoose.model("pago", pagoSchema, "pago");
 
 export default model;
