@@ -230,7 +230,6 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             const res = await request(app).post(`/api/conceptos/3`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
                 .send(onePrueba)
-            console.log(res);
             const ifDontExistExeption = (message) => {
                 return message === 'The element not exist' ? 404 : 201
             }
