@@ -9,10 +9,10 @@ const model = "adm_movimiento_deposito";
  * Get all deposits movements
  * @param query modifier of the consult
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
         let data: IMovimientoDeposito[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -34,12 +34,12 @@ export const get = async (query: any): Promise<any> => {
  * @param id id of the object
  * @param query modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: IMovimientoDeposito = await consult.getOne(model, id, query);
-        let count = await consult.count(model);
+        let data: IMovimientoDeposito = await consult.getOne(tenantId, model, id, query);
+        let count = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
@@ -58,11 +58,11 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * Create a new deposit movement
  * @param body data of the object
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any, tenantId: string): Promise<any> => {
     let { data } = body;
     let newMovDep: IMovimientoDeposito = data;
     try {
-        let { insertId } = await consult.create(model, newMovDep) as any;
+        let { insertId } = await consult.create(tenantId, model, newMovDep) as any;
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         
@@ -79,18 +79,18 @@ export const create = async (body: any): Promise<any> => {
  * @param params params request object
  * @param body data of the object
  */
-export const update = async (params:any, body: any): Promise<any> => {
+export const update = async (params:any, body: any, tenantId: string): Promise<any> => {
     let { id } = params;
     let { data } = body;
     let newMovDep: IMovimientoDeposito = data;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
         
-        let data: IMovimientoDeposito[] = await consult.getOtherByMe('adm_conceptos', id, model, {fields:'id'});
+        let data: IMovimientoDeposito[] = await consult.getOtherByMe(tenantId, 'adm_conceptos', id, model, {fields:'id'});
         
         if(!data) return respuestas.ElementNotFound;
         
-        let { affectedRows } = await consult.update(model, data[0].id as number, newMovDep) as any;
+        let { affectedRows } = await consult.update(tenantId, model, data[0].id as number, newMovDep) as any;
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
         
@@ -106,12 +106,12 @@ export const update = async (params:any, body: any): Promise<any> => {
  * Delete a movement
  * @param params params request object
  */
-export const remove = async (params: any): Promise<any> => {
+export const remove = async (params: any, tenantId: string): Promise<any> => {
     let { id } = params;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
         
-        await consult.remove(model, id);
+        await consult.remove(tenantId, model, id);
         
         return respuestas.Deleted
     } catch (error) {
