@@ -7,7 +7,8 @@ const router = Router();
 //obtener todos los clientes
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { message, response, code } = await controller.get(req.query);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -18,7 +19,8 @@ router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
 //obtener todos los clientes ordenados por compras
 router.get('/mostbuyers',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { message, response, code } = await controller.getMostBuyers(req.query);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.getMostBuyers(req.query, tenantId);
         return res.status(code).json(message ? {message} : {response});
     } catch (error) {
         console.log(error);
@@ -30,7 +32,8 @@ router.get('/mostbuyers',validar, async (req:Request, res:Response):Promise<Resp
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let { message, response, code } = await controller.getOne(id,req.query);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.getOne(id,req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -41,7 +44,8 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 //obtener las compras de un cliente
 router.get('/:id/buys',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { message, response, code } = await controller.getBuys(req.params,req.query);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.getBuys(req.params,req.query, tenantId);
         return res.status(code).json(message ? {message} : {response});
     } catch (error) {
         console.log(error);
@@ -52,7 +56,8 @@ router.get('/:id/buys',validar, async (req:Request, res:Response):Promise<Respon
 //obtener las devoluciones de un cliente
 router.get('/:id/devolutions',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { message, response, code } = await controller.getDevolutions(req.params,req.query);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.getDevolutions(req.params,req.query, tenantId);
         return res.status(code).json(message ? {message} : {response});
     } catch (error) {
         console.log(error);
@@ -63,7 +68,8 @@ router.get('/:id/devolutions',validar, async (req:Request, res:Response):Promise
 //crear un cliente
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { message, response, code } = await controller.create(req.body);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.create(req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         return res.status(InternalServerError.code).json({message:InternalServerError.message});
@@ -73,7 +79,8 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
 //actualizar un cliente
 router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.update(req.params,req.body);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let {message,response,code} = await controller.update(req.params,req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         return res.status(InternalServerError.code).json({message:InternalServerError.message});
@@ -82,7 +89,8 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
 
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,code} = await controller.remove(req.params);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let {message,code} = await controller.remove(req.params, tenantId);
         return res.status(code).json(message);
     } catch (error) {
         return res.status(InternalServerError.code).json({message:InternalServerError.message});
