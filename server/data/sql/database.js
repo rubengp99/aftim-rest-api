@@ -5,13 +5,12 @@ const chalk = require('chalk');
 var connection = null;
 
 function connect(data) {
-    if (!data)
-        data = database;
     try {
-        database.database = data.database;
-        console.log(database)
+        let { id } = data;
+        let db = database;
+        db.database = id;
         connection = createPool(database);
-        console.log(`${chalk.green('[DATABASE]')} connected to ${data.database} database`);
+        console.log(`${chalk.green('[DATABASE]')} connected to ${db.database} database`);
         return connection;
     } catch (error) {
         console.log(`${chalk.red('[ERROR]')} ${error}`)
@@ -19,8 +18,8 @@ function connect(data) {
     }
 }
 
-async function disconnect() {
-    await connection.end();
+async function disconnect(db) {
+    await db.end();
 }
 
 module.exports = { connect, disconnect };
