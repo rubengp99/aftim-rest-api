@@ -1,14 +1,13 @@
 import * as controller  from './controller';
-import  {validar}  from'../../helpers/aunthentication';
+import  {validar}  from '../../helpers/aunthentication';
 import { InternalServerError } from '../../errors';
 import  { Router,Request,Response } from 'express';
 const router = Router();
 
-//obtener todos los usarios
-router.get('/',validar, async(req:Request, res:Response): Promise<Response> =>{
-    let {query} = req;
+// Obtener todos los objetivos
+router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { code, response, message } = await controller.get(query);
+        let { message, response, code } = await controller.get(req.query);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -16,11 +15,11 @@ router.get('/',validar, async(req:Request, res:Response): Promise<Response> =>{
     }
 });
 
-//obtener un usuario en concreto
+// Obtener objetivo individual
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let {message,response,code} = await controller.getOne(id,req.query);
+        let { message, response, code } = await controller.getOne(id,req.query);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -28,12 +27,10 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
     }
 });
 
-//obtener los pedidos de un usuario
-router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Response> =>{
-    let {id} = req.params;
-    let {query} = req;
+// crear un pago
+router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { code, response, message } = await controller.getPedidosByUser(id,query);
+        let {message,response,code} = await controller.create(req.body);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -41,7 +38,7 @@ router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Res
     }
 });
 
-//actualizar un usuario
+//actualizar un pago
 router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,response,code} = await controller.update(req.params,req.body);
@@ -52,11 +49,11 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
     }
 });
 
-//eliminar un usuario
+// Eliminar un pago
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.remove(req.params);
-        return res.status(code).json(message || response);
+        let {message,code} = await controller.remove(req.params);
+        return res.status(code).json(message);
     } catch (error) {
         console.log(error);
         return res.status(InternalServerError.code).json({message:InternalServerError.message});

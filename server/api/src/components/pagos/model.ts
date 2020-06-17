@@ -1,0 +1,10 @@
+export interface IPago{
+    id?:                string | number,
+    emisor:             string,
+    receptor:           string,
+    adm_pedidos_id:     number,
+    adm_status_id:      number,
+    monto:              number,
+    codigo_referencia:  number,
+    imagen:             string,
+}

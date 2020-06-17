@@ -27,6 +27,7 @@ import compras from './components/compras/route';
 import rutas from './components/servicio_rutas/route';
 import ensamblados from './components/ensamblado/route';
 import direcciones from './components/direcciones/route';
+import pagos from './components/pagos/route';
 
 export const routes = (app: Application) => {
     app.use('/api/grupos', grupo);
@@ -57,6 +58,7 @@ export const routes = (app: Application) => {
     app.use('/api/rutas',rutas);
     app.use('/api/ensamblados',ensamblados);
     app.use('/api/direcciones',direcciones);
+    app.use('/api/pagos',pagos);
     app.use('*', async (req, res, next) => {
         res.status(404).json({ message: "Route not especified" });
     });

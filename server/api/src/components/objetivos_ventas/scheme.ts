@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
 import { VendedorSchema } from "../vendedor/scheme"
 
-export const usuarioSchema = new mongoose.Schema({
+export const objetivoSchema = new mongoose.Schema({
 
     tipo:{//cantidad agregada
         type:String,
@@ -28,6 +28,6 @@ export const usuarioSchema = new mongoose.Schema({
     timestamps:true
 });
 
-const model = mongoose.model("usuario", usuarioSchema, "usuario");
+const model = mongoose.model("objetivo", objetivoSchema, "objetivo");
 
 export default model;
