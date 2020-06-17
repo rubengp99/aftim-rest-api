@@ -7,7 +7,8 @@ const router = Router();
 //obtener todos los ensamblados
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { message, response, code } = await controller.get(req.query);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         return res.status(InternalServerError.code).json({ message: InternalServerError.message });
@@ -18,7 +19,8 @@ router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let { message, response, code } = await controller.getOne(id,req.query);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let { message, response, code } = await controller.getOne(id,req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         return res.status(InternalServerError.code).json({ message: InternalServerError.message });
@@ -28,7 +30,8 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 //crear un esamblado
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.create(req.body);
+        let tenantId: string = req.headers['tenantId'] as string;
+        let {message,response,code} = await controller.create(req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         return res.status(InternalServerError.code).json({ message: InternalServerError.message });
