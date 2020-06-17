@@ -14,6 +14,10 @@ export const pagoSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    adm_tipo_pago_id:{
+        type: Number,
+        required: true,
+    },
     adm_status_id:{
         type: Number,
         required: true,
