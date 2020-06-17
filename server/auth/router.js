@@ -11,7 +11,7 @@ router.post('/encript', async (req, res) =>{
         return res.status(200).json({ password: validado });
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ validado: false });
+        return res.status(500).json({ validado: false, error: error });
     }
 });
 
@@ -24,7 +24,7 @@ router.post('/validate', async (req, res) => {
         return res.status(200).json({ validado: validado });
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ validado: false });
+        return res.status(500).json({ validado: false, error: error  });
     }
 });
 
@@ -36,7 +36,7 @@ router.post('/login', async (req, res) =>{
         return res.status(response.code).json({...response});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
+        return res.status(500).json({message: 'Internal Error', error: error });
     }
 });
 
@@ -48,7 +48,7 @@ router.post('/signup', async (req, res) =>{
         return res.status(200).json({...response});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
+        return res.status(500).json({message: 'Internal Error', error: error });
     } 
 });
 
@@ -60,7 +60,7 @@ router.post('/sesion', async(req, res) =>{
         return res.status(200).json({...response});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
+        return res.status(500).json({message: 'Internal Error', error: error });
     } 
 });
 
@@ -72,7 +72,7 @@ router.post('/sendmail', async(req, res) =>{
         return res.status(200).json({...response});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
+        return res.status(500).json({message: 'Internal Error', error: error });
     } 
 });
 
@@ -80,11 +80,11 @@ router.post('/validcode', async(req, res) =>{
     let { user,hash } = req.body.data;
     try {
         let tenantId = getTenantId(req);
-        let { code, message } = await validPasswordHash(tenantId, user,hash);
-        return res.status(200).json(message);
+        let response = await validPasswordHash(tenantId, user,hash);
+        return res.status(200).json({...response});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
+        return res.status(500).json({message: 'Internal Error', error: error });
     } 
 });
 
@@ -92,11 +92,11 @@ router.post('/resetpassword', async (req, res) =>{
     let {data} = req.body;
     try {
         let tenantId = getTenantId(req);
-        let { code, message} = await resetPassword(tenantId, data.user,data.password);
-        return res.status(200).json(message);
+        let response = await resetPassword(tenantId, data.user,data.password);
+        return res.status(200).json({...response});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
+        return res.status(500).json({message: 'Internal Error', error: error });
     }
 });
 

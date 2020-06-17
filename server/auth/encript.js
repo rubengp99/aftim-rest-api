@@ -1,4 +1,6 @@
 const bcrypt = require("bcryptjs");
+const axios = require("axios")
+
 async function encriptar (password){
     try {
         
@@ -9,32 +11,42 @@ async function encriptar (password){
         throw new Error(`Error al encriptar contraseña, Error: ${error}`);
     }
 }
-async function validar (password, hash){
+async function compareHash (password, hash){
     try {
         let valido = await bcrypt.compare(password,hash);
         console.log(valido);
         return valido;
     } catch (error) {
-        throw new Error(`Error al validar contraseña, Error: ${error}`);
+        throw new Error(`Error al compareHash contraseña, Error: ${error}`);
     }
     
 }
 
 //non ts function version
-function createAxios(baseURL, tenantId){
-    axios.defaults.baseURL = "";
-    return axios.create({
+const createAxios = function (baseURL, tenantId) {
+    console.log("[AXIOS] call from URL: "+baseURL)
+    const instance = axios.create({
         baseURL: baseURL,
+        withCredentials: true,
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'tenant-id': tenantId
-        }
+        },
+        params:{}
+    });
+
+    instance.interceptors.request.use(function (config) {
+        return config;
+    }, function (error) {
+        return Promise.reject(error)
     })
+
+    return instance;
 }
 
 function getTenantId(req) {
     return req.headers['tenant-id'];
 }
 
-module.exports = { encriptar, validar, createAxios, getTenantId }
+module.exports = { encriptar, compareHash, createAxios, getTenantId }

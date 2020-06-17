@@ -6,9 +6,11 @@ var connection = null;
 
 function connect(data) {
     try {
+        console.log(data)
         let { id } = data;
         let db = database;
         db.database = id;
+        console.log(db)
         connection = createPool(database);
         console.log(`${chalk.green('[DATABASE]')} connected to ${data.database} database`);
         return connection;
