@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 const moment = require('moment');
 const { DATA_URL, TOKEN_KEY, NOTS_URL } = require("./keys");
-const { encriptar, validar } = require("./encript");
+const { encriptar, compareHash } = require("./encript");
 const { getForgotTemplate } = require('./templates');
 
 const Unauthorized = {
@@ -32,12 +32,12 @@ async function apiAccess(tenantId, token) {
 
         let { data } = await connection.post(`/mysql/query`, { sql: sql });
         if (!data[0]) return false;
-        let valid = await validar(parsedToken.password, data[0].password)
+        let valid = await compareHash(parsedToken.password, data[0].password)
         if (!valid) return false;
 
         return { validado: true };
     } catch (error) {
-        throw new Error(`Error al validar llave, ${error}`);
+        throw new Error(`Error al compareHash llave, ${error}`);
     }
 }
 
@@ -52,7 +52,7 @@ async function login(tenantId, usuario, password) {
 
         if (!data[0]) return Unauthorized;
 
-        let valid = await validar(password, data[0].password);
+        let valid = await compareHash(password, data[0].password);
         if (!valid) return Unauthorized;
 
         const token = jwt.sign({ _id: data[0].login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
@@ -97,7 +97,7 @@ async function validate(tenantId, user_token) {
         return { response, code: 200 };
     } catch (error) {
         if (error.name == "TokenExpiredError") return Forbidden;
-        throw new Error(`Error desconocido al validar el token, Error: ${error}`);
+        throw new Error(`Error desconocido al compareHash el token, Error: ${error}`);
     }
 }
 
@@ -148,7 +148,7 @@ async function validPasswordHash(tenantId, mail, hash) {
         
         return { code: 200, message: 'valid' }
     } catch (error) {
-        throw new Error(`Error al validar el hash de recuperacion, ${error}`);
+        throw new Error(`Error al compareHash el hash de recuperacion, ${error}`);
     }
 }
 

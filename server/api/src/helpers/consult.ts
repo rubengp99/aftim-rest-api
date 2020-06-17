@@ -16,7 +16,7 @@ export const get = async (tenantId: string, model: string, query?: any): Promise
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -36,7 +36,7 @@ export const getOne = async (tenantId: string, model: string, id: string | numbe
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -57,7 +57,7 @@ export const getOtherByMe = async (tenantId: string, model: string, id: string |
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -68,7 +68,7 @@ export const getPersonalized = async (tenantId:string, sql: string): Promise<any
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -84,7 +84,7 @@ export const create = async (tenantId: string, model: string, object: any): Prom
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -100,7 +100,7 @@ export const insertMany = async (tenantId: string, model: string, object: any): 
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 /**
@@ -117,7 +117,7 @@ export const update = async (tenantId: string, model: string, id: string | numbe
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -133,7 +133,7 @@ export const remove = async (tenantId: string, model: string, id: string | numbe
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -148,7 +148,7 @@ export const count = async (tenantId: string, model: string): Promise<number> =>
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 /**
@@ -164,7 +164,7 @@ export const countOther = async (tenantId: string, model: string, other: string,
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -180,7 +180,7 @@ export const getUser = async (tenantId: string, user: string) => {
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
 
@@ -196,6 +196,6 @@ export const empresa = async (tenantId: string, id: string) => {
         return data;
     } catch (error) {
         if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
+        throw new Error(`Error en conexion connection la BD, error: ${error}`);
     }
 }
