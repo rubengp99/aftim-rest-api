@@ -10,10 +10,10 @@ const submodel = "adm_municipios";
  * Get all states
  * @param query modifier of the consult
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
 	try {
-		let data: IEstados[] = await consult.get(model, query);
-		let totalCount: number = await consult.count(model);
+		let data: IEstados[] = await consult.get(tenantId, model, query);
+		let totalCount: number = await consult.count(tenantId, model);
 		let count = data.length;
 		let { limit } = query;
 
@@ -21,7 +21,7 @@ export const get = async (query: any): Promise<any> => {
 
 		for (let i = 0; i < data.length; i++) {
 			let { id } = data[i];
-			let pres: IMunicipios[] = await consult.get(submodel, { estado_id: id });
+			let pres: IMunicipios[] = await consult.get(tenantId, submodel, { estado_id: id });
 			data[i].detalles = pres;
 		}
 		let link = links.pages(data, model, count, totalCount, limit);
@@ -40,15 +40,15 @@ export const get = async (query: any): Promise<any> => {
  * @param id id of the state
  * @param query modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
 	try {
 		if (isNaN(id as number)) return respuestas.InvalidID;
 
-		let data: IEstados = await consult.getOne(model, id, query);
+		let data: IEstados = await consult.getOne(tenantId, model, id, query);
 
 		if (!data) return respuestas.ElementNotFound;
 
-		let pres: IMunicipios[] = await consult.get(submodel, { estado_id: id });
+		let pres: IMunicipios[] = await consult.get(tenantId, submodel, { estado_id: id });
 		data.detalles = pres;
 
 		let response = Object.assign({ data });
@@ -65,7 +65,7 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * Create a new state
  * @param body data of the new state
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any, tenantId: string): Promise<any> => {
 	let { data, data1 } = body;
 
 	let newEstado: IEstados = typeof data == "string" ? JSON.parse(data) : data;
@@ -73,13 +73,13 @@ export const create = async (body: any): Promise<any> => {
 	var newMunicipios: IMunicipios[]
 
 	try {
-		let { insertId } = await consult.create(model, newEstado);
+		let { insertId } = await consult.create(tenantId, model, newEstado);
 
 		if (typeof data1 !== "undefined") {
 			newMunicipios = typeof data1 == "string" ? JSON.parse(data1) : data1;
 			for (let index = 0; index < newMunicipios.length; index++) {
 				newMunicipios[index].estado_id = insertId;
-				let inserted = await consult.create(submodel, newMunicipios[index]);
+				let inserted = await consult.create(tenantId, submodel, newMunicipios[index]);
 				newMunicipios[index].id = inserted.insertId;
 			}
 			newEstado.detalles = newMunicipios;
@@ -97,14 +97,14 @@ export const create = async (body: any): Promise<any> => {
 	}
 };
 
-export async function update(params: any, body: any): Promise<any> {
+export async function update(params: any, body: any, tenantId: string): Promise<any> {
 	let { id } = params;
 	let { data } = body;
 	let newEstado: IEstados = data;
 	try {
 		if (isNaN(id)) return respuestas.InvalidID;
 
-		let { affectedRows } = (await consult.update(model, id, newEstado)) as any;
+		let { affectedRows } = (await consult.update(tenantId, model, id, newEstado)) as any;
 		let link = links.created(model, id);
 		let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
 
@@ -120,22 +120,22 @@ export async function update(params: any, body: any): Promise<any> {
  * Delete a state 
  * @param params params request object
  */
-export const remove = async (params: any): Promise<any> => {
+export const remove = async (params: any, tenantId: string): Promise<any> => {
 	let { id } = params;
 	try {
 		if (isNaN(id)) return respuestas.InvalidID;
 
-		const data: IEstados = await consult.getOne(model, id, { fields: "id" });
+		const data: IEstados = await consult.getOne(tenantId, model, id, { fields: "id" });
 
 		if (!data) return respuestas.ElementNotFound;
 
-		const data1: IMunicipios[] = await consult.get(submodel, { estado_id: id });
+		const data1: IMunicipios[] = await consult.get(tenantId, submodel, { estado_id: id });
 
 		for (let index = 0; index < data1.length; index++) {
-			await consult.remove(submodel, data1[index].id as number);
+			await consult.remove(tenantId, submodel, data1[index].id as number);
 		}
 
-		await consult.remove(model, id);
+		await consult.remove(tenantId, model, id);
 
 		return respuestas.Deleted;
 	} catch (error) {
@@ -150,7 +150,7 @@ export const remove = async (params: any): Promise<any> => {
  * @param params paramas request object
  * @param body data of the municipality
  */
-export const addDetail = async (params: any, body: any): Promise<any> => {
+export const addDetail = async (params: any, body: any, tenantId: string): Promise<any> => {
 	let { data } = body;
 	let { id } = params;
 
@@ -158,14 +158,14 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
 
 	try {
 		console.log(id)
-		const estado = await consult.getOne(model, id, { fields: "id" });
+		const estado = await consult.getOne(tenantId, model, id, { fields: "id" });
 
 		if (!estado) return respuestas.ElementNotFound;
 
 		const newMunicipio: IMunicipios = data;
 		newMunicipio.estado_id = +id;
 		console.log(newMunicipio)
-		const { insertId } = await consult.create(submodel, newMunicipio);
+		const { insertId } = await consult.create(tenantId, submodel, newMunicipio);
 
 		newMunicipio.id = insertId;
 
@@ -185,22 +185,22 @@ export const addDetail = async (params: any, body: any): Promise<any> => {
  * @param params params request object
  * @param body data of the municipality
  */
-export const updateDetail = async (params: any, body: any): Promise<any> => {
+export const updateDetail = async (params: any, body: any, tenantId: string): Promise<any> => {
 	let { data } = body;
 	let { id, id1 } = params;
 	if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
 	try {
-		const estado = await consult.getOne(model, id, { fields: "id" });
+		const estado = await consult.getOne(tenantId, model, id, { fields: "id" });
 
 		if (!estado) return respuestas.ElementNotFound;
 
-		const detalle = await consult.getOne(submodel, id1, {});
+		const detalle = await consult.getOne(tenantId, submodel, id1, {});
 
 		if (!detalle) return respuestas.ElementNotFound;
 
 		const newMunicipio: IMunicipios = data;
 
-		await consult.update(submodel, id1, newMunicipio);
+		await consult.update(tenantId, submodel, id1, newMunicipio);
 
 		const link = links.created(model, id);
 		const response = { message: respuestas.Update.message, link: link };
@@ -217,17 +217,17 @@ export const updateDetail = async (params: any, body: any): Promise<any> => {
  * Remove a municipality from the state
  * @param params params request object
  */
-export const deleteDetail = async (params: any): Promise<any> => {
+export const deleteDetail = async (params: any, tenantId: string): Promise<any> => {
 	let { id, id1 } = params;
 
 	if (isNaN(id) || isNaN(id1)) return respuestas.InvalidID;
 
 	try {
-		const estado = await consult.getOne(model, id, { fields: "id" });
+		const estado = await consult.getOne(tenantId, model, id, { fields: "id" });
 
 		if (!estado) return respuestas.ElementNotFound;
 
-		await consult.remove(submodel, id1);
+		await consult.remove(tenantId, submodel, id1);
 
 		return respuestas.Deleted;
 	} catch (error) {

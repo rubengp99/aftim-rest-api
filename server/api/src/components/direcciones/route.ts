@@ -5,12 +5,10 @@ import { Router, Request, Response } from "express";
 const router = Router();
 
 //obtener todos los estados
-router.get(
-	"/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.get("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.get(req.query);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { message, response, code } = await controller.get(req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -20,13 +18,11 @@ router.get(
 );
 
 //obtener un estado en concreto
-router.get(
-	"/:id",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.get("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		let { id } = req.params;
 		try {
-			let { message, response, code } = await controller.getOne(id, req.query);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { message, response, code } = await controller.getOne(id, req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -37,12 +33,10 @@ router.get(
 
 
 //crear un estado
-router.post(
-	"/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.create(req.body);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { message, response, code } = await controller.create(req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -52,12 +46,10 @@ router.post(
 );
 
 //actualizar un estado
-router.post(
-	"/:id",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.update(req.params, req.body);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { message, response, code } = await controller.update(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -67,12 +59,10 @@ router.post(
 );
 
 //eliminar un estado
-router.delete(
-	"/:id",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.delete("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, code } = await controller.remove(req.params);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { message, code } = await controller.remove(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {
 			console.log(error);
@@ -82,12 +72,10 @@ router.delete(
 );
 
 //agregar municipios a un estado
-router.post(
-	"/:id/municipios/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/:id/municipios/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.addDetail(req.params, req.body);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { message, response, code } = await controller.addDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -97,12 +85,10 @@ router.post(
 );
 
 //actualizar un municipio en concreto de un estado
-router.post(
-	"/:id/municipios/:id1",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/:id/municipios/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { response, message, code } = await controller.updateDetail(req.params, req.body);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { response, message, code } = await controller.updateDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -112,12 +98,10 @@ router.post(
 );
 
 //eliminar un municipio de un estado
-router.delete(
-	"/:id/municipios/:id1",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.delete("/:id/municipios/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, code } = await controller.deleteDetail(req.params);
+			let tenantId: string = req.headers['tenantId'] as string;
+			let { message, code } = await controller.deleteDetail(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {
 			console.log(error);
