@@ -18,7 +18,6 @@ router.post('/encript', async (req, res) =>{
 router.post('/validate', async (req, res) => {
     let { token, data } = req.body;
     try {
-        console.log("[AUTH] joining /validate")
         let tenantId = getTenantId(req);
         let validado  = await apiAccess(tenantId, token);
         return res.status(200).json({ validado: validado });
