@@ -21,8 +21,9 @@ async function validar (password,hash){
 }
 
 //non ts function version
-function createAxios(tenantId){
+function createAxios(baseURL, tenantId){
     return axios.create({
+        baseURL: baseURL,
         withCredentials: false,
         headers: {
             Accept: 'application/json',

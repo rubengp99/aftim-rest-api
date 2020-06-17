@@ -10,9 +10,8 @@ export async function validar(req: Request, res: Response, next: NextFunction) {
         let head: string = req.headers['x-access-control'] as string;
         let tenantId: string = getTenantId(req);
         let connection = createAxios(authURL as string, tenantId);
-        console.log(connection)
+        
         if (!tenantId) return res.status(502).json({ message: 'A tenant ID must be specified' })
-         
         let { data } = await connection.post(`/validate`, { token: head });
         if (!data.validado) return res.status(401).json({ message: 'Invalid token' });
         

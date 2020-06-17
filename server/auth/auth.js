@@ -23,14 +23,14 @@ const Conflict = {
 
 async function apiAccess(tenantId, token) {
     try {
-        let connection = createAxios(tenantId);
+        let connection = createAxios(DATA_URL, tenantId);
         if (!token) return false;
         
         console.log(token);
         let parsedToken = JSON.parse(token);
         const sql = `SELECT * FROM usuario WHERE login = '${parsedToken.user}' or email = '${parsedToken.user}'`;
 
-        let { data } = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
+        let { data } = await connection.post(`/mysql/query`, { sql: sql });
         if (!data[0]) return false;
         let valid = await validar(parsedToken.password, data[0].password)
         if (!valid) return false;
@@ -44,10 +44,10 @@ async function apiAccess(tenantId, token) {
 async function login(tenantId, usuario, password) {
     if (!usuario || !password) return Unauthorized;
     try {
-        let connection = createAxios(tenantId);
+        let connection = createAxios(DATA_URL, tenantId);
 
         const sql = `SELECT * FROM usuario WHERE login = '${usuario}' or email = '${usuario}'`;
-        let { data } = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
+        let { data } = await connection.post(`/mysql/query`, { sql: sql });
 
 
         if (!data[0]) return Unauthorized;
@@ -64,14 +64,14 @@ async function login(tenantId, usuario, password) {
 
 async function signup(tenantId, newUser) {
     try {
-        let connection = createAxios(tenantId);
+        let connection = createAxios(DATA_URL, tenantId);
 
         const sql = `SELECT * FROM usuario WHERE login = '${newUser.login}' or email = '${newUser.email}'`;
-        let  { check }  = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
+        let  { check }  = await connection.post(`/mysql/query`, { sql: sql });
         if (check) return Conflict;
 
         newUser.password = await encriptar(newUser.password);
-        let { data } = await connection.post(`${DATA_URL}/mysql/usuario`, { data: newUser });
+        let { data } = await connection.post(`/mysql/usuario`, { data: newUser });
 
         newUser.id = data.insertId
         const token = jwt.sign({ _id: newUser.login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
@@ -84,13 +84,13 @@ async function signup(tenantId, newUser) {
 
 async function validate(tenantId, user_token) {
     try {
-        let connection = createAxios(tenantId)
+        let connection = createAxios(DATA_URL, tenantId);
         if (!user_token) return Unauthorized;
 
         let payload = jwt.verify(user_token, TOKEN_KEY || "2423503");
 
         const sql = `SELECT * FROM usuario WHERE login = '${payload._id}' or email = '${payload._id}'`;
-        let { data } = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
+        let { data } = await connection.post(`/mysql/query`, { sql: sql });
 
         const response = { data: data[0] };
 
@@ -108,16 +108,16 @@ async function encript(password) {
 
 async function sendRecuperationMail(tenantId, mail) {
     try {
-        let connection = createAxios(tenantId)
+        let connection = createAxios(DATA_URL, tenantId);
 
         const sql = `SELECT * FROM usuario WHERE login = '${mail}' or email = '${mail}'`;
-        let { data } = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
+        let { data } = await connection.post(`/mysql/query`, { sql: sql });
         
         if (!data[0]) return Unauthorized;
 
         let hash = crypto.randomBytes(3).toString('hex').toUpperCase();
         let template = getForgotTemplate(data[0].nombre, hash);
-        await connection.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: { recovery: hash, recoverydate: moment().format('YYYY-MM-DD hh:mm:ss') } });
+        await connection.post(`/mysql/usuario/${data[0].id}`, { data: { recovery: hash, recoverydate: moment().format('YYYY-MM-DD hh:mm:ss') } });
 
         await connection.post(`${NOTS_URL}/sendmail`, {
             data: {
@@ -135,16 +135,16 @@ async function sendRecuperationMail(tenantId, mail) {
 
 async function validPasswordHash(tenantId, mail, hash) {
     try {
-        let connection = createAxios(tenantId)
+        let connection = createAxios(DATA_URL, tenantId);
 
         const sql = `SELECT * FROM usuario WHERE login = '${mail}' or email = '${mail}'`;
-        let { data } = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
+        let { data } = await connection.post(`/mysql/query`, { sql: sql });
         
         if (!data[0]) return Unauthorized;
         if (moment().isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
         if (hash != data[0].recovery) return Unauthorized;
         
-        await connection.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: { recovery: '' } });
+        await connection.post(`/mysql/usuario/${data[0].id}`, { data: { recovery: '' } });
         
         return { code: 200, message: 'valid' }
     } catch (error) {
@@ -155,14 +155,14 @@ async function validPasswordHash(tenantId, mail, hash) {
 async function resetPassword(tenantId, usuario, password) {
     if (!usuario || !password) return Unauthorized;
     try {
-        let connection = createAxios(tenantId)
+        let connection = createAxios(DATA_URL, tenantId);
 
         const sql = `SELECT * FROM usuario WHERE login = '${usuario}' or email = '${usuario}'`;
-        let { data } = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
+        let { data } = await connection.post(`/mysql/query`, { sql: sql });
         
         if (!data[0]) return Unauthorized;
         let newpass = await encriptar(password);
-        await connection.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: { password: newpass } });
+        await connection.post(`/mysql/usuario/${data[0].id}`, { data: { password: newpass } });
         
         return { code: 201, message: 'password changed' }
     } catch (error) {
