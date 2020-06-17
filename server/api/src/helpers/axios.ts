@@ -1,8 +1,9 @@
 import axios, {AxiosInstance} from "axios";
 import { Request } from 'express';
 
-export const createAxios = function (baseURL: string, tenantId: string):AxiosInstance{
-    return axios.create({
+export const createAxios = function (baseURL: string, tenantId: string) : AxiosInstance{
+    console.log("[AXIOS] call from URL: "+baseURL)
+    return  axios.create({
         baseURL: baseURL,
         headers: {
             Accept: 'application/json',

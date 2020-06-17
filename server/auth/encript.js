@@ -9,7 +9,7 @@ async function encriptar (password){
         throw new Error(`Error al encriptar contraseña, Error: ${error}`);
     }
 }
-async function validar (password,hash){
+async function validar (password, hash){
     try {
         let valido = await bcrypt.compare(password,hash);
         console.log(valido);
@@ -22,6 +22,7 @@ async function validar (password,hash){
 
 //non ts function version
 function createAxios(baseURL, tenantId){
+    axios.defaults.baseURL = "";
     return axios.create({
         baseURL: baseURL,
         headers: {
