@@ -52,4 +52,15 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
     }
 });
 
+//eliminar un usuario
+router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
+    try {
+        let {message,response,code} = await controller.remove(req.params);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res.status(InternalServerError.code).json({message:InternalServerError.message});
+    }
+});
+
 export default router;

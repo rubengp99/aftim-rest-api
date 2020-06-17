@@ -4,7 +4,7 @@ import * as respuestas from '../../errors';
 import { IDescargo, IDetDescargo } from './model';
 
 const model = "adm_enc_descargos";
-const submodel = "adm_enc_descargos";
+const submodel = "adm_det_descargos";
 
 /**
  * Get all descargos
@@ -79,7 +79,7 @@ export const create = async (body: any, tenantId: string): Promise<any> => {
         
         for (let index = 0; index < detalles.length; index++) {
             let detalle = detalles[index];
-            let movDep: any[] = await consult.get(tenantId, "movmiento_depositos", { depositos_id: detalle.depositos_id, conceptos_id: detalle.conceptos_id });
+            let movDep: any[] = await consult.get(tenantId, "movmiento_depositos", { depositos_id: detalle.adm_depositos_id, conceptos_id: detalle.adm_conceptos_id });
             await consult.update(tenantId, "movimiento_depositos", movDep[0].id, movDep[0]);
         }
         

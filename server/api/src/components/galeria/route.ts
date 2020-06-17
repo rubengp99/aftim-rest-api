@@ -29,6 +29,7 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 
 //añadir data de una nueva imagen
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
+    const holi = '';
     try {
         let {message,response,code} = await controller.create(req.body);
         return res.status(code).json(message || response);

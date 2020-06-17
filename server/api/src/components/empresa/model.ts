@@ -26,5 +26,7 @@ export interface IEmpresa {
     nota2:                  string,
     color_presupuesto:      string,
     img_barcode:            string,
-    modelo:                 number
+    modelo:                 number,
+    estados_id:              string | number,
+    municipios_id:           string | number,
 }

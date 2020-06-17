@@ -45,28 +45,6 @@ router.post('/signup', async (req, res)=>{
     } 
 });
 
-router.post('/signUpClient', async (req, res)=>{
-    let { data, data1} = req.body;
-    try {
-        let { code, response,token } = await signUpClient(data,data1);
-        return res.status(code).json({data:response.data,token});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
-    } 
-});
-
-router.post('/signUpSeller', async (req, res)=>{
-    let { data, data1} = req.body;
-    try {
-        let { code, response,token } = await signUpSeller(data,data1);
-        return res.status(code).json({data:response.data,token});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({message: 'Internal Error'});
-    } 
-});
-
 router.post('/sesion', async(req, res)=>{
     let { token } = req.body;
     try {

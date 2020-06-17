@@ -244,7 +244,7 @@ describe('testing delete endpoint #endoint #delete', () => {
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ data: { percent: 10 } })
 
-        console.log(res)
+        
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 200
         }

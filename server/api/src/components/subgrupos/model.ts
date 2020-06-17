@@ -1,7 +1,7 @@
 import { IGrupo } from "components/grupos/model";
 
 export interface ISubgrupo{
-    id:             number,
+    id?:             number,
     adm_grupos_id:  number,
     nombre:         string,
     visualizar:     boolean,

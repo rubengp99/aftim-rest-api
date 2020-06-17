@@ -143,7 +143,7 @@ export const create = async (body: any, file: any): Promise<any> => {
 	if (file) {
 		let { filename = "default.png" } = file;
 	}
-	console.log(data, data1);
+	
 	let newPedido: IPedidos = typeof data == "string" ? JSON.parse(data) : data;
 	let newDetalles: IDetPedidos[] = typeof data1 == "string" ? JSON.parse(data1) : data1;
 

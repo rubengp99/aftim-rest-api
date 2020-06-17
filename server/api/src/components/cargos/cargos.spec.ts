@@ -33,7 +33,7 @@ describe('testing get endpoint routes #cargos #endpoint #get', () => {
     })
 })
 describe('testing post endpoints #cargos #endpoint #post', () => {
-    /*it('crea un nuevo cargo #post #create', async () => {
+  /*  it('crea un nuevo cargo #post #create', async () => {
         const { app } = new App();
         const res = await request(app).post(`/api/cargos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
