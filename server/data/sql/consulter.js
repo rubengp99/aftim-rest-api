@@ -1,8 +1,6 @@
 const chalk = require('chalk');
 
-const { connect } = require('./database');
 const { selectSQL, selectSQLOne, selectByFilter, makeInsert } = require('./querys');
-var connection = connect();
 
 /**
  * This function get all of the elements on the table
@@ -12,7 +10,7 @@ var connection = connect();
  * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
  * ``` 
  */
-async function get(model, query) {
+async function get(connection, model, query) {
     let sql = selectSQL(query, model);
     try {
         let data = await connection.query(sql);
@@ -46,7 +44,7 @@ async function get(model, query) {
  *- }
  * ```
  */
-async function getOne(model, id, query) {
+async function getOne(connection, model, id, query) {
     let sql = selectSQLOne(id, query, model);
     try {
         let data = await connection.query(sql);
@@ -72,7 +70,7 @@ async function getOne(model, id, query) {
  * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
  * ```
  */
-async function getOtherByMe(model, id, other, query) {
+async function getOtherByMe(connection, model, id, other, query) {
     let sql = selectByFilter(query, other, model, id);
     try {
         let data = await connection.query(sql);
@@ -91,7 +89,7 @@ async function getOtherByMe(model, id, other, query) {
  * @param {string} model model of the table
  * @param {JSON} object the new object to introduce in the db
  */
-async function create(model, object) {
+async function create(connection, model, object) {
     try {
         let inserted = await connection.query(`INSERT INTO ${model} set ?`, [object]);
         return inserted[0];
@@ -104,7 +102,7 @@ async function create(model, object) {
     }
 }
 
-async function insertMany(model,array){
+async function insertMany(connection, model,array){
     try {
         let arrVals = [];
         array.forEach(element => {
@@ -128,7 +126,7 @@ async function insertMany(model,array){
  * @param {number} id id of the register in the table
  * @param {JSON} object object to update in the db
  */
-async function update(model, id, object) {
+async function update(connection, model, id, object) {
     try {
         let updated = await connection.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
         return updated[0];
@@ -146,7 +144,7 @@ async function update(model, id, object) {
  * @param {string} model model of the table
  * @param {number} id id of the register
  */
-async function remove(model, id){
+async function remove(connection, model, id){
     try {
         let deleted = await connection.query(`DELETE FROM ${model} WHERE id = ? `,[id]);
         return deleted;
@@ -159,7 +157,7 @@ async function remove(model, id){
  * Execute a custom SQL sentence
  * @param {string} sql SQL sentence to execute
  */
-async function query(sql){
+async function query(connection, sql){
     try {
         let data = await connection.query(sql);
         return data[0];
@@ -177,7 +175,7 @@ async function query(sql){
  * This function return the total count of register in a table
  * @param {string} model model of the table
  */
-async function count(model){
+async function count(connection, model){
     try {
         let count = await connection.query(`SELECT COUNT(id) as total FROM ${model}`);
         let total = count[0][0].total;
@@ -193,7 +191,7 @@ async function count(model){
  * @param {number} id the id of the register
  * @param {string} other the other table
  */
-async function countOther(model, id, other){
+async function countOther(connection, model, id, other){
     try {
         let count = await connection.query(`SELECT COUNT(id) as total FROM ${other} WHERE ${model}_id = ${id}`);
         let total = count[0][0].total;
