@@ -7,7 +7,7 @@ const router = Router();
 //obtener todos los estados
 router.get("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { message, response, code } = await controller.get(req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -21,7 +21,7 @@ router.get("/", validar, async (req: Request, res: Response): Promise<Response> 
 router.get("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		let { id } = req.params;
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { message, response, code } = await controller.getOne(id, req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -35,7 +35,7 @@ router.get("/:id", validar, async (req: Request, res: Response): Promise<Respons
 //crear un estado
 router.post("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { message, response, code } = await controller.create(req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -48,7 +48,7 @@ router.post("/", validar, async (req: Request, res: Response): Promise<Response>
 //actualizar un estado
 router.post("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { message, response, code } = await controller.update(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -61,7 +61,7 @@ router.post("/:id", validar, async (req: Request, res: Response): Promise<Respon
 //eliminar un estado
 router.delete("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { message, code } = await controller.remove(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {
@@ -74,7 +74,7 @@ router.delete("/:id", validar, async (req: Request, res: Response): Promise<Resp
 //agregar municipios a un estado
 router.post("/:id/municipios/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { message, response, code } = await controller.addDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -87,7 +87,7 @@ router.post("/:id/municipios/", validar, async (req: Request, res: Response): Pr
 //actualizar un municipio en concreto de un estado
 router.post("/:id/municipios/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { response, message, code } = await controller.updateDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -100,7 +100,7 @@ router.post("/:id/municipios/:id1", validar, async (req: Request, res: Response)
 //eliminar un municipio de un estado
 router.delete("/:id/municipios/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenantId'] as string;
+			let tenantId: string = req.headers['tenant-id'] as string;
 			let { message, code } = await controller.deleteDetail(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {

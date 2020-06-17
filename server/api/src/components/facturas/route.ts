@@ -7,7 +7,7 @@ const router = Router();
 //obtener todas las facturas
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -18,7 +18,7 @@ router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
 //obtener los ingresos facturas
 router.get('/total',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.getTotal(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -29,7 +29,7 @@ router.get('/total',validar, async (req:Request, res:Response):Promise<Response>
 //obtener el total de facturas existentes
 router.get('/cantidad',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.getCantidad(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -41,7 +41,7 @@ router.get('/cantidad',validar, async (req:Request, res:Response):Promise<Respon
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.getOne(id,req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -52,7 +52,7 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 //crear una factura
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let {message,response,code} = await controller.create(req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -63,7 +63,7 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
 //actualizar una factura
 router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let {message,response,code} = await controller.update(req.params,req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -75,7 +75,7 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
 //eliminar una factura
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let {message,code} = await controller.remove(req.params, tenantId);
         return res.status(code).json(message);
     } catch (error) {
@@ -87,7 +87,7 @@ router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response
 //actualizar los detalles de una factura
 router.post('/:id/detalles/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let {message,response,code} = await controller.addDetail(req.params,req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -99,7 +99,7 @@ router.post('/:id/detalles/',validar, async (req:Request, res:Response):Promise<
 //actualizar un detalle en concreto en una factura
 router.post('/:id/detalles/:id1',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let {response,message,code} = await controller.updateDetail(req.params,req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -111,7 +111,7 @@ router.post('/:id/detalles/:id1',validar, async (req:Request, res:Response):Prom
 //eliminar un detalle de una factura en concreto
 router.delete('/:id/detalles/:id1',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let {message,code} = await controller.deleteDetail(req.params, tenantId);
         return res.status(code).json(message);
     } catch (error) {

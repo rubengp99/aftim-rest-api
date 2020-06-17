@@ -7,7 +7,7 @@ const router = Router();
 //obtener todos los depositos
 router.get('/', validar, async (req: Request, res: Response): Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -20,7 +20,7 @@ router.get('/', validar, async (req: Request, res: Response): Promise<Response> 
 router.get('/:id', validar, async (req: Request, res: Response): Promise<Response> => {
     let { id } = req.params;
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.getOne(id, req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -34,7 +34,7 @@ router.get('/:id/conceptos/', validar, async (req: Request, res: Response): Prom
     let { id } = req.params;
     let { query } = req.body;
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.getConceptosBydeposito(id, query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -46,7 +46,7 @@ router.get('/:id/conceptos/', validar, async (req: Request, res: Response): Prom
 //crear un deposito
 router.post('/', validar, async (req: Request, res: Response): Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.create(req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -58,7 +58,7 @@ router.post('/', validar, async (req: Request, res: Response): Promise<Response>
 //actualizar un deposito
 router.post('/:id', validar, async (req: Request, res: Response): Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, response, code } = await controller.update(req.params, req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -69,7 +69,7 @@ router.post('/:id', validar, async (req: Request, res: Response): Promise<Respon
 //eliminar un deposito
 router.delete('/:id', validar, async (req: Request, res: Response): Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
         let { message, code } = await controller.remove(req.params, tenantId);
         return res.status(code).json(message);
     } catch (error) {

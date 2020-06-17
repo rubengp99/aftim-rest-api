@@ -6,10 +6,10 @@ export async function validar(req: Request, res: Response, next: NextFunction) {
     console.log(`[DATE] ${new Date()}`);
     try {
         let head: string = req.headers['x-access-control'] as string;
-        let tenantId: string = req.headers['tenantId'] as string;
+        let tenantId: string = req.headers['tenant-id'] as string;
+        if (!tenantId) return res.status(502).json({ message: 'A tenant ID must be specified' })
         let { data } = await axios.post(`${authURL}/validate`, { token: head });
         if (!data.validado) return res.status(401).json({ message: 'Invalid token' });
-        if (tenantId === "") return res.status(502).json({ message: 'A tenant ID must be specified' })
         req.userId = data.id;
         next();
     } catch (error) {
