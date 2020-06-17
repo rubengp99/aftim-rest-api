@@ -28,7 +28,7 @@ import rutas from './components/servicio_rutas/route';
 import ensamblados from './components/ensamblado/route';
 import direcciones from './components/direcciones/route';
 import pagos from './components/pagos/route';
-
+import movimiento_caja from "./components/movimientos_caja/route";
 export const routes = (app: Application) => {
     app.use('/api/grupos', grupo);
     app.use('/api/subgrupos', subgrupos);
@@ -55,6 +55,7 @@ export const routes = (app: Application) => {
     app.use('/api/vendedor',vendedores);
     app.use('/api/objetivos_ventas',objetivos_ventas);
     app.use('/api/compras', compras);
+    app.use('/api/movimiento_caja', movimiento_caja);
     app.use('/api/rutas',rutas);
     app.use('/api/ensamblados',ensamblados);
     app.use('/api/direcciones',direcciones);
