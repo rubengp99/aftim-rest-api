@@ -11,10 +11,10 @@ const submodel = 'adm_det_compra';
  * Obtener todas las compras 
  * @param query modifier of the consult
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: ICompras[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model);
+        let data: ICompras[] = await consult.get(tenantId, model, query);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -22,7 +22,7 @@ export const get = async (query: any): Promise<any> => {
 
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
-            let pres: IDetCompras[] = await consult.getOtherByMe(model, id as string, submodel,{});
+            let pres: IDetCompras[] = await consult.getOtherByMe(tenantId, model, id as string, submodel,{});
             data[i].detalles = pres;
         }
 
@@ -42,16 +42,16 @@ export const get = async (query: any): Promise<any> => {
  * @param id id de la compra
  * @param query modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: ICompras = await consult.getOne(model, id, query);
-        let count: number = await consult.count(model);
+        let data: ICompras = await consult.getOne(tenantId, model, id, query);
+        let count: number = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
-        let pres: IDetCompras[] = await consult.getOtherByMe(model, id as string, submodel,{});
+        let pres: IDetCompras[] = await consult.getOtherByMe(tenantId, model, id as string, submodel,{});
         data.detalles = pres;
         let link = links.records(data, 'compras', count);
         let response = Object.assign({ data }, link);
