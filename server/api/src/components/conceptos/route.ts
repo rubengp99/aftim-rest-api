@@ -7,7 +7,8 @@ const router = Router();
 //obtener todos los conceptos
 router.get("/", validar, async (req: Request, res: Response): Promise<Response> => {
 	try {
-		let { message, response, code } = await controller.get(req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.get(req.query, tenantId);
 			return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -18,7 +19,8 @@ router.get("/", validar, async (req: Request, res: Response): Promise<Response> 
 //obtener todos los conceptos ordenados por ventas
 router.get("/mostsold", validar, async (req: Request, res: Response): Promise<Response> => {
 	try {
-		let { message, response, code } = await controller.getMostSold(req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.getMostSold(req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -29,7 +31,8 @@ router.get("/mostsold", validar, async (req: Request, res: Response): Promise<Re
 //obtener todos los conceptos ordenados por devoluciones
 router.get("/mostreturned", validar, async (req: Request, res: Response): Promise<Response> => {
 	try {
-		let { message, response, code } = await controller.getMostReturned(req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.getMostReturned(req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -40,7 +43,8 @@ router.get("/mostreturned", validar, async (req: Request, res: Response): Promis
 //obtener ventas de un concepto
 router.get("/:id/sell", validar, async (req: Request, res: Response): Promise<Response> => {
 	try {
-		let { message, response, code } = await controller.sellByConcept(req.params, req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.sellByConcept(req.params, req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -51,7 +55,8 @@ router.get("/:id/sell", validar, async (req: Request, res: Response): Promise<Re
 //obtener devoluciones de un concepto
 router.get("/:id/devolutions", validar, async (req: Request, res: Response): Promise<Response> => {	
 	try {
-		let { message, response, code } = await controller.devolutionsByConcept(req.params, req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.devolutionsByConcept(req.params, req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -63,7 +68,8 @@ router.get("/:id/devolutions", validar, async (req: Request, res: Response): Pro
 router.get("/:id/issold", validar, async (req: Request, res: Response): Promise<Response> => {
 	let { id } = req.params;
 	try {
-		let { message, response, code } = await controller.isSold(id);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.isSold(id, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -75,7 +81,8 @@ router.get("/:id/issold", validar, async (req: Request, res: Response): Promise<
 router.get("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 	let { id } = req.params;
 	try {
-		let { message, response, code } = await controller.getOne(id, req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.getOne(id, req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -87,7 +94,8 @@ router.get("/:id", validar, async (req: Request, res: Response): Promise<Respons
 router.get("/:id/depositos", validar, async (req: Request, res: Response): Promise<Response> => {
 	let { id } = req.params;
 	try {
-		let { message, response, code } = await controller.getDepositsByConcept(id, req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.getDepositsByConcept(id, req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -99,7 +107,8 @@ router.get("/:id/depositos", validar, async (req: Request, res: Response): Promi
 router.get("/:id/photos", validar, async (req: Request, res: Response): Promise<Response> => {
 	let { id } = req.params;
 	try {
-		let { message, response, code } = await controller.getPhotosByConcept(id, req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.getPhotosByConcept(id, req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -111,7 +120,8 @@ router.get("/:id/photos", validar, async (req: Request, res: Response): Promise<
 router.get("/:id/presentaciones", validar, async (req: Request, res: Response): Promise<Response> => {
 	let { id } = req.params;
 	try {
-		let { message, response, code } = await controller.getPresentationsByConcept(id, req.query);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.getPresentationsByConcept(id, req.query, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -122,7 +132,8 @@ router.get("/:id/presentaciones", validar, async (req: Request, res: Response): 
 //crear un concepto
 router.post("/", validar, async (req: Request, res: Response): Promise<Response> => {
 	try {
-		let { message, response, code } = await controller.create(req.body, req.file);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.create(req.body, req.file, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -133,7 +144,8 @@ router.post("/", validar, async (req: Request, res: Response): Promise<Response>
 //actualizar un concepto
 router.post("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 	try {
-		let { message, response, code } = await controller.update(req.params, req.body, req.file);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, response, code } = await controller.update(req.params, req.body, req.file, tenantId);
 		return res.status(code).json(message ? { message } : response);
 	} catch (error) {
 		console.log(error);
@@ -144,7 +156,8 @@ router.post("/:id", validar, async (req: Request, res: Response): Promise<Respon
 //eliminar un concepto
 router.delete("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 	try {
-		let { message, code } = await controller.remove(req.params);
+		let tenantId: string = req.headers['tenantId'] as string;
+		let { message, code } = await controller.remove(req.params, tenantId);
 		return res.status(code).json({ message });
 	} catch (error) {
 		console.log(error);
