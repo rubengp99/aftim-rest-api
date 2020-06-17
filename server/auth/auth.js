@@ -60,10 +60,8 @@ async function login(usuario, password) {
 
 async function signup(newUser) {
     try {
-
         const sql = `SELECT * FROM usuario WHERE login = '${newUser.login}' or email = '${newUser.email}'`;
-        let { check } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
-
+        let  { check }  = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
         if (check) return Conflict;
 
         newUser.password = await encriptar(newUser.password);
@@ -74,52 +72,6 @@ async function signup(newUser) {
 
         return { response: { data: newUser }, token, code: 200 };
     } catch (error) {
-        throw new Error(`Error al hacer signup, ${error}`);
-    }
-}
-
-async function signUpClient(newUser,newCliente){
-    try {
-        const sql = `SELECT * FROM usuario WHERE login = '${newUser.login}' or email = '${newUser.email}'`;
-        let { check } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
-
-        if (check) return Conflict;
-
-        newUser.password = await encriptar(newUser.password);
-        let { data } = await axios.post(`${DATA_URL}/mysql/usuario`, { data: newUser });
-
-        newUser.id = data.insertId;
-        const token = jwt.sign({ _id: newUser.login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
-
-        let { data1 } = await axios.post(`${DATA_URL}/mysql/adm_clientes`, { data: newCliente });
-        newCliente.id = data1.insertId;
-        newUser.cliente = newCliente;
-
-        return { response: { data: newUser}, token, code: 200 };
-    }catch (error) {
-        throw new Error(`Error al hacer signup, ${error}`);
-    }
-}
-
-async function signUpSeller(newUser,newVendedor){
-    try {
-        const sql = `SELECT * FROM usuario WHERE login = '${newUser.login}' or email = '${newUser.email}'`;
-        let { check } = await axios.post(`${DATA_URL}/mysql/query`, { sql: sql });
-
-        if (check) return Conflict;
-
-        newUser.password = await encriptar(newUser.password);
-        let { data } = await axios.post(`${DATA_URL}/mysql/usuario`, { data: newUser });
-
-        newUser.id = data.insertId;
-        const token = jwt.sign({ _id: newUser.login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
-
-        let { data1 } = await axios.post(`${DATA_URL}/mysql/adm_vendedor`, { data: newVendedor });
-        newVendedor.id = data1.insertId;
-        newUser.vendedor = newVendedor;
-
-        return { response: { data: newUser}, token, code: 200 };
-    }catch (error) {
         throw new Error(`Error al hacer signup, ${error}`);
     }
 }

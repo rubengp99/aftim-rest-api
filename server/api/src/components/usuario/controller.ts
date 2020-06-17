@@ -100,3 +100,22 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
         return respuestas.InternalServerError;
     }
 }
+
+/**
+ * Delete a user
+ * @param params params request object 
+ */
+export const remove = async (params:any): Promise<any> => {
+    let { id } = params;
+    try {
+        if(isNaN(id)) return respuestas.InvalidID;
+        
+        await consult.remove(model, id);
+        
+        return respuestas.Deleted;
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error al consultar la base de datos, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
