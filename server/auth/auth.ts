@@ -22,7 +22,7 @@ const Conflict = {
     code: 409
 }
 
-async function apiAccess(tenantId, token) {
+async function apiAccess(tenantId: string, token: string) {
     try {
         let connection = createAxios(tenantId);
         if (!token) return false;
@@ -42,7 +42,7 @@ async function apiAccess(tenantId, token) {
     }
 }
 
-async function login(tenantId, usuario, password) {
+async function login(tenantId: string, usuario: string, password: string) {
     if (!usuario || !password) return Unauthorized;
     try {
         let connection = createAxios(tenantId);
@@ -63,7 +63,7 @@ async function login(tenantId, usuario, password) {
     }
 }
 
-async function signup(tenantId, newUser) {
+async function signup(tenantId: string, newUser: any) {
     try {
         let connection = createAxios(tenantId);
 
@@ -83,7 +83,7 @@ async function signup(tenantId, newUser) {
     }
 }
 
-async function validate(tenantId, user_token) {
+async function validate(tenantId: string, user_token: string) {
     try {
         let connection = createAxios(tenantId)
         if (!user_token) return Unauthorized;
@@ -102,12 +102,12 @@ async function validate(tenantId, user_token) {
     }
 }
 
-async function encript(password) {
+async function encript(password: string) {
     let pass = await encriptar(password);
     return pass;
 }
 
-async function sendRecuperationMail(tenantId, mail) {
+async function sendRecuperationMail(tenantId: string, mail: string) {
     try {
         let connection = createAxios(tenantId)
 
@@ -134,7 +134,7 @@ async function sendRecuperationMail(tenantId, mail) {
 }
 
 
-async function validPasswordHash(tenantId, mail, hash) {
+async function validPasswordHash(tenantId: string, mail: string, hash: string) {
     try {
         let connection = createAxios(tenantId)
 
@@ -153,7 +153,7 @@ async function validPasswordHash(tenantId, mail, hash) {
     }
 }
 
-async function resetPassword(tenantId, usuario, password) {
+async function resetPassword(tenantId: string, usuario: string, password: string) {
     if (!usuario || !password) return Unauthorized;
     try {
         let connection = createAxios(tenantId)
@@ -162,7 +162,7 @@ async function resetPassword(tenantId, usuario, password) {
         let { data } = await connection.post(`${DATA_URL}/mysql/query`, { sql: sql });
         
         if (!data[0]) return Unauthorized;
-        newpass = await encriptar(password);
+        let newpass = await encriptar(password);
         await connection.post(`${DATA_URL}/mysql/usuario/${data[0].id}`, { data: { password: newpass } });
         
         return { code: 201, message: 'password changed' }

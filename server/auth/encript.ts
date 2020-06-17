@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
-async function encriptar (password){
+
+async function encriptar (password: string){
     try {
         
         let salt = await bcrypt.genSalt(10);
@@ -9,7 +10,7 @@ async function encriptar (password){
         throw new Error(`Error al encriptar contraseña, Error: ${error}`);
     }
 }
-async function validar (password,hash){
+async function validar (password: string ,hash: string){
     try {
         let valido = await bcrypt.compare(password,hash);
         console.log(valido);
