@@ -19,8 +19,8 @@ function connect(data) {
     }
 }
 
-async function disconnect(db) {
-    await db.end();
+async function disconnect() {
+    await connection.end();
 }
 
 module.exports = { connect, disconnect };
