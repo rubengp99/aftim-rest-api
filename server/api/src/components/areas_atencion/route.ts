@@ -2,7 +2,7 @@ import * as controller from './controller';
 import { validar } from '../../helpers/aunthentication';
 import { InternalServerError } from '../../errors';
 import { Router, Request, Response } from 'express';
-import { getTenantId } from './axios';
+import { getTenantId } from '../../helpers/axios';
 
 const router = Router();
 
