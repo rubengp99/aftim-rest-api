@@ -4,7 +4,7 @@ import * as respuestas from '../../errors';
 import { IDescargo, IDetDescargo } from './model';
 
 const model = "adm_enc_descargos";
-const submodel = "adm_enc_descargos";
+const submodel = "adm_det_descargos";
 
 /**
  * Get all descargos
@@ -12,6 +12,7 @@ const submodel = "adm_enc_descargos";
  */
 export const get = async (query: any): Promise<any> => {
     try {
+        const holi = "";
         let data: IDescargo[] = await consult.get(model, query);
         let totalCount: number = await consult.count(model);
         let count = data.length;
@@ -79,7 +80,7 @@ export const create = async (body: any): Promise<any> => {
         
         for (let index = 0; index < detalles.length; index++) {
             let detalle = detalles[index];
-            let movDep: any[] = await consult.get("movmiento_depositos", { depositos_id: detalle.depositos_id, conceptos_id: detalle.conceptos_id });
+            let movDep: any[] = await consult.get("movmiento_depositos", { adm_depositos_id: detalle.adm_depositos_id, adm_conceptos_id: detalle.adm_conceptos_id });
             await consult.update("movimiento_depositos", movDep[0].id, movDep[0]);
         }
         

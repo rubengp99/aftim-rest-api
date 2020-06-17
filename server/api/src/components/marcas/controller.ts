@@ -66,8 +66,8 @@ export const getConceptosByMarca = async (id:string | number ,query:any):Promise
         
         if(!recurso) return respuestas.ElementNotFound;
         
-        let data:any = await consult.getOtherByMe(model,id,'conceptos',query);
-        let totalCount = await consult.countOther(model,'conceptos',id);
+        let data:any = await consult.getOtherByMe(model,id,'adm_conceptos',query);
+        let totalCount = await consult.countOther(model,'adm_conceptos',id);
         let count = data.length;
         let {limit} = query;
         

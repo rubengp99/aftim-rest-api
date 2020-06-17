@@ -7,7 +7,7 @@ const router = Router();
 //obtener todos los descargos
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let { message, response, code } = await controller.get(req.query);
+        let { message, response, code } = await controller.get(req.body.query);
         return res.status(code).json(message || response);
     } catch (error) {
         return res.status(InternalServerError.code).json({ message: InternalServerError.message });

@@ -38,7 +38,7 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
     }
 });
 
-//obtener una entidad en concreto
+//editar una entidad en concreto
 router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let {message,response,code} = await controller.update(req.params,req.body);

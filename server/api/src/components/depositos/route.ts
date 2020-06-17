@@ -30,7 +30,7 @@ router.get('/:id', validar, async (req: Request, res: Response): Promise<Respons
 //obtener los conceptos de un deposito
 router.get('/:id/conceptos/', validar, async (req: Request, res: Response): Promise<Response> => {
     let { id } = req.params;
-    let { query } = req;
+    let { query } = req.body;
     try {
         let { message, response, code } = await controller.getConceptosBydeposito(id, query);
         return res.status(code).json(message || response);

@@ -30,7 +30,7 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 //obtener los conceptos de una marca
 router.get('/:id/conceptos/',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
-    let {query} = req;
+    let {query} = req.body;
     try {
         let {message,response,code} = await controller.getConceptosByMarca(id,query);
         return res.status(code).json(message || response);
@@ -65,7 +65,7 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
 //eliminar una marca
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,code} = await controller.remove(req);
+        let {message,code} = await controller.remove(req.params);
         return res.status(code).json(message);
     } catch (error) {
         console.log(error);
