@@ -9,7 +9,7 @@ export interface IUsuario {
     tema:           string,
     app_ajax:       number,
     datagrid:       number,
-    fotografia:     string,
+    imagen:         string,
     pool:           string,
     usuario_at:     string,
     usuario_in:     string,
