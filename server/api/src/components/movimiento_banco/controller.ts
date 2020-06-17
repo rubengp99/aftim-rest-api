@@ -8,10 +8,10 @@ const model = "adm_movimientos_bancos";
  * Get all banks moves
  * @param query modifier of the consult
  */
-export async function get(query: any): Promise<any> {
+export async function get(query: any, tenantId: string): Promise<any> {
     try {
-        let data: IMovimientoBanco[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model);
+        let data: IMovimientoBanco[] = await consult.get(tenantId, model, query);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -33,12 +33,12 @@ export async function get(query: any): Promise<any> {
  * @param id id of the bank move
  * @param query modifier of the consult
  */
-export async function getOne(id: string | number, query: any): Promise<any> {
+export async function getOne(id: string | number, query: any, tenantId: string): Promise<any> {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: IMovimientoBanco = await consult.getOne(model, id, query);
-        let count = await consult.count(model);
+        let data: IMovimientoBanco = await consult.getOne(tenantId, model, id, query);
+        let count = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
@@ -57,11 +57,11 @@ export async function getOne(id: string | number, query: any): Promise<any> {
  * Creat a new bank move
  * @param body data of the new bank move 
  */
-export async function create(body: any): Promise<any> {
+export async function create(body: any, tenantId: string): Promise<any> {
     let { data } = body;
     let newGrupo: IMovimientoBanco = data;
     try {
-        let { insertId } = await consult.create(model, newGrupo) as any;
+        let { insertId } = await consult.create(tenantId, model, newGrupo) as any;
         newGrupo.id = insertId; 
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message, data:newGrupo }, { link: link });
