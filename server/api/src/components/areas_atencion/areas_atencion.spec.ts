@@ -3,7 +3,7 @@ import { get, getOne, create, update, remove } from './controller';
 import { App } from '../../app';
 
 import request from 'supertest';
-
+let tenantId: string = "test"
 
 const dataPrueba: IAreasAtencion = {
     id: 1,
@@ -21,14 +21,14 @@ const onePrueba = {
 
 describe('Controller', () => {
     test('Get all', async () => {
-        const data = await get({});
+        const data = await get({}, tenantId);
         expect(data).toBeDefined();
         expect(data.code).toEqual(expect.any(Number));
         expect(data.message || data.response).toBeDefined();
         
     });
     test('Get One', async () => {
-        const data = await getOne(1, {});
+        const data = await getOne(1, {}, tenantId);
         expect(data).toBeDefined();
         expect(data.code).toEqual(expect.any(Number));
         if(data.code === 200){
@@ -63,7 +63,8 @@ describe('Router', () => {
     test('Get',async ()=>{
         const response = await request(app.app)
                         .get('/api/areas_atencion')
-                        .set('x-access-control','{"user":"admin","password":"123456"}');
+                        .set('x-access-control','{"user":"admin","password":"123456"}')
+                        .set('tenantId', tenantId);
         expect(response.status).toBe(200);
     });
 });
