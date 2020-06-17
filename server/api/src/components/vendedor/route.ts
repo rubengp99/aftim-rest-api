@@ -2,12 +2,14 @@ import * as controller  from './controller';
 import  {validar}  from '../../helpers/aunthentication';
 import { InternalServerError } from '../../errors';
 import  { Router,Request,Response } from 'express';
+import { getTenantId } from '../../helpers/axios';
+
 const router = Router();
 
 //obtener todos los vendedores
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.get(req.query, tenantId);
         return res.status(code).json(message ? {message} : response);
     } catch (error) {
@@ -19,7 +21,7 @@ router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
 //obtener todos los vendedores ordenados por ventas
 router.get('/mostsellers',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.getTopSellers(req.query, tenantId);
         return res.status(code).json(message ? {message} : response);
     } catch (error) {
@@ -32,7 +34,7 @@ router.get('/mostsellers',validar, async (req:Request, res:Response):Promise<Res
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.getOne(id,req.query, tenantId);
         return res.status(code).json(message ? {message} : response);
     } catch (error) {
@@ -44,7 +46,7 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 //obtener las ventas de un vendedor
 router.get('/:id/sell',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.getSellsBySeller(req.params,req.query, tenantId);
         return res.status(code).json(message ? {message} : response);
     } catch (error) {
@@ -56,7 +58,7 @@ router.get('/:id/sell',validar, async (req:Request, res:Response):Promise<Respon
 //crear un vendedor
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.create(req.body, tenantId);
         return res.status(code).json(message ? {message} : response);
     } catch (error) {
@@ -68,7 +70,7 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
 //actualizar un vendedor
 router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.update(req.params,req.body, tenantId);
         return res.status(code).json(message ? {message} : response);
     } catch (error) {
@@ -80,7 +82,7 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
 //eliminar un vendedor
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,code} = await controller.remove(req.params, tenantId);
         return res.status(code).json({message});
     } catch (error) {

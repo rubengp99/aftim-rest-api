@@ -1,18 +1,5 @@
-import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { dataURL } from '../keys';
-// start the db connection
-
-
-function createAxios(tenantId: string):AxiosInstance{
-    return axios.create({
-        withCredentials: false,
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'tenantId': tenantId
-        }
-    })
-}
+import { createAxios } from './axios'
 
 /**
  * This function get all of the elements on the table

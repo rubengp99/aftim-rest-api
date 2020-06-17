@@ -2,12 +2,14 @@ import * as controller from "./controller";
 import { validar } from "../../helpers/aunthentication";
 import { InternalServerError } from "../../errors";
 import { Router, Request, Response } from "express";
+import { getTenantId } from '../../helpers/axios';
+
 const router = Router();
 
 //obtener todos los pedidos
 router.get("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.get(req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -18,7 +20,7 @@ router.get("/", validar, async (req: Request, res: Response): Promise<Response> 
 );
 router.get("/stats", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.getStats(tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -32,7 +34,7 @@ router.get("/stats", validar, async (req: Request, res: Response): Promise<Respo
 router.get("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		let { id } = req.params;
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.getOne(id, req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -45,7 +47,7 @@ router.get("/:id", validar, async (req: Request, res: Response): Promise<Respons
 //obtener los conceptos de un pedido
 router.get("/:id/conceptos/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.getConceptsByOrder(req.params, req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -58,7 +60,7 @@ router.get("/:id/conceptos/", validar, async (req: Request, res: Response): Prom
 //obtener la informacion de banco de un pedido
 router.get("/:id/movimiento_banco/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.getBankMovesByOrder(req.params, req.query, tenantId);
 			return res.status(code).json(message ? { message } : { response });
 		} catch (error) {
@@ -71,7 +73,7 @@ router.get("/:id/movimiento_banco/", validar, async (req: Request, res: Response
 //crear un pedido
 router.post("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.create(req.body, req.file, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -84,7 +86,7 @@ router.post("/", validar, async (req: Request, res: Response): Promise<Response>
 //actualizar un pedido
 router.post("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.update(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -98,7 +100,7 @@ router.post("/:id", validar, async (req: Request, res: Response): Promise<Respon
 //actualizar los detalles de un pedido
 router.post("/:id/detalles/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, response, code } = await controller.addDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -111,7 +113,7 @@ router.post("/:id/detalles/", validar, async (req: Request, res: Response): Prom
 //actualizar un detalle en concreto de un pedido
 router.post("/:id/detalles/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { response, message, code } = await controller.updateDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
@@ -124,7 +126,7 @@ router.post("/:id/detalles/:id1", validar, async (req: Request, res: Response): 
 //eliminar detalles de  un pedido
 router.delete("/:id/detalles/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, code } = await controller.deleteDetail(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {
@@ -136,7 +138,7 @@ router.delete("/:id/detalles/:id1", validar, async (req: Request, res: Response)
 //eliminar un pedido
 router.delete("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let tenantId: string = req.headers['tenant-id'] as string;
+			let tenantId: string = getTenantId(req);
 			let { message, code } = await controller.remove(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {

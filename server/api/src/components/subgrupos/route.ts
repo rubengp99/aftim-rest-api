@@ -2,12 +2,14 @@ import * as controller  from './controller';
 import  {validar}  from'../../helpers/aunthentication';
 import { InternalServerError } from '../../errors';
 import  { Router,Request,Response } from 'express';
+import { getTenantId } from '../../helpers/axios';
+
 const router = Router();
 
 //obtener un subgrupo
 router.get('/',validar,async (req:Request,res:Response):Promise<Response>=>{
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code}= await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -20,7 +22,7 @@ router.get('/',validar,async (req:Request,res:Response):Promise<Response>=>{
 router.get('/mostsold', validar, async (req: Request, res: Response): Promise<Response> => {
     let { query } = req;
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,data,code} = await controller.mostSold(query, tenantId);
         return res.status(code).json(message ? {message} : {data});
     } catch (error) {
@@ -35,7 +37,7 @@ router.get('/mostsold', validar, async (req: Request, res: Response): Promise<Re
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.getOne(id,req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -49,7 +51,7 @@ router.get('/:id/conceptos/',validar, async (req:Request, res:Response):Promise<
     let {id} = req.params;
     let {query} = req;
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {response,code} = await controller.getConceptosBySubgrupo(id,query, tenantId);     
         return res.status(code).json(response);
     } catch (error) {
@@ -63,7 +65,7 @@ router.get('/:id/sell',validar, async (req:Request, res:Response): Promise<Respo
     let { id } = req.params;
     let { query } = req;
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.getSellBySubgroups(id,query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -75,7 +77,7 @@ router.get('/:id/sell',validar, async (req:Request, res:Response): Promise<Respo
 //crear un subgrupo
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.create(req.body,req.file, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -87,7 +89,7 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
 //actualizar un subgrupo
 router.post('/:id', validar, async (req:Request, res:Response):Promise<Response> =>{
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,response,code} = await controller.update(req.params,req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
@@ -99,7 +101,7 @@ router.post('/:id', validar, async (req:Request, res:Response):Promise<Response>
 //eliminar un subgrupo
 router.delete('/:id', validar, async (req:Request, res:Response):Promise<Response> =>{
     try {
-        let tenantId: string = req.headers['tenant-id'] as string;
+        let tenantId: string = getTenantId(req);
         let {message,code} = await controller.remove(req.params, tenantId);
         return res.status(code).json(message);
     } catch (error) {
