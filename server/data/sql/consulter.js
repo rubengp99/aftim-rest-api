@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 
 const { selectSQL, selectSQLOne, selectByFilter, makeInsert } = require('./querys');
+const { disconnect } = require('./database')
 
 /**
  * This function get all of the elements on the table
@@ -15,6 +16,9 @@ async function get(connection, model, query) {
     try {
         let data = await connection.query(sql);
         let response = JSON.parse(JSON.stringify(data[0]));
+        
+        await disconnect(connection);
+        
         return response;
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
@@ -50,6 +54,9 @@ async function getOne(connection, model, id, query) {
         let data = await connection.query(sql);
         if (!data[0][0]) return null;
         let response = JSON.parse(JSON.stringify(data[0][0]));
+
+        await disconnect(connection);
+        
         return response;
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
@@ -74,6 +81,9 @@ async function getOtherByMe(connection, model, id, other, query) {
     let sql = selectByFilter(query, other, model, id);
     try {
         let data = await connection.query(sql);
+
+        await disconnect(connection);
+        
         return data[0];
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
@@ -92,6 +102,9 @@ async function getOtherByMe(connection, model, id, other, query) {
 async function create(connection, model, object) {
     try {
         let inserted = await connection.query(`INSERT INTO ${model} set ?`, [object]);
+
+        await disconnect(connection);
+        
         return inserted[0];
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
@@ -110,6 +123,9 @@ async function insertMany(connection, model,array){
         });
         let fields = makeInsert(array[0]);
         let inserted = await connection.query(`INSERT INTO ${model} (${fields}) VALUES ?`, [arrVals]);
+
+        await disconnect(connection);
+        
         return inserted[0];
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
@@ -129,6 +145,9 @@ async function insertMany(connection, model,array){
 async function update(connection, model, id, object) {
     try {
         let updated = await connection.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
+
+        await disconnect(connection);
+        
         return updated[0];
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2'){ 
@@ -147,6 +166,9 @@ async function update(connection, model, id, object) {
 async function remove(connection, model, id){
     try {
         let deleted = await connection.query(`DELETE FROM ${model} WHERE id = ? `,[id]);
+
+        await disconnect(connection);
+        
         return deleted;
     } catch (error) {
         throw new Error(`Error en conexion connection la BD, error: ${error}`);
@@ -160,6 +182,9 @@ async function remove(connection, model, id){
 async function query(connection, sql){
     try {
         let data = await connection.query(sql);
+
+        await disconnect(connection);
+        
         return data[0];
     } catch (error) {
         
@@ -179,6 +204,9 @@ async function count(connection, model){
     try {
         let count = await connection.query(`SELECT COUNT(id) as total FROM ${model}`);
         let total = count[0][0].total;
+
+        await disconnect(connection);
+        
         return total;
     } catch (error) {
         throw new Error(`Error en conexion connection la BD, error: ${error}`);
@@ -195,6 +223,9 @@ async function countOther(connection, model, id, other){
     try {
         let count = await connection.query(`SELECT COUNT(id) as total FROM ${other} WHERE ${model}_id = ${id}`);
         let total = count[0][0].total;
+
+        await disconnect(connection);
+        
         return total;
     } catch (error) {
         throw new Error(`Error en conexion connection la BD, error: ${other}`);
