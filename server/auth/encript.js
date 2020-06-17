@@ -24,11 +24,10 @@ async function validar (password,hash){
 function createAxios(baseURL, tenantId){
     return axios.create({
         baseURL: baseURL,
-        withCredentials: false,
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            'tenantId': tenantId
+            'tenant-id': tenantId
         }
     })
 }

@@ -5,11 +5,10 @@ const chalk = require('chalk');
 var connection = null;
 
 function connect(data) {
-    if (!data)
-        data = database;
     try {
-        database.database = data.database;
-        console.log(database)
+        let { id } = data;
+        let db = database;
+        db.database = id;
         connection = createPool(database);
         console.log(`${chalk.green('[DATABASE]')} connected to ${data.database} database`);
         return connection;

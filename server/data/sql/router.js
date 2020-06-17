@@ -13,7 +13,7 @@ router.get('/count/:table', async (req, res) =>{
     let { table } = req.params;
     try {
         let tenantId = getTenantId(req);
-        let db = connect({ database: tenantId })
+        let db = connect({ id:  tenantId })
         let response = await count(db, table);
         return res.status(200).json(response);
     } catch (error) {
