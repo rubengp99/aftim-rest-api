@@ -8,7 +8,9 @@ function connect(data) {
     if (!data)
         data = database;
     try {
-        connection = createPool(data);
+        database.database = data.database;
+        console.log(database)
+        connection = createPool(database);
         console.log(`${chalk.green('[DATABASE]')} connected to ${data.database} database`);
         return connection;
     } catch (error) {

@@ -1,8 +1,7 @@
-import { createAxios } from "../api/src/helpers/axios"
-const axios = require("axios");
+const axiosUtils = require("./encript")
+let { createAxios } = axiosUtils;
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const moment = require('moment');
 const { DATA_URL, TOKEN_KEY, NOTS_URL } = require("./keys");
 const { encriptar, validar } = require("./encript");
@@ -22,7 +21,7 @@ const Conflict = {
     code: 409
 }
 
-async function apiAccess(tenantId: string, token: string) {
+async function apiAccess(tenantId, token) {
     try {
         let connection = createAxios(tenantId);
         if (!token) return false;
@@ -42,7 +41,7 @@ async function apiAccess(tenantId: string, token: string) {
     }
 }
 
-async function login(tenantId: string, usuario: string, password: string) {
+async function login(tenantId, usuario, password) {
     if (!usuario || !password) return Unauthorized;
     try {
         let connection = createAxios(tenantId);
@@ -63,7 +62,7 @@ async function login(tenantId: string, usuario: string, password: string) {
     }
 }
 
-async function signup(tenantId: string, newUser: any) {
+async function signup(tenantId, newUser) {
     try {
         let connection = createAxios(tenantId);
 
@@ -83,7 +82,7 @@ async function signup(tenantId: string, newUser: any) {
     }
 }
 
-async function validate(tenantId: string, user_token: string) {
+async function validate(tenantId, user_token) {
     try {
         let connection = createAxios(tenantId)
         if (!user_token) return Unauthorized;
@@ -102,12 +101,12 @@ async function validate(tenantId: string, user_token: string) {
     }
 }
 
-async function encript(password: string) {
+async function encript(password) {
     let pass = await encriptar(password);
     return pass;
 }
 
-async function sendRecuperationMail(tenantId: string, mail: string) {
+async function sendRecuperationMail(tenantId, mail) {
     try {
         let connection = createAxios(tenantId)
 
@@ -134,7 +133,7 @@ async function sendRecuperationMail(tenantId: string, mail: string) {
 }
 
 
-async function validPasswordHash(tenantId: string, mail: string, hash: string) {
+async function validPasswordHash(tenantId, mail, hash) {
     try {
         let connection = createAxios(tenantId)
 
@@ -153,7 +152,7 @@ async function validPasswordHash(tenantId: string, mail: string, hash: string) {
     }
 }
 
-async function resetPassword(tenantId: string, usuario: string, password: string) {
+async function resetPassword(tenantId, usuario, password) {
     if (!usuario || !password) return Unauthorized;
     try {
         let connection = createAxios(tenantId)
