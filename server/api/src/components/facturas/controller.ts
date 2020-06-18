@@ -253,7 +253,7 @@ export const deleteDetail = async (params: any, tenantId: string): Promise<any> 
 
 export const getCantidad = async (query: any, tenantId: string): Promise<any> =>{
     try {
-        let facturas:IFacturas[] = await consult.get(model,query);
+        let facturas:IFacturas[] = await consult.get(tenantId, model,query);
         let count = facturas.length;
         let totalCount: number = await consult.count(tenantId, model);
         if (count <= 0) return respuestas.Empty;

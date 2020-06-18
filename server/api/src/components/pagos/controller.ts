@@ -11,7 +11,7 @@ const submodel = "usuarios";
  */
 export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: IPago[] = await consult.get(model, query);
+        let data: IPago[] = await consult.get(tenantId, model, query);
         let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;

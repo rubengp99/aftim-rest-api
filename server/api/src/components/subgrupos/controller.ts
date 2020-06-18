@@ -130,7 +130,7 @@ export async function getSellBySubgroups(id:string | number,query:any, tenantId:
         for (let index = 0; index < conceptos.length; index++) {
             const element = conceptos[index];
             query.limit = await consult.count(tenantId, 'adm_det_facturas');
-            let detalles:any[] = await consult.getOtherByMe('adm_conceptos',element.id,'adm_det_facturas',query);
+            let detalles:any[] = await consult.getOtherByMe(tenantId, 'adm_conceptos',element.id,'adm_det_facturas',query);
             for (let index = 0; index < detalles.length; index++) {
                 const element1 = detalles[index];
                 let encabezado = await consult.getOne(tenantId, 'adm_enc_facturas', element1.adm_enc_facturas_id,{fields:'id,adm_tipos_facturas_id'});

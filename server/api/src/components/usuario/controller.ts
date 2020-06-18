@@ -58,7 +58,7 @@ export async function update(params: any,body:any, tenantId: string): Promise<an
 
 export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: IUsuario[] = await consult.get(model, query);
+        let data: IUsuario[] = await consult.get(tenantId, model, query);
         let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
