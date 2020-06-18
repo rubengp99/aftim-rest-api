@@ -1,6 +1,8 @@
 const request = require('supertest')
 import { App } from "./../../app";
 import { ICiudad } from "./model";
+let tenantId: string = "almendras"
+const target = "ciudad";
 
 const datosPrueba: ICiudad = {
     adm_estado_id: 1,
@@ -16,14 +18,16 @@ const ifDontExistExeptionData = (message) => {
 
 describe('Get Routes', () => {
     test('Obtener todos #Get #All', async () => {
-        const res = await request(app).get(`/api/ciudad`)
+        const res = await request(app).get(`/api/${target}`)
+            .set('tenant-id', tenantId)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
         expect(res.body.data).toBeDefined();
         expect(res.status).toEqual(200);
     })
     test('Obtener uno #Get #One', async () => {
-        const res = await request(app).get(`/api/ciudad/1`)
+        const res = await request(app).get(`/api/${target}/1`)
+            .set('tenant-id', tenantId)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ query: { fields: 1, limit: "" } })
         expect(ifDontExistExeptionData(res.body)).toBeDefined();
@@ -33,7 +37,8 @@ describe('Get Routes', () => {
 
 describe('Post Routes #Post', () => {
     test('Crear uno #Create #One', async () => {
-        const res = await request(app).post(`/api/ciudad`)
+        const res = await request(app).post(`/api/${target}`)
+            .set('tenant-id', tenantId)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .send({ data: datosPrueba })
         expect(res.body.message).toBeDefined();

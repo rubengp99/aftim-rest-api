@@ -2,6 +2,8 @@ const request = require('supertest')
 import { App } from "./../../app";
 import { IEmpresa } from "./model";
 import { utimes } from "fs-extra";
+let tenantId: string = "almendras"
+const target = "empresa";
 const datosPrueba: IEmpresa = {
     rif: 'J-00000000-0',
     razon_social: '',
@@ -28,7 +30,7 @@ const datosPrueba: IEmpresa = {
     nota2: '',
     color_presupuesto: '',
     img_barcode: '',
-    modelo: 1
+    modelo: 1,
 }
 const envio = {
     data: datosPrueba
@@ -38,8 +40,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver todas #get #All', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa`)
+        const res = await request(app).get(`/api${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         expect(res.status).toEqual(200);
@@ -49,8 +52,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver una empresa #get #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3`)
+        const res = await request(app).get(`/api${target}/3`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
             const ifDontExistExeption = (message) => {
                 return message === 'The element not exist' ? 404 : 200
@@ -63,8 +67,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver conceptos de una empresa #get #oneConcept', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/1/conceptos`)
+        const res = await request(app).get(`/api${target}/1/conceptos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         const ifDontExistExeption = (message) => {
@@ -78,8 +83,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver grupos de una empresa #get #oneGrupos', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/grupos`)
+        const res = await request(app).get(`/api${target}/3/grupos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } });
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 200
@@ -93,8 +99,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver depositos de una empresa #get #oneDepositos', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/2/depositos`)
+        const res = await request(app).get(`/api${target}/2/depositos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         const ifDontExistExeption = (message) => {
@@ -108,8 +115,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver cargos de una empresa #get #oneCargos', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/cargos`)
+        const res = await request(app).get(`/api${target}/3/cargos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 200
@@ -122,8 +130,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver conceptos de un grupo de una empresa #get #oneConceptGroup', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/grupos/2/conceptos`)
+        const res = await request(app).get(`/api${target}/3/grupos/2/conceptos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 200
@@ -136,8 +145,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver conceptos de un grupo de una empresa #get #oneConceptGroup', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/grupos/2/conceptos`)
+        const res = await request(app).get(`/api${target}/3/grupos/2/conceptos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         const ifDontExistExeption = (message) => {
@@ -151,8 +161,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver subgrupos de una empresa #get #oneSubgroups', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/subgrupos`)
+        const res = await request(app).get(`/api${target}/3/subgrupos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         const ifDontExistExeption = (message) => {
@@ -166,8 +177,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver pedidos de una empresa #get #onePedidos', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/pedidos`)
+        const res = await request(app).get(`/api${target}/3/pedidos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         const ifDontExistExeption = (message) => {
@@ -181,8 +193,9 @@ describe('testing get endpoint empresas  #endpoint #get', () => {
     it('ver usuarios de una compania #get #oneusers', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/empresa/3/usuario`)
+        const res = await request(app).get(`/api${target}/3/usuario`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         const ifDontExistExeption = (message) => {
@@ -198,8 +211,9 @@ describe('testing post endpoints #post #endpoint', () => {
     it('crear una empresa #post #create #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/empresa/`)
+        const res = await request(app).post(`/api${target}/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(envio)
 
         //check
@@ -210,8 +224,9 @@ describe('testing post endpoints #post #endpoint', () => {
     it('actualiza una empresa #post #update #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/empresa/1`)
+        const res = await request(app).post(`/api${target}/1`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(envio);
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 201
@@ -225,8 +240,9 @@ describe('testing post endpoints #post #endpoint', () => {
         const { app } = new App();
 
         //execute
-        const res = await request(app).post(`/api/empresa/3/adjustPrice`)
+        const res = await request(app).post(`/api${target}/3/adjustPrice`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ data: { percent: 10 } })
 
         const ifDontExistExeption = (message) => {
@@ -240,8 +256,9 @@ describe('testing delete endpoint #endoint #delete', () => {
     it('eliminar una empresa #delete #one #empresa', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).delete(`/api/empresa/2`)
+        const res = await request(app).delete(`/api${target}/2`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ data: { percent: 10 } })
 
         

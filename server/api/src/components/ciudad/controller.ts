@@ -12,6 +12,7 @@ const model = "adm_ciudad";
  */
 export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
+        let holi = "";
         let data: ICiudad[] = await consult.get(tenantId, model, query);
         let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;

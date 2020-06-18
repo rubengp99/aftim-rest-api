@@ -1,6 +1,8 @@
 const request = require('supertest')
 import { App } from "./../../app";
 import { IDeposito } from "./model";
+let tenantId: string = "almendras"
+const target = "depositos";
 const DatosPrueba: IDeposito = {
     nombre: '',
     usuario_id: 6
@@ -19,15 +21,17 @@ const ifDontExistExeptionData = (message) => {
 }
 describe('Get Routes', () => {
     test('Obtener todos #Get #All', async () => {
-        const res = await request(app).get(`/api/depositos`)
+        const res = await request(app).get(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.body.data).toBeDefined();
         expect(res.status).toEqual(200);
     })
     test('Obtener uno #Get #One', async () => {
-        const res = await request(app).get(`/api/depositos/9`)
+        const res = await request(app).get(`/api/${target}/9`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
 
@@ -37,8 +41,9 @@ describe('Get Routes', () => {
     })
     test('Obtener conceptos de un deposito #Get #One #Concepts', async () => {
         const holi = { query: { fields: 'id', limit: "" } };
-        const res = await request(app).get(`/api/depositos/3/conceptos`)
+        const res = await request(app).get(`/api/${target}/3/conceptos`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(holi);
 
         expect(ifDontExistExeptionData(res.body)).toBeDefined();
@@ -47,15 +52,17 @@ describe('Get Routes', () => {
 })
 describe('Post Routes #Post', () => {
     test('Crear uno #Create #One', async () => {
-        const res = await request(app).post(`/api/depositos`)
+        const res = await request(app).post(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(pack)
         expect(res.body.message).toBeDefined();
         expect(res.status).toEqual(201);
     })
     test('Actualzar uno #Update #One', async () => {
-        const res = await request(app).post(`/api/depositos/1`)
+        const res = await request(app).post(`/api/${target}/1`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(pack)
         //check
         expect(res.body.message).toBeDefined();
@@ -64,8 +71,9 @@ describe('Post Routes #Post', () => {
 })
 describe('Delete Routes #Delete', () => {
     test('Delete uno #Delete', async () => {
-        const res = await request(app).delete(`/api/depositos/3`)
+        const res = await request(app).delete(`/api/${target}/3`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(pack)
             
             //check

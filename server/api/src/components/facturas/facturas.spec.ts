@@ -1,6 +1,8 @@
 const request = require('supertest')
 import { App } from "./../../app";
 import { IFacturas,IDetFacturas } from "./model";
+let tenantId: string = "almendras"
+const target = "factura";
 const datoPrueba : IFacturas= {
     numero_factura: '121212312',
     numero_fiscal: '23213',
@@ -63,8 +65,9 @@ describe('testing get endpoint from facturas #facturas #get #endpointTesting', (
     it('devolver todas las facuras #facturas #get #All', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/factura`)
+        const res = await request(app).get(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.status).toEqual(200);
     })
@@ -73,8 +76,9 @@ describe('testing get endpoint from facturas #facturas #get #endpointTesting', (
     it('devolver ingresos totalesde facturas #facturas #get #AllIngesos', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/factura/total`)
+        const res = await request(app).get(`/api/${target}/total`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.status).toEqual(200);
     })
@@ -83,8 +87,9 @@ describe('testing get endpoint from facturas #facturas #get #endpointTesting', (
     it('devolver cantidad de facturas existentes #facturas #get #Allexistences', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/factura/cantidad`)
+        const res = await request(app).get(`/api/${target}/cantidad`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.status).toEqual(200);
     })
@@ -93,8 +98,9 @@ describe('testing get endpoint from facturas #facturas #get #endpointTesting', (
     it('devolver  facturas en concreto #facturas #get #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/factura/4`)
+        const res = await request(app).get(`/api/${target}/4`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.status).toEqual(200);
     })
@@ -109,8 +115,9 @@ describe('testing post endpoints #facturas #endpoints #post', () => {
     it('crear nueva factura #post #create', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/factura/`)
+        const res = await request(app).post(`/api/${target}/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(envio)
         expect(res.status).toEqual(201);
     })
@@ -125,8 +132,9 @@ describe('testing post endpoints #facturas #endpoints #post', () => {
             return message === 'The element not exist' ? 404 : 201
         }
         //execute
-        const res = await request(app).post(`/api/factura/4`)
+        const res = await request(app).post(`/api/${target}/4`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(envio)
         expect(res.body.message).toEqual(resUpdated.message);//this will test the controller result
         expect(res.status).toEqual(ifDontExistExeption(res.body));//this will test endpoint route
@@ -142,8 +150,9 @@ describe('testing post endpoints #facturas #endpoints #post', () => {
             return message === 'The element not exist' ? 404 : 201
         }
         //execute
-        const res = await request(app).post(`/api/factura/6/detalles/7`)
+        const res = await request(app).post(`/api/${target}/6/detalles/7`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ data: envio.data1[0] })
         expect(res.status).toEqual(ifDontExistExeption(res.body));//this will test endpoint route
     })
@@ -162,8 +171,9 @@ describe('testing delete endpoints #facturas #endpoints #delete', () => {
             return message === 'The element not exist' ? 404 : 200
         }
         //execute
-        const res = await request(app).delete(`/api/factura/2`)
+        const res = await request(app).delete(`/api/${target}/2`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(envio)
         expect(resOnDelete(res.body)).toEqual(true);//this will test the controller result
         expect(res.status).toEqual(ifDontExistExeption(res.body));
@@ -181,8 +191,9 @@ describe('testing delete endpoints #facturas #endpoints #delete', () => {
         }
         //execute
 
-        const res = await request(app).delete(`/api/factura/5/detalles/6`)
+        const res = await request(app).delete(`/api/${target}/5/detalles/6`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ data: envio.data1[0].cantidad })
 
         expect(resOnDelete(res.body)).toEqual(true);//this will test the controller result

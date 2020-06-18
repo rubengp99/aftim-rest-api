@@ -9,6 +9,7 @@ const router = Router();
 //obtener todas las facturas
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
+        let holi :string = '';
         let tenantId: string = getTenantId(req);
         let { message, response, code } = await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);

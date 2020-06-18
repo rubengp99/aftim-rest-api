@@ -2,6 +2,8 @@ const request = require('supertest')
 import { App } from "./../../app";
 
 import { IPedidos, IDetPedidos } from "./model";
+let tenantId: string = "almendras"
+const target = "pedidos";
 const datosPrueba: IPedidos = {
     adm_empresa_id: 1,
     rest_mesas_id: 1,
@@ -46,8 +48,9 @@ describe('testing get routes #pedidos #get', () => {
         const { app } = new App();
         //execute
 
-        const res = await request(app).get(`/api/pedidos`)
+        const res = await request(app).get(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         expect(res.status).toEqual(200);
@@ -57,8 +60,9 @@ describe('testing get routes #pedidos #get', () => {
     it('ver estado de todos los pedidos #get #All #states', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/pedidos/stats`)
+        const res = await request(app).get(`/api/${target}/stats`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         expect(res.status).toEqual(200);
@@ -68,8 +72,9 @@ describe('testing get routes #pedidos #get', () => {
     it('ver un pedido #get #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/pedidos/1`)
+        const res = await request(app).get(`/api/${target}/1`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         expect(res.status).toEqual(200);
@@ -79,8 +84,9 @@ describe('testing get routes #pedidos #get', () => {
     it('ver conceptos e un pedido #get #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/pedidos/1/conceptos/`)
+        const res = await request(app).get(`/api/${target}/1/conceptos/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         expect(res.status).toEqual(200);
@@ -90,8 +96,9 @@ describe('testing get routes #pedidos #get', () => {
     it('obtener informacion bancaria de un pedido #get #one #information', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).get(`/api/pedidos/1/movimiento_banco/`)
+        const res = await request(app).get(`/api/${target}/1/movimiento_banco/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
 
         expect(res.status).toEqual(200);
@@ -104,8 +111,9 @@ describe('testing post endpoints  #endpoint #post', () => {
     it('crea un nuevo pedido #post #create #pedido', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/pedidos`)
+        const res = await request(app).post(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ data: datosPrueba, data1: detallesPrueba });
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 201
@@ -117,8 +125,9 @@ describe('testing post endpoints  #endpoint #post', () => {
     it('actualiza un  pedido #post #update #pedido', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/pedidos/${elementToUpdate.id}`)
+        const res = await request(app).post(`/api/${target}/${elementToUpdate.id}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ data: datosPrueba, data1: detallesPrueba });
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 201
@@ -131,8 +140,9 @@ describe('testing post endpoints  #endpoint #post', () => {
     it('actualiza detalles de un  pedido #post #update #pedido #details', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).post(`/api/pedidos/${elementToUpdate.id}/detalles/`)
+        const res = await request(app).post(`/api/${target}/${elementToUpdate.id}/detalles/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ data: detallesPrueba })
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 201
@@ -149,8 +159,9 @@ describe('testing delete endpoints #endpoint #delete', () => {
     it('borra un pedido #delete #one', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).delete(`/api/pedidos/${elementsToDelete.id1}`)//recive el id del elemento a borrar mediante la ruta 
+        const res = await request(app).delete(`/api/${target}/${elementsToDelete.id1}`)//recive el id del elemento a borrar mediante la ruta 
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({})
         const ifDontExistExeption = (message) => {
             return message === 'The element not exist' ? 404 : 200
@@ -162,8 +173,9 @@ describe('testing delete endpoints #endpoint #delete', () => {
     it('borra detalles de un  pedido #delete #one #details', async () => {
         const { app } = new App();
         //execute
-        const res = await request(app).delete(`/api/pedidos/${elementsToDelete.id2}/detalles/1`) //recive el id del elemento a borrar mediante la ruta pimero el id del pedido 
-            .set('x-access-control', '{"user":"admin","password":"123456"}')//luego el id del detalle
+        const res = await request(app).delete(`/api/${target}/${elementsToDelete.id2}/detalles/1`) //recive el id del elemento a borrar mediante la ruta pimero el id del pedido 
+            .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)//luego el id del detalle
             .send({})
 
         const ifDontExistExeption = (message) => {
