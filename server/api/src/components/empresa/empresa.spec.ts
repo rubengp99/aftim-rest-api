@@ -30,7 +30,7 @@ const datosPrueba: IEmpresa = {
     nota2: '',
     color_presupuesto: '',
     img_barcode: '',
-    modelo: 1
+    modelo: 1,
 }
 const envio = {
     data: datosPrueba

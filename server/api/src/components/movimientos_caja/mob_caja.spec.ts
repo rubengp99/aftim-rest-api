@@ -1,5 +1,6 @@
 import {IMovimientosCaja} from "./model";
 const request = require('supertest');
+import {App} from "./../../app";
 import {getOne,get,create} from "./controller";
 let tenantId: string = "jesttest"
 const target = "movimiento_caja";
@@ -24,7 +25,7 @@ const datosPrueba : IMovimientosCaja = {
     fecha_transaccion:'',
     imagen:''
 }
-describe('Controller #controllers', () => {
+/*describe('Controller #controllers', () => {
     test('Get all #All', async () => {
         const data = await get({});
         expect(data).toBeDefined();
@@ -43,7 +44,7 @@ describe('Controller #controllers', () => {
         expect(data.code).toEqual(expect.any(Number));
         expect(data.message || data.response).toBeDefined();
     })
- })
+ })*/
 
 
  const { app } = new App();

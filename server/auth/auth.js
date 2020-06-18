@@ -26,7 +26,6 @@ async function apiAccess(tenantId, token) {
         let connection = createAxios(DATA_URL, tenantId);
         if (!token) return false;
         
-        console.log(token);
         let parsedToken = JSON.parse(token);
         const sql = `SELECT * FROM usuario WHERE login = '${parsedToken.user}' or email = '${parsedToken.user}'`;
 

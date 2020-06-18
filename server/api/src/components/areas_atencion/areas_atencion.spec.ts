@@ -4,7 +4,7 @@ import { App } from '../../app';
 
 import request from 'supertest';
 //vars
-let tenantId: string = "test"
+let tenantId: string = "jesttest"
 const target = "areas_atencion";
 
 
@@ -47,9 +47,9 @@ describe(`Router`, () => {
     describe(`Get Routes #Get `, () => {
         test(`Get #Get #All`, async () => {
             const response = await request(app.app)
-                .get(`/api/${target}`)
-                .set(`x-access-control`, `{"user":"admin","password":"123456"}`)
-                .set(`tenant-id`, tenantId);
+                .get(`/api/areas_atencion`)
+                .set(`tenant-id`, tenantId)
+                .set(`x-access-control`, `{"user":"admin","password":"123456"}`)  
             expect(response.body.data).toBeDefined();
             expect(response.status).toBe(200);
         });
@@ -67,9 +67,9 @@ describe(`Router`, () => {
         test(`Create one #Create #One`, async () => {
             const response = await request(app.app)
                 .post(`/api/${target}`)
-                .send(onePrueba)
                 .set(`x-access-control`, `{"user":"admin","password":"123456"}`)
-                .set(`tenant-id`, tenantId);
+                .set(`tenant-id`, tenantId) 
+                .send(onePrueba);
             expect(response.body.message).toBeDefined();
             expect(response.status).toBe(201);
         })
