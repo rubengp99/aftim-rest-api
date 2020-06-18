@@ -1,6 +1,6 @@
 export interface IVendedor {
     id?: number | string,
-    name: string,
-    usuario_id: number | string,
-    imagen: string,
+    nombre: string,
+    adm_usuario_id?: number | string,
+    imagen?: string,
 }
