@@ -21,15 +21,10 @@ export async function validar(req: Request, res: Response, next: NextFunction) {
             if (!data.validado) return res.status(401).json({ message: 'Invalid token' });
                
             console.log("[LOG] Token validated.")
+
+            req.userId = data.id;
             next();
         }).catch(e => console.log(e))
-        //let { data } = await;
-     //   if (!data.validado) return res.status(401).json({ message: 'Invalid token' });
-               
-        //console.log('[LOG] Token validated.');
-        
-       // req.userId = data.id;
-        //
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal server error' });
