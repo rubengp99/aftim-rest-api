@@ -1,7 +1,7 @@
 const request = require('supertest')
 import { App } from "./../../app";
 import { IUsuario } from "./model";
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "usuario";
 const dataPrueba :IUsuario = {
     nombre:         '',
@@ -61,7 +61,7 @@ describe('Get Routes', () => {
 describe('Post Routes #Post', () => {
 
     test('Actualizar uno #Update #One', async () => {
-        const res = await request(app).post(`/api/${target}/2`)
+        const res = await request(app).post(`/api/${target}/17`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .set('tenant-id', tenantId)
             .send({data:dataPrueba})
@@ -71,7 +71,7 @@ describe('Post Routes #Post', () => {
 })
 describe('Delete Routes #Delete', () => {
     test('Delete uno #Delete', async () => {
-        const res = await request(app).delete(`/api/${target}/3`)
+        const res = await request(app).delete(`/api/${target}/14`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .set('tenant-id', tenantId)
             .send({})

@@ -1,7 +1,7 @@
 import { IRuta } from './model';
 import { App } from '../../app';
 import request from 'supertest';
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "rutas";
 describe(`Get Routes #Get `, () => {
     const app = new App();

@@ -3,7 +3,7 @@ const request = require('supertest')
 import { App } from "./../../app";
 import {ICambio} from "./model";
 
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "cambio";
 
 describe('Cambio controller',()=>{
@@ -30,7 +30,7 @@ const pack = {
 const { app } = new App();
 describe('Get Routes', () => {
     test('Obtener todos #Get #All', async () => {
-        const res = await request(app).get(`/api/${target}`)
+        const res = await request(app).get(`/api/cambio`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
             .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })

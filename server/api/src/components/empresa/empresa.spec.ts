@@ -2,7 +2,7 @@ const request = require('supertest')
 import { App } from "./../../app";
 import { IEmpresa } from "./model";
 import { utimes } from "fs-extra";
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "empresa";
 const datosPrueba: IEmpresa = {
     rif: 'J-00000000-0',

@@ -2,7 +2,7 @@ import {IMovimientosCaja} from "./model";
 const request = require('supertest');
 import {App} from "./../../app";
 import {getOne,get,create} from "./controller";
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "movimiento_caja";
 const datosPrueba : IMovimientosCaja = {
     adm_caja_id:1,

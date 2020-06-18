@@ -2,7 +2,7 @@ const request = require('supertest')
 import { App } from "./../../app";
 import { IDescargo, IDetDescargo} from "./model";
 
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "descargos";
 const subData:   IDetDescargo  = {
     adm_enc_descargos_id:   1,

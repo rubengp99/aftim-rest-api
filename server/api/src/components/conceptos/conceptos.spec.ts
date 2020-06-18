@@ -4,7 +4,7 @@ import { App } from "./../../app";
 import { IConcepto } from './model';
 import { IGrupo } from "./../grupos/model";
 import { ISubgrupo } from "./../subgrupos/model";
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "conceptos";
 const grupoPrueba: IGrupo = {
     id: 80,

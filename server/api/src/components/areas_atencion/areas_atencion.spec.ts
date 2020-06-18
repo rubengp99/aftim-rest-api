@@ -4,7 +4,7 @@ import { App } from '../../app';
 
 import request from 'supertest';
 //vars
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "areas_atencion";
 
 

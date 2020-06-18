@@ -3,7 +3,7 @@ import { App } from "./../../app";
 import { ICargo } from "./model";
 
 //testing endpoints routes
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "cargos";
 
 const datoPrueba: ICargo = {

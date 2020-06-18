@@ -1,7 +1,7 @@
 const request = require('supertest')
 import { App } from "./../../app";
 import { IMarcas } from "./model";
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "marcas";
 const datosPrueba :IMarcas = {
     nombre :''

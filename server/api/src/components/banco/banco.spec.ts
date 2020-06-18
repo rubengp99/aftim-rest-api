@@ -2,7 +2,7 @@ const request = require('supertest')
 import { App } from "./../../app";
 import { IBanco } from "./model";
 
-let tenantId: string = "jesttest"
+let tenantId: string = "almendras"
 const target = "grupos";
 
 const DatosPrueba: IBanco = {
@@ -66,7 +66,7 @@ describe('Post Routes #Post', () => {
         const res = await request(app).post(`/api/${target}/2`)
         .set(`tenant-id`, tenantId)    
         .set('x-access-control', '{"user":"admin","password":"123456"}')
-            .send(pack)
+        .send(pack)
 
         //check
         expect(res.status).toEqual(ifDontExistExeptionStatus(res.body, 201));
