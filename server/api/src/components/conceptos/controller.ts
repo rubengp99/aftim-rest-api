@@ -2,6 +2,7 @@ import * as consult from "../../helpers/consult";
 import * as links from "../../helpers/links";
 import * as respuestas from "../../errors";
 import { IConcepto } from "./model";
+import { getOptionals } from "./helpers/fields";
 
 const model = "adm_conceptos";
 const submodel = "adm_presentaciones";
@@ -15,7 +16,7 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
 
 		if (query.fields) {
 			let aux = query.fields.split(",");
-			let filtrados = aux.filter((e: any) => e !== "presentaciones" && e !== "existencias" && e !== "grupo" && e !== "subgrupo" && e !== "issold");
+			let filtrados = aux.filter((e: any) => e !== "direcciones" && e !== "presentaciones" && e !== "existencias" && e !== "grupo" && e !== "subgrupo" && e !== "issold");
 			query.fields = filtrados.join(",");
 		}
 
@@ -28,26 +29,8 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
 		// si no me pasaron campos requeridos o si en los campos estan las presentaciones entonces
 		// consulto las presentaciones de ese producto
 
-		for (let i = 0; i < data.length; i++) {
-			let { id } = data[i];
-			if (!fields || fields.includes("presentaciones")) {
-				let pres: any[] = await consult.getOtherByMe(tenantId, model, id as string, submodel, {});
-				data[i].presentaciones = pres;
-			}
-			if (!fields || fields.includes("existencias")) {
-				let movDep: any[] = await consult.getOtherByMe(tenantId, model, id as string, "adm_movimiento_deposito", { fields: "id,adm_depositos_id,existencia" });
-				data[i].existencias = movDep;
-			}
-			if (fields && fields.includes("grupo")) {
-				data[i].grupo = await consult.getOne(tenantId, "adm_grupos", id as string, { fields: "*" });
-			}
-			if (fields && fields.includes("subgrupo")) {
-				data[i].subgrupo = await consult.getOne(tenantId, "adm_subgrupos", id as string, { fields: "*" });
-			}
-			if (!fields || fields.includes("issold")) {
-				let c = await consult.countOther(tenantId, model, "adm_det_facturas", id as string);
-				data[i].isSold = c > 0;
-			}
+		for (let concept of data) {
+			concept = await getOptionals(tenantId, fields, concept);
 		}
 
 		let link = links.pages(data, model, count, totalCount, limit);
@@ -68,21 +51,21 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
 export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
 	try {
 		if (isNaN(id as number)) return respuestas.InvalidID;
+		let { fields } = query;
+		
+		if (query.fields) {
+			let aux = query.fields.split(",");
+			let filtrados = aux.filter((e: any) => e !== "direcciones" && e !== "presentaciones" && e !== "existencias" && e !== "grupo" && e !== "subgrupo" && e !== "issold");
+			query.fields = filtrados.join(",");
+		}
 
 		let data: IConcepto = await consult.getOne(tenantId, model, id, query);
 		let count = await consult.count(tenantId, model);
-		let { fields } = query;
+		
 
 		if (!data) return respuestas.ElementNotFound;
 
-		if (!fields || fields.includes(submodel)) {
-			let pres = (await consult.getOtherByMe(tenantId, model, id as string, submodel, {})) as any[];
-			data.presentaciones = pres;
-		}
-		if (!fields || fields.includes("issold")) {
-			let factCount = await consult.countOther(tenantId, model, "adm_det_facturas", id);
-			data.isSold = factCount > 0;
-		}
+		data = await getOptionals(tenantId, fields, data);
 
 		let link = links.records(data, model, count);
 		let response = Object.assign({ data }, link);

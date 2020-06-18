@@ -4,6 +4,7 @@ import * as respuestas from '../../errors';
 import { IEmpresa } from './model';
 import { ICargo } from '../cargos/model';
 import { IConcepto } from '../conceptos/model';
+import { getOptionals } from "../conceptos/helpers/fields"
 
 const model = "adm_empresa";
 
@@ -73,7 +74,7 @@ export const getConceptsByEmpresa = async (id: string | number, query: any, tena
 
         if(query.fields){
             let aux = query.fields.split(',');
-            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
+            let filtrados = aux.filter((e:any) => e !== 'direcciones' && e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
             query.fields = filtrados.join(',');
         }
 
@@ -83,22 +84,8 @@ export const getConceptsByEmpresa = async (id: string | number, query: any, tena
 
         if (count <= 0) return respuestas.Empty;
 
-        for (let i = 0; i < data.length; i++) {
-            let { id } = data[i];
-            if(!fields || fields.includes('presentaciones')){
-                let pres: any[] = await consult.getOtherByMe(tenantId, 'adm_conceptos', id as string, 'adm_presentaciones', {});
-                data[i].presentaciones = pres;
-            }
-            if(!fields || fields.includes('existencias')){
-                let movDep: any[] = await consult.getOtherByMe(tenantId, 'adm_conceptos',id as string,'adm_movimiento_deposito',{fields:'id,adm_depositos_id,existencia'});
-                data[i].existencias = movDep;
-            }
-            if(fields && fields.includes('grupo')){
-                data[i].grupo = await consult.getOne(tenantId, 'adm_grupos', id as string, {fields:'*'});
-            }
-            if(fields && fields.includes('subgrupo')){
-                data[i].subgrupo = await consult.getOne(tenantId, 'adm_subgrupos', id as string, {fields:'*'});
-            }
+        for (let concept of data) {
+            concept = await getOptionals(tenantId, fields, concept);
         }
 
         let link = links.pages(data, `empresa/${id}/conceptos`, count, totalCount, limit);
@@ -298,27 +285,11 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
         
         if(query.fields){
             let aux = query.fields.split(',');
-            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
+            let filtrados = aux.filter((e:any) => e !== 'direcciones' && e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
             query.fields = filtrados.join(',');
 
             for (let concept of data) {
-                let { id } = concept;
-                if(!fields || fields.includes('presentaciones')){
-                    let sql =  `SELECT * FROM adm_presentaciones WHERE adm_conceptos_id=${id}`;
-                    let pres: any[] = await consult.getPersonalized(tenantId, sql);
-                    concept.presentaciones = pres;
-                }
-                if(!fields || fields.includes('existencias')){
-                    let sql =  `SELECT id,adm_depositos_id,existencia FROM adm_movimiento_deposito WHERE adm_conceptos_id=${id}`;
-                    let movDep: any[] = await consult.getPersonalized(tenantId, sql);
-                    concept.existencias = movDep;
-                }
-                if(fields && fields.includes('grupo')){
-                    concept.grupo = await consult.getOne(tenantId, 'adm_grupos', id as string, {fields:'*'});
-                }
-                if(fields && fields.includes('subgrupo')){
-                    concept.subgrupo = await consult.getOne(tenantId, 'adm_subgrupos', id as string, {fields:'*'});
-                }
+                concept = await getOptionals(tenantId, fields, concept);
             }            
         }
 

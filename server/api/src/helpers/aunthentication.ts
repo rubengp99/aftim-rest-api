@@ -20,7 +20,7 @@ export async function validar(req: Request, res: Response, next: NextFunction) {
             let { data } = r;
             if (!data.validado) return res.status(401).json({ message: 'Invalid token' });
                
-            console.log(r);
+            console.log("[LOG] Token validated.")
             next();
         }).catch(e => console.log(e))
         //let { data } = await;

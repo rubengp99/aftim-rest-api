@@ -1,7 +1,7 @@
 export interface IEstados
 {
     id?:                    number,
-    estado?:                string,
+    nombre?:                string,
     detalles?:              IMunicipios[]
 }
 
