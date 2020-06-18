@@ -37,6 +37,33 @@ export async function getPedidosByUser (id: string | number, query: any, tenantI
     }
 }
 
+export async function getPagosByUser (id: string | number, query: any, tenantId: string): Promise<any> {
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let recurso: IUsuario = await consult.getOne(tenantId, model, id, { fields: 'id' });
+        
+        if (!recurso) return respuestas.ElementNotFound;
+
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'adm_pagos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'adm_pagos', id);
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+
+        let link = links.pages(data, `usuario/${id}/pago`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`Error en el controlador ${model}, error: ${error}`);
+        return respuestas.InternalServerError;
+    }
+}
+
 export async function update(params: any,body:any, tenantId: string): Promise<any>{
     let { id } = params;
     let { data } = body;
