@@ -8,4 +8,5 @@ export interface IPago{
     monto:              number,
     codigo_referencia:  number,
     imagen:             string,
+    usuario_id:         number,
 }
