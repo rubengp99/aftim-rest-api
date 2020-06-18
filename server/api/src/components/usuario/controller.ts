@@ -53,7 +53,7 @@ export async function getPagosByUser (id: string | number, query: any, tenantId:
         if (count <= 0) return respuestas.Empty;
 
 
-        let link = links.pages(data, `usuario/${id}/pago`, count, totalCount, limit);
+        let link = links.pages(data, `usuario/${id}/pagos`, count, totalCount, limit);
         let response = Object.assign({ totalCount, count, data }, link);
         
         return { response, code: respuestas.Ok.code };
