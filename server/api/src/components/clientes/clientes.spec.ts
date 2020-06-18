@@ -2,6 +2,9 @@ const request = require('supertest')
 import { App } from "./../../app";
 import { ICliente } from "./model";
 
+let tenantId: string = "jesttest"
+const target = "clientes";
+
 const datosPrueba : ICliente = {
     nombre: '',
     nombre_comercial: '',
@@ -50,34 +53,39 @@ const ifDontExistExeptionData = (message) => {
 }
 describe('Get Routes', () => {
     test('Obtener todos #Get #All', async () => {
-        const res = await request(app).get(`/api/clientes`)
+        const res = await request(app).get(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.body.data).toBeDefined();
         expect(res.status).toEqual(200);
     })
     test('Obtener uno #Get #One', async () => {
-        const res = await request(app).get(`/api/clientes/1`)
+        const res = await request(app).get(`/api/${target}/1`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.status).toEqual(ifDontExistExeptionStatus({message:res.body}, 200));
     })
     test('Obtener orden de compras #Get #Order #Compras', async () => {
-        const res = await request(app).get(`/api/clientes/mostbuyers`)
+        const res = await request(app).get(`/api/${target}/mostbuyers`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.status).toEqual(ifDontExistExeptionStatus(res.body, 200));
     })
     test('Obtener compras de un cliente #Get #One #Compras', async () => {
-        const res = await request(app).get(`/api/clientes/1/buys`)
+        const res = await request(app).get(`/api/${target}/1/buys`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(ifDontExistExeptionData(res.body)).toBeDefined();
         expect(res.status).toEqual(ifDontExistExeptionStatus(res.body, 200));
     })
     test('Obtener devolucions de un cliente #Get #One #devolucions', async () => {
-        const res = await request(app).get(`/api/clientes/1/devolutions`)
+        const res = await request(app).get(`/api/${target}/1/devolutions`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(ifDontExistExeptionData(res.body)).toBeDefined();
         expect(res.status).toEqual(ifDontExistExeptionStatus(res.body, 200));
@@ -87,16 +95,18 @@ describe('Get Routes', () => {
 describe('Post Routes #Post', () => {
     test('Crear uno #Create #One', async () => {
         const cedula = Object.assign(datosPrueba,{cedula:`${Math.floor(Math.random()*((999999 - 0) - 0))}`})
-        const res = await request(app).post(`/api/clientes`)
+        const res = await request(app).post(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({data:cedula})
         expect(res.body.message).toBeDefined();
         expect(res.status).toEqual(201);
     })
     test('Actualizar uno #Update #One', async () => {
         const cedula = Object.assign(datosPrueba,{cedula:`${Math.floor(Math.random()*((999999 - 0) - 0))}`})
-        const res = await request(app).post(`/api/clientes/2`)
+        const res = await request(app).post(`/api/${target}/2`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({data:cedula})
         //check
         expect(res.status).toEqual(ifDontExistExeptionStatus(res.body, 201));
@@ -104,8 +114,9 @@ describe('Post Routes #Post', () => {
 })
 describe('Delete Routes #Delete', () => {
     test('Delete uno #Delete', async () => {
-        const res = await request(app).delete(`/api/clientes/3`)
+        const res = await request(app).delete(`/api/${target}/3`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(pack)
         //check
         expect(res.status).toEqual(ifDontExistExeptionStatus(res.body, 200));

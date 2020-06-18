@@ -1,20 +1,23 @@
 import { IRuta } from './model';
 import { App } from '../../app';
 import request from 'supertest';
-
-describe('Get Routes #Get ', () => {
+let tenantId: string = "jesttest"
+const target = "rutas";
+describe(`Get Routes #Get `, () => {
     const app = new App();
-    test('Get #Get #All', async () => {
+    test(`Get #Get #All`, async () => {
         const response = await request(app.app)
-            .get('/api/rutas')
-            .set('x-access-control', '{"user":"admin","password":"123456"}');
+            .get(`/api/${target}`)
+            .set(`x-access-control`, `{"user":"admin","password":"123456"}`)
+            .set(`tenant-id`, tenantId)
         expect(response.body.data).toBeDefined();
         expect(response.status).toBe(200);
     });
-    test('Get #Get #One', async () => {
+    test(`Get #Get #One`, async () => {
         const response = await request(app.app)
-            .get('/api/rutas/1')
-            .set('x-access-control', '{"user":"admin","password":"123456"}');
+            .get(`/api/${target}/1`)
+            .set(`x-access-control`, `{"user":"admin","password":"123456"}`)
+            .set(`tenant-id`, tenantId)
         expect(response.body.data).toBeDefined();
         expect(response.status).toBe(200);
     });

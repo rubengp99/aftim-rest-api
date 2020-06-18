@@ -4,6 +4,8 @@ import { App } from "./../../app";
 import { IConcepto } from './model';
 import { IGrupo } from "./../grupos/model";
 import { ISubgrupo } from "./../subgrupos/model";
+let tenantId: string = "jesttest"
+const target = "conceptos";
 const grupoPrueba: IGrupo = {
     id: 80,
     nombre: '',
@@ -90,8 +92,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('deberia devolver status 200 #conceptos #get #All', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos`)
+            const res = await request(app).get(`/api/${target}`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
             expect(res.body.data).toBeDefined();
             expect(res.status).toEqual(200);
@@ -100,8 +103,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('deberia devolver conceptos ordenados por ventas #conceptos #get #ventas', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/mostsold`)
+            const res = await request(app).get(`/api/${target}/mostsold`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } });
             expect(res.body.data).toBeDefined();
             expect(res.status).toEqual(200);
@@ -109,8 +113,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('devolver conceptos ordenados devoluciones #conceptos #get #ordendevoluciones', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/mostreturned`)
+            const res = await request(app).get(`/api/${target}/mostreturned`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
             expect(res.body.data).toBeDefined();
             expect(res.status).toEqual(200);
@@ -118,8 +123,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('devolver ventas de un concepto #conceptos #get #ventas', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/3/sell`)
+            const res = await request(app).get(`/api/${target}/3/sell`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 200
@@ -130,8 +136,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('devolver devoluciones de un concepto #conceptos #get #devoluciones', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/3/devolutions`)
+            const res = await request(app).get(`/api/${target}/3/devolutions`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 200
@@ -142,8 +149,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('si un concepto se ha vendido alguna vez #conceptos #get #wasSoldSometime', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/4/issold`)
+            const res = await request(app).get(`/api/${target}/4/issold`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 200
@@ -154,8 +162,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('Obtener un concepto particular #conceptos #get #one', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/4`)
+            const res = await request(app).get(`/api/${target}/4`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 200
@@ -166,8 +175,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('Obtener depositos de un concepto #conceptos #get #one #depositos', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/7/depositos`)
+            const res = await request(app).get(`/api/${target}/7/depositos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 200
@@ -178,8 +188,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('Obtener foto de un concepto #conceptos #get #one #imagen', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/3/photos`)
+            const res = await request(app).get(`/api/${target}/3/photos`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 200
@@ -190,8 +201,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
 
         it('Obtener presentacion de un concepto #conceptos #get #one #presentaciones', async () => {
             const { app } = new App();
-            const res = await request(app).get(`/api/conceptos/7/presentaciones`)
+            const res = await request(app).get(`/api/${target}/7/presentaciones`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send({ query: { fields: 1, limit: "" } })
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 200
@@ -212,8 +224,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             }
             //   nuevoDataPrueba.codigo =`${Math.random()}` // para crear un codigo unico y no de error
             //   nuevoDataPrueba.referencia = `${Math.random()}`
-            const res = await request(app).post(`/api/conceptos`)
+            const res = await request(app).post(`/api/${target}`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send(onePrueba);
             expect(res.body.message).toBeDefined();
             expect(res.status).toEqual(201);
@@ -227,8 +240,9 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
                 data1: [{}, {},{}]
             }
             // para crear un codigo unico y no de error
-            const res = await request(app).post(`/api/conceptos/3`)
+            const res = await request(app).post(`/api/${target}/3`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
+                 .set('tenant-id', tenantId)
                 .send(onePrueba)
             const ifDontExistExeption = (message) => {
                 return message === 'The element not exist' ? 404 : 201

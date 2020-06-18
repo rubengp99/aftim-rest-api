@@ -2,7 +2,8 @@ const request = require('supertest')
 import { App } from "./../../app";
 import { IDescargo, IDetDescargo} from "./model";
 
-
+let tenantId: string = "jesttest"
+const target = "descargos";
 const subData:   IDetDescargo  = {
     adm_enc_descargos_id:   1,
     adm_conceptos_id:       1,
@@ -34,15 +35,17 @@ const ifDontExistExeptionData = (message) => {
 
 describe('Get Routes', () => {
     test('Obtener todos #Get #All', async () => {
-        const res = await request(app).get(`/api/descargos`)
+        const res = await request(app).get(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 'id', limit: "" } })
         expect(res.body.data).toBeDefined();
         expect(res.status).toEqual(200);
     })
     test('Obtener uno #Get #One', async () => {
-        const res = await request(app).get(`/api/descargos/9`)
+        const res = await request(app).get(`/api/${target}/9`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send({ query: { fields: 'id', limit: "" } })
         //check
         expect(ifDontExistExeptionData(res.body)).toBeDefined();
@@ -51,8 +54,9 @@ describe('Get Routes', () => {
 })
 describe('Post Routes #Post', () => {
     test('Crear uno #Create #One', async () => {
-        const res = await request(app).post(`/api/descargos`)
+        const res = await request(app).post(`/api/${target}`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenant-id', tenantId)
             .send(pack)
         expect(res.body.message).toBeDefined();
         expect(res.status).toEqual(201);
