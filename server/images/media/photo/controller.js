@@ -1,9 +1,8 @@
-const axios = require('axios');
 const path = require('path');
 const fs = require('fs-extra');
 const { DATA_URL } = require('../../keys');
 const { tablas } = require('./models');
-const { getTenantId, createAxios } = require('../../../api/src/helpers/axios');
+const { getTenantId, createAxios } = require('../../../auth/encript');
 
 async function getPhotosOfGallery(req, res) {
     try {
