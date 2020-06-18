@@ -2,12 +2,15 @@ import * as controller  from './controller';
 import  {validar}  from'../../helpers/aunthentication';
 import  { InternalServerError } from '../../errors';
 import  { Router,Request,Response } from 'express';
+import { getTenantId } from '../../helpers/axios';
+
 const router = Router();
 
 //obtener todas las unidades
 router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.get(req.query);
+        let tenantId: string = getTenantId(req);
+        let {message,response,code} = await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -18,7 +21,8 @@ router.get('/',validar, async (req:Request, res:Response):Promise<Response> => {
 router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     let {id} = req.params;
     try {
-        let {message, response, code} = await controller.getOne(id,req.query);
+        let tenantId: string = getTenantId(req);
+        let {message, response, code} = await controller.getOne(id,req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -29,7 +33,8 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
 //crear una unidad
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.create(req.body);
+        let tenantId: string = getTenantId(req);
+        let {message,response,code} = await controller.create(req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -39,7 +44,8 @@ router.post('/',validar, async (req:Request, res:Response):Promise<Response> => 
 //editar una unidad
 router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.update(req.params,req.body);
+        let tenantId: string = getTenantId(req);
+        let {message,response,code} = await controller.update(req.params,req.body, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -49,7 +55,8 @@ router.post('/:id',validar, async (req:Request, res:Response):Promise<Response> 
 //eliminar una unidad
 router.delete('/:id',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,code} = await controller.remove(req);
+        let tenantId: string = getTenantId(req);
+        let {message,code} = await controller.remove(req, tenantId);
         return res.status(code).json(message);
     } catch (error) {
         console.log(error);

@@ -9,10 +9,10 @@ const model = "adm_depositos";
  * Get all the deposits
  * @param query modifier of the consult
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: IDeposito[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model);
+        let data: IDeposito[] = await consult.get(tenantId, model, query);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -34,12 +34,12 @@ export const get = async (query: any): Promise<any> => {
  * @param id id of the deposit
  * @param query modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: IDeposito = await consult.getOne(model, id, query);
-        let count = await consult.count(model);
+        let data: IDeposito = await consult.getOne(tenantId, model, id, query);
+        let count = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
@@ -59,11 +59,11 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * @param id id of the deposit
  * @param query modifier of the consult
  */
-export const getConceptosBydeposito = async (id: string | number, query: any): Promise<any> => {
+export const getConceptosBydeposito = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
         
-        let recurso: IDeposito = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IDeposito = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
         
@@ -77,16 +77,16 @@ export const getConceptosBydeposito = async (id: string | number, query: any): P
         let sql = `SELECT ${f}, adm_movimiento_deposito.existencia FROM adm_movimiento_deposito INNER JOIN adm_conceptos 
         ON adm_conceptos_id = adm_conceptos.id WHERE adm_depositos_id = ${id} ${where} 
         order by adm_conceptos.${query.orderField || 'id'} limit ${query.limit || '50'} offset ${query.offset || '0'}`;
-        let data: any[] = await consult.getPersonalized(sql);
+        let data: any[] = await consult.getPersonalized(tenantId, sql);
         console.log(sql);
-        let totalCount = await consult.count('adm_conceptos');
+        let totalCount = await consult.count(tenantId, 'adm_conceptos');
         let count = data.length;
         let {limit ,fields} = query; 
         
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
             if(!fields || fields.includes('presentaciones')){
-                let pres: any[] = await consult.getOtherByMe('adm_conceptos', id as string, 'adm_presentaciones', {});
+                let pres: any[] = await consult.getOtherByMe(tenantId, 'adm_conceptos', id as string, 'adm_presentaciones', {});
                 data[i].presentaciones = pres;
             }
         }
@@ -146,11 +146,11 @@ function makeFields(tabla:string,fields:string){
  * Create a new deposit
  * @param body data of the new deposit
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any, tenantId: string): Promise<any> => {
     let { data } = body;
     let newdeposito: IDeposito = data;
     try {
-        let { insertId } = await consult.create(model, newdeposito) as any;
+        let { insertId } = await consult.create(tenantId, model, newdeposito) as any;
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message}, { link: link });
         
@@ -167,7 +167,7 @@ export const create = async (body: any): Promise<any> => {
  * @param params params request object
  * @param body data of the deposit
  */
-export const update = async (params: any, body: any): Promise<any> => {
+export const update = async (params: any, body: any, tenantId: string): Promise<any> => {
     let { id } = params;
     let { data } = body;
     let newdeposito: IDeposito = data;
@@ -175,7 +175,7 @@ export const update = async (params: any, body: any): Promise<any> => {
         console.log(newdeposito);
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let { affectedRows } = await consult.update(model, id, newdeposito) as any;
+        let { affectedRows } = await consult.update(tenantId, model, id, newdeposito) as any;
         let link = links.created('depositos', id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
         
@@ -191,12 +191,12 @@ export const update = async (params: any, body: any): Promise<any> => {
  * Delete one deposit
  * @param params params request object
  */
-export const remove = async (params: any): Promise<any> => {
+export const remove = async (params: any, tenantId: string): Promise<any> => {
     let { id } = params;
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        await consult.remove(model, id);
+        await consult.remove(tenantId, model, id);
         
         return respuestas.Deleted;
     } catch (error) {

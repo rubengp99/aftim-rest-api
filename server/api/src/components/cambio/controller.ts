@@ -9,10 +9,10 @@ const model = "adm_cambio";
  * Get the last 50 currencies data
  * @param query object modifier of the consult
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: ICambio[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model);
+        let data: ICambio[] = await consult.get(tenantId, model, query);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit = 10 } = query;
 
@@ -33,11 +33,11 @@ export const get = async (query: any): Promise<any> => {
  * @param id id of the currency
  * @param query object modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
-        let data: ICambio = await consult.getOne(model, id, query);
-        let count: number = await consult.count(model);
+        let data: ICambio = await consult.getOne(tenantId, model, id, query);
+        let count: number = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
@@ -55,12 +55,12 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * Create a new currency
  * @param body data of the currency
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any, tenantId: string): Promise<any> => {
     let { data } = body;
     let newArea: ICambio = data;
     try {
 
-        let { insertId } = await consult.create(model, newArea);
+        let { insertId } = await consult.create(tenantId, model, newArea);
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
 
@@ -77,7 +77,7 @@ export const create = async (body: any): Promise<any> => {
  * @param params object params request
  * @param body de data of the currency
  */
-export const update = async (params: any, body: any): Promise<any> => {
+export const update = async (params: any, body: any, tenantId: string): Promise<any> => {
     const { id } = params;
     let { data } = body;
     let newArea: ICambio = data;
@@ -85,7 +85,7 @@ export const update = async (params: any, body: any): Promise<any> => {
 
         if(isNaN(id)) return respuestas.InvalidID;
 
-        let { affectedRows } = await consult.update(model, id, newArea);
+        let { affectedRows } = await consult.update(tenantId, model, id, newArea);
         let link = links.created(model, id);
         let response = Object.assign({ message:respuestas.Update.message, affectedRows }, { link: link });
         
@@ -101,12 +101,12 @@ export const update = async (params: any, body: any): Promise<any> => {
  * Delete a currency
  * @param params obejct params request
  */
-export const remove = async (params: any): Promise<any> => {
+export const remove = async (params: any, tenantId: string): Promise<any> => {
     let { id } = params;
     try {
         if(isNaN(id)) return respuestas.InvalidID;
 
-        await consult.remove(model, id);
+        await consult.remove(tenantId, model, id);
         
         return respuestas.Deleted;
     } catch (error) {

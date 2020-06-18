@@ -9,10 +9,10 @@ const model_1 = "adm_tipos_conceptos"
  * Get all the types of concepts
  * @param query modifier of the consult
  */
-export const getTiposConceptos = async (query: any): Promise<any> => {
+export const getTiposConceptos = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: ITipoConceptos[] = await tipos.get(model_1, query);
-        let totalCount: number = await tipos.count(model_1);
+        let data: ITipoConceptos[] = await tipos.get(tenantId, model_1, query);
+        let totalCount: number = await tipos.count(tenantId, model_1);
         let count = data.length;
         let { limit } = query;
         
@@ -34,12 +34,12 @@ export const getTiposConceptos = async (query: any): Promise<any> => {
  * @param id id of the type
  * @param query modifier of the consult
  */
-export const getOneTipoConcepto = async (id: string | number, query: any): Promise<any> => {
+export const getOneTipoConcepto = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: ITipoConceptos = await tipos.getOne(model_1, id, query);
-        let count: number = await tipos.count(model_1);
+        let data: ITipoConceptos = await tipos.getOne(tenantId, model_1, id, query);
+        let count: number = await tipos.count(tenantId, model_1);
         
         if (!data) return respuestas.ElementNotFound;
         

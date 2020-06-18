@@ -9,10 +9,10 @@ const submodel = "usuarios";
  * Get all payments
  * @param query identifier of the consult
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
         let data: IPago[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -35,12 +35,12 @@ export const get = async (query: any): Promise<any> => {
  * @param id id of the payment
  * @param query modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: IPago = await consult.getOne(model, id, query);
-        let count = await consult.count(model);
+        let data: IPago = await consult.getOne(tenantId, model, id, query);
+        let count = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
@@ -59,12 +59,12 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * Create a new payment
  * @param body data of the new payment
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any, tenantId: string): Promise<any> => {
     let { data } = body;
     let newPago: IPago = data;
 
     try {
-        let { insertId } = await consult.create(model, newPago);
+        let { insertId } = await consult.create(tenantId, model, newPago);
         newPago.id = insertId
         let link = links.created(model, insertId);
         let response = Object.assign({ data: newPago, message: respuestas.Created.message }, { link: link });
@@ -81,7 +81,7 @@ export const create = async (body: any): Promise<any> => {
  * Create a new payment
  * @param body data of the new pago
  */
-export const update = async (params: any, body: any): Promise<any> => {
+export const update = async (params: any, body: any, tenantId: string): Promise<any> => {
     const { id } = params;
     let { data } = body;
     let newPago: IPago = data;
@@ -89,7 +89,7 @@ export const update = async (params: any, body: any): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let { insertId } = await consult.update(model, id ,newPago);
+        let { insertId } = await consult.update(tenantId, model, id ,newPago);
         newPago.id = insertId
         let link = links.created(model, insertId);
         let response = Object.assign({ data: newPago, message: respuestas.Created.message }, { link: link });
@@ -106,12 +106,12 @@ export const update = async (params: any, body: any): Promise<any> => {
  * Delete a objetivo
  * @param params params request object
  */
-export const remove = async (params: any): Promise<any> => {
+export const remove = async (params: any, tenantId: string): Promise<any> => {
     let { id } = params;
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        await consult.remove(model, id);
+        await consult.remove(tenantId, model, id);
         
         return respuestas.Deleted;
     } catch (error) {

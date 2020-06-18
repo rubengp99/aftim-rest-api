@@ -4,6 +4,7 @@ import * as respuestas from '../../errors';
 import { IEmpresa } from './model';
 import { ICargo } from '../cargos/model';
 import { IConcepto } from '../conceptos/model';
+import { getOptionals } from "../conceptos/helpers/fields"
 
 const model = "adm_empresa";
 
@@ -11,10 +12,10 @@ const model = "adm_empresa";
  * Get all companies
  * @param query modifier 
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: IEmpresa[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
+        let data: IEmpresa[] = await consult.get(tenantId, model, query);
+        let totalCount: number = await consult.count(tenantId, model); // consulto el total de registros de la BD
         let count = data.length;
         let { limit } = query;
 
@@ -36,12 +37,12 @@ export const get = async (query: any): Promise<any> => {
  * @param id id of the company
  * @param query modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
         
-        let data: IEmpresa = await consult.getOne(model, id, query);
-        let count: number = await consult.count(model);
+        let data: IEmpresa = await consult.getOne(tenantId, model, id, query);
+        let count: number = await consult.count(tenantId, model);
         
         if (!data) return respuestas.ElementNotFound;
 
@@ -62,10 +63,10 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
  * @param id id of the company 
  * @param query modifier of the consult
  */
-export const getConceptsByEmpresa = async (id: string | number, query: any): Promise<any> => {
+export const getConceptsByEmpresa = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
 
@@ -73,32 +74,18 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
 
         if(query.fields){
             let aux = query.fields.split(',');
-            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
+            let filtrados = aux.filter((e:any) => e !== 'direcciones' && e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
             query.fields = filtrados.join(',');
         }
 
-        let data: IConcepto[] = await consult.getOtherByMe(model, id, 'adm_conceptos', query);
-        let totalCount = await consult.countOther(model, 'adm_conceptos', id);
+        let data: IConcepto[] = await consult.getOtherByMe(tenantId, model, id, 'adm_conceptos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'adm_conceptos', id);
         let count = data.length;
 
         if (count <= 0) return respuestas.Empty;
 
-        for (let i = 0; i < data.length; i++) {
-            let { id } = data[i];
-            if(!fields || fields.includes('presentaciones')){
-                let pres: any[] = await consult.getOtherByMe('adm_conceptos', id as string, 'adm_presentaciones', {});
-                data[i].presentaciones = pres;
-            }
-            if(!fields || fields.includes('existencias')){
-                let movDep: any[] = await consult.getOtherByMe('adm_conceptos',id as string,'adm_movimiento_deposito',{fields:'id,adm_depositos_id,existencia'});
-                data[i].existencias = movDep;
-            }
-            if(fields && fields.includes('grupo')){
-                data[i].grupo = await consult.getOne('adm_grupos', id as string, {fields:'*'});
-            }
-            if(fields && fields.includes('subgrupo')){
-                data[i].subgrupo = await consult.getOne('adm_subgrupos', id as string, {fields:'*'});
-            }
+        for (let concept of data) {
+            concept = await getOptionals(tenantId, fields, concept);
         }
 
         let link = links.pages(data, `empresa/${id}/conceptos`, count, totalCount, limit);
@@ -117,16 +104,16 @@ export const getConceptsByEmpresa = async (id: string | number, query: any): Pro
  * @param id id of the company 
  * @param query modifier of the consult
  */
-export const getDepositsByEmpresa = async (id: string | number, query: any): Promise<any> => {
+export const getDepositsByEmpresa = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'adm_depositos', query);
-        let totalCount = await consult.countOther(model, 'adm_depositos', id);
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'adm_depositos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'adm_depositos', id);
         let count = data.length;
         let { limit } = query;
 
@@ -149,16 +136,16 @@ export const getDepositsByEmpresa = async (id: string | number, query: any): Pro
  * @param id id of the company
  * @param query modifier of the consult
  */
-export const getGroupsByEmpresa = async (id: string | number, query: any): Promise<any> => {
+export const getGroupsByEmpresa = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
         
-        let limite = await consult.count('adm_conceptos');
-        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_grupos_id', orderField: 'adm_grupos_id', limit: limite || 50 });
+        let limite = await consult.count(tenantId, 'adm_conceptos');
+        let conceptos: any[] = await consult.getOtherByMe(tenantId, model, id, 'adm_conceptos', { fields: 'id,adm_grupos_id', orderField: 'adm_grupos_id', limit: limite || 50 });
 
         if (!conceptos) return respuestas.Empty;
 
@@ -166,19 +153,19 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
         let data:any[]  = [];
 
         if(grp != null){
-            let data1 = await consult.getOne('adm_grupos', grp, {}); 
+            let data1 = await consult.getOne(tenantId, 'adm_grupos', grp, {}); 
             data.push(data1);
         }
 
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].adm_grupos_id !== grp && conceptos[index].adm_grupos_id !== null) {
-                let group: any = await consult.getOne('adm_grupos', conceptos[index].adm_grupos_id, {});
+                let group: any = await consult.getOne(tenantId, 'adm_grupos', conceptos[index].adm_grupos_id, {});
                 data.push(group);
                 grp = conceptos[index].adm_grupos_id;
             }
         }
 
-        let totalCount = await consult.count('adm_grupos');
+        let totalCount = await consult.count(tenantId, 'adm_grupos');
         let count = data.length;
         let { limit } = query;
 
@@ -201,15 +188,15 @@ export const getGroupsByEmpresa = async (id: string | number, query: any): Promi
 * @param id id of the company
 * @param query modifier of the consult
 */
-export const getSubgroupsByEmpresa = async (id: string | number, query: any): Promise<any> => {
+export const getSubgroupsByEmpresa = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let conceptos: any[] = await consult.getOtherByMe(model, id, 'adm_conceptos', { fields: 'id,adm_subgrupos_id', orderField: 'adm_subgrupos_id' });
+        let conceptos: any[] = await consult.getOtherByMe(tenantId, model, id, 'adm_conceptos', { fields: 'id,adm_subgrupos_id', orderField: 'adm_subgrupos_id' });
 
         if (!conceptos) return respuestas.Empty;
 
@@ -217,19 +204,19 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
         let data: any[] = [];
         
         if(grp!== null){
-            let data1 =  await consult.getOne('adm_subgrupos', grp, {});
+            let data1 =  await consult.getOne(tenantId, 'adm_subgrupos', grp, {});
             data.push(data1);
         }
         
         for (let index = 0; index < conceptos.length; index++) {
             if (conceptos[index].adm_subgrupos_id !== grp && conceptos[index].adm_subgrupos_id !== null) {
-                let group: any = await consult.getOne('adm_subgrupos', conceptos[index].adm_subgrupos_id, {});
+                let group: any = await consult.getOne(tenantId, 'adm_subgrupos', conceptos[index].adm_subgrupos_id, {});
                 data.push(group);
                 grp = conceptos[index].adm_subgrupos_id;
             }
         }
         
-        let totalCount = await consult.count('adm_subgrupos');
+        let totalCount = await consult.count(tenantId, 'adm_subgrupos');
         let count = data.length;
         let { limit } = query;
         
@@ -247,16 +234,16 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any): Pr
     }
 }
 
-export const getPedidosByEmpresa = async (id: string | number, query: any): Promise<any> =>{
+export const getPedidosByEmpresa = async (id: string | number, query: any, tenantId: string): Promise<any> =>{
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
         
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'rest_pedidos', query);
-        let totalCount = await consult.countOther(model, 'rest_pedidos', id);
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'rest_pedidos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'rest_pedidos', id);
         let count = data.length;
         let { limit } = query;
 
@@ -264,7 +251,7 @@ export const getPedidosByEmpresa = async (id: string | number, query: any): Prom
 
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
-            let pres: any[] = await consult.getOtherByMe('rest_pedidos', id as string, 'rest_det_pedidos', {});
+            let pres: any[] = await consult.getOtherByMe(tenantId, 'rest_pedidos', id as string, 'rest_det_pedidos', {});
             data[i].detalles = pres;
         }
 
@@ -284,7 +271,7 @@ export const getPedidosByEmpresa = async (id: string | number, query: any): Prom
  * @param id id of the company 
  * @param query modifier of the consult
  */
-export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: string | number, query: any): Promise<any> => {
+export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: string | number, query: any, tenantId: string): Promise<any> => {
     try {
       if (isNaN(eId as number) || isNaN(gId as number)) return respuestas.InvalidID;
 
@@ -292,33 +279,17 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
 
         let sql =  `SELECT * FROM adm_conceptos WHERE adm_empresa_id=${eId} AND adm_grupos_id=${gId} LIMIT ${limit ? limit : 50}`;
         
-        let data = await consult.getPersonalized(sql);
-        let totalCount = await consult.count('adm_conceptos');
+        let data = await consult.getPersonalized(tenantId, sql);
+        let totalCount = await consult.count(tenantId, 'adm_conceptos');
         let count = data.length;
         
         if(query.fields){
             let aux = query.fields.split(',');
-            let filtrados = aux.filter((e:any) => e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
+            let filtrados = aux.filter((e:any) => e !== 'direcciones' && e !== 'presentaciones' && e!=='existencias' && e !== 'grupo' && e !== 'subgrupo');
             query.fields = filtrados.join(',');
 
             for (let concept of data) {
-                let { id } = concept;
-                if(!fields || fields.includes('presentaciones')){
-                    let sql =  `SELECT * FROM adm_presentaciones WHERE adm_conceptos_id=${id}`;
-                    let pres: any[] = await consult.getPersonalized(sql);
-                    concept.presentaciones = pres;
-                }
-                if(!fields || fields.includes('existencias')){
-                    let sql =  `SELECT id,adm_depositos_id,existencia FROM adm_movimiento_deposito WHERE adm_conceptos_id=${id}`;
-                    let movDep: any[] = await consult.getPersonalized(sql);
-                    concept.existencias = movDep;
-                }
-                if(fields && fields.includes('grupo')){
-                    concept.grupo = await consult.getOne('adm_grupos', id as string, {fields:'*'});
-                }
-                if(fields && fields.includes('subgrupo')){
-                    concept.subgrupo = await consult.getOne('adm_subgrupos', id as string, {fields:'*'});
-                }
+                concept = await getOptionals(tenantId, fields, concept);
             }            
         }
 
@@ -338,15 +309,15 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
     }
 }
 
-export async function getUserByCompany(id: string | number, query: any): Promise<any>{
+export async function getUserByCompany(id: string | number, query: any, tenantId: string): Promise<any>{
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'usuario', query);
-        let totalCount = await consult.countOther(model, 'usuario', id);
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'usuario', query);
+        let totalCount = await consult.countOther(tenantId, model, 'usuario', id);
         let count = data.length;
         let { limit } = query;
 
@@ -367,11 +338,11 @@ export async function getUserByCompany(id: string | number, query: any): Promise
  * Create a new company
  * @param body data of the new company
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any, tenantId: string): Promise<any> => {
     let { data } = body;
     let newCliente: IEmpresa = data;
     try {
-        let { insertId } = await consult.create(model, newCliente);
+        let { insertId } = await consult.create(tenantId, model, newCliente);
         newCliente.id = insertId;
         let link = links.created(model, insertId);
         let response = Object.assign({data:newCliente, message: respuestas.Created.message}, { link: link });
@@ -391,7 +362,7 @@ export const create = async (body: any): Promise<any> => {
  * @param params params request object
  * @param body data of the company
  */
-export const update = async (params: any, body: any): Promise<any> => {
+export const update = async (params: any, body: any, tenantId: string): Promise<any> => {
     const { id } = params;
     let { data } = body;
     let newCliente: IEmpresa = data;
@@ -399,7 +370,7 @@ export const update = async (params: any, body: any): Promise<any> => {
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
 
-        let { affectedRows } = await consult.update(model, id, newCliente);
+        let { affectedRows } = await consult.update(tenantId, model, id, newCliente);
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
         
@@ -416,13 +387,13 @@ export const update = async (params: any, body: any): Promise<any> => {
  * Delete a company
  * @param params params request object
  */
-export const remove = async (params: any): Promise<any> => {
+export const remove = async (params: any, tenantId: string): Promise<any> => {
     let { id } = params;
     try {
 
         if(isNaN(id as number)) return respuestas.InvalidID;
 
-        await consult.remove(model, id);
+        await consult.remove(tenantId, model, id);
         
         return respuestas.Deleted;
     } catch (error) {
@@ -438,21 +409,21 @@ export const remove = async (params: any): Promise<any> => {
  * @param id id of the company 
  * @param query modifier of the consult
  */
-export const getCargosByEmpresa = async (id: string | number, query: any): Promise<any> => {
+export const getCargosByEmpresa = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
 
-        let data: any = await consult.getOtherByMe(model, id, 'adm_cargos', query);
-        let totalCount = await consult.countOther(model, 'adm_cargos', id);
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'adm_cargos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'adm_cargos', id);
         let count = data.length;
         let { limit } = query;
 
         for (let cargo of data) {
-            let concepto =  await consult.getPersonalized(`SELECT * FROM adm_conceptos WHERE adm_empresa_id=${id} AND id=${cargo.adm_conceptos_id}`);
+            let concepto =  await consult.getPersonalized(tenantId, `SELECT * FROM adm_conceptos WHERE adm_empresa_id=${id} AND id=${cargo.adm_conceptos_id}`);
             cargo.concepto = Object.assign({},concepto[0]);
             delete cargo.adm_conceptos_id;
         }
@@ -477,21 +448,21 @@ export const getCargosByEmpresa = async (id: string | number, query: any): Promi
  * @param query modifier of the consult
  */
 
-export const createCargo = async (id: any, body: any): Promise<any> => {
+export const createCargo = async (id: any, body: any, tenantId: string): Promise<any> => {
     body
     try {
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
         
         let { data } = body;
         let { adm_depositos_id, adm_conceptos_id } = data;
         let newCargo: ICargo = data;
-        let { insertId } = await consult.create('adm_cargos', newCargo) as any;
+        let { insertId } = await consult.create(tenantId, 'adm_cargos', newCargo) as any;
         
-        let movDep:any[] = await consult.getPersonalized(`SELECT * FROM adm_movimiento_deposito WHERE adm_depositos_id=${adm_depositos_id} AND adm_conceptos_id=${adm_conceptos_id}`)
+        let movDep:any[] = await consult.getPersonalized(tenantId, `SELECT * FROM adm_movimiento_deposito WHERE adm_depositos_id=${adm_depositos_id} AND adm_conceptos_id=${adm_conceptos_id}`)
         movDep[0].existencia = +newCargo.cantidad + +movDep[0].existencia;
-        let {affectedRows} = await consult.update("adm_movimiento_deposito",movDep[0].id,movDep[0]);
+        let {affectedRows} = await consult.update(tenantId, "adm_movimiento_deposito",movDep[0].id,movDep[0]);
 
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message}, { link: link });
@@ -511,22 +482,22 @@ export const createCargo = async (id: any, body: any): Promise<any> => {
  * @param query modifier of the consult
  */
 
-export const adjustPrice = async (id:  string | number, body:  any): Promise<any> => {
+export const adjustPrice = async (id:  string | number, body:  any, tenantId: string): Promise<any> => {
     try {
 
-        let recurso: IEmpresa = await consult.getOne(model, id, { fields: 'id' });
+        let recurso: IEmpresa = await consult.getOne(tenantId, model, id, { fields: 'id' });
 
         if (!recurso) return respuestas.ElementNotFound;
         
         let { percent } = body.data;
-        let conceptos: any[] = await consult.getPersonalized(`SELECT * from adm_conceptos WHERE adm_empresa_id=${id}`)
+        let conceptos: any[] = await consult.getPersonalized(tenantId, `SELECT * from adm_conceptos WHERE adm_empresa_id=${id}`)
 
         console.log(conceptos.length);
 
         for (let concepto  of conceptos) {
             concepto.precio_a = Math.round(((1 + +percent) * +concepto.precio_a) * 100) / 100;
             concepto.precio_dolar = Math.round(((1+ +percent) * +concepto.precio_dolar) * 100) / 100;
-            consult.getPersonalized(`UPDATE adm_conceptos SET precio_a=${concepto.precio_a}, precio_dolar=${concepto.precio_dolar} WHERE id=${concepto.id}`)
+            consult.getPersonalized(tenantId, `UPDATE adm_conceptos SET precio_a=${concepto.precio_a}, precio_dolar=${concepto.precio_dolar} WHERE id=${concepto.id}`)
         }
 
         let response = Object.assign({ message: respuestas.Update.message});

@@ -9,10 +9,10 @@ const model = "adm_clientes";
  * Get all clients
  * @param query modifier of the consult
  */
-export const get = async (query: any): Promise<any> => {
+export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: ICliente[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model); // consulto el total de registros de la BD
+        let data: ICliente[] = await consult.get(tenantId, model, query);
+        let totalCount: number = await consult.count(tenantId, model); // consulto el total de registros de la BD
         let count = data.length;
         let { limit } = query;
 
@@ -34,12 +34,12 @@ export const get = async (query: any): Promise<any> => {
  * @param id id of the client
  * @param query modifier of the consult
  */
-export const getOne = async (id: string | number, query: any): Promise<any> => {
+export const getOne = async (id: string | number, query: any, tenantId: string): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: ICliente[] = await consult.getOne(model, id, query);
-        let count: number = await consult.count(model);
+        let data: ICliente[] = await consult.getOne(tenantId, model, id, query);
+        let count: number = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
@@ -54,19 +54,19 @@ export const getOne = async (id: string | number, query: any): Promise<any> => {
     }
 }
 
-export async function getBuys(params: any, query: any): Promise<any> {
+export async function getBuys(params: any, query: any, tenantId: string): Promise<any> {
     try {
         let { id } = params;
         if(isNaN(id)) return respuestas.InvalidID;
 
-        const cliente = await consult.getOne(model,id,{});
+        const cliente = await consult.getOne(tenantId, model,id,{});
 
         if(!cliente) return respuestas.ElementNotFound;
 
         query.adm_tipos_facturas_id = ['5','1'];
-        const limit = await consult.countOther(model,'adm_enc_facturas',id);
+        const limit = await consult.countOther(tenantId, model,'adm_enc_facturas',id);
         query.limit = limit;
-        const facturas:any[] = await consult.getOtherByMe(model,id,'adm_enc_facturas',query);
+        const facturas:any[] = await consult.getOtherByMe(tenantId, model,id,'adm_enc_facturas',query);
 
         const compras = facturas.length;
         const totalCompras = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal),0).toFixed(2);
@@ -81,19 +81,19 @@ export async function getBuys(params: any, query: any): Promise<any> {
     }
 }
 
-export async function getDevolutions(params: any, query: any): Promise<any> {
+export async function getDevolutions(params: any, query: any, tenantId: string): Promise<any> {
     try {
         let { id } = params;
         if(isNaN(id)) return respuestas.InvalidID;
 
-        const cliente = await consult.getOne(model,id,{});
+        const cliente = await consult.getOne(tenantId, model,id,{});
 
         if(!cliente) return respuestas.ElementNotFound;
 
         query.adm_tipos_facturas_id = ['2','3'];
-        const limit = await consult.countOther(model,'adm_enc_facturas',id);
+        const limit = await consult.countOther(tenantId, model,'adm_enc_facturas',id);
         query.limit = limit;
-        const facturas:any[] = await consult.getOtherByMe(model,id,'adm_enc_facturas',query);
+        const facturas:any[] = await consult.getOtherByMe(tenantId, model,id,'adm_enc_facturas',query);
 
         const devoluciones = facturas.length;
         const totalDevoluciones = facturas.reduce((acum,element)=> acum + parseFloat(element.subtotal),0).toFixed(2);
@@ -109,7 +109,7 @@ export async function getDevolutions(params: any, query: any): Promise<any> {
     }
 }
 
-export async function getMostBuyers(query: any): Promise<any>{
+export async function getMostBuyers(query: any, tenantId: string): Promise<any>{
     try {
         let where = makeWhere(query,'adm_enc_facturas',1);
         let sql = `SELECT adm_clientes.*, SUM(subtotal) AS total, SUM(subtotal_dolar) as totalDolar,
@@ -117,7 +117,7 @@ export async function getMostBuyers(query: any): Promise<any>{
         LEFT JOIN adm_clientes ON adm_clientes_id = adm_clientes.id
         WHERE adm_tipos_facturas_id IN (5,1) ${where}
         GROUP BY adm_clientes.id ORDER BY total ${query.order || 'DESC'}  LIMIT ${query.limit || '10'}`;
-        const data:any[] = await consult.getPersonalized(sql);
+        const data:any[] = await consult.getPersonalized(tenantId, sql);
         const count = data.length;
         
         if(count <= 0) return respuestas.Empty;
@@ -162,11 +162,11 @@ function makeWhere(query:any,tabla:any,ind:number){
  * Create a new client
  * @param body data of the new client
  */
-export const create = async (body: any): Promise<any> => {
+export const create = async (body: any, tenantId: string): Promise<any> => {
     let { data } = body;
     let newCliente: ICliente = data;
     try {
-        let { insertId } = await consult.create(model, newCliente);
+        let { insertId } = await consult.create(tenantId, model, newCliente);
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         
@@ -182,7 +182,7 @@ export const create = async (body: any): Promise<any> => {
  * @param params params request object
  * @param body data of the cliente
  */
-export const update = async (params: any, body: any): Promise<any> => {
+export const update = async (params: any, body: any, tenantId: string): Promise<any> => {
     const { id } = params;
     let { data } = body;
     let newCliente: ICliente = data;
@@ -190,7 +190,7 @@ export const update = async (params: any, body: any): Promise<any> => {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let { affectedRows } = await consult.update(model, id, newCliente);
+        let { affectedRows } = await consult.update(tenantId, model, id, newCliente);
         let link = links.created(model, id);
         let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
         
@@ -206,12 +206,12 @@ export const update = async (params: any, body: any): Promise<any> => {
  * Delete a client
  * @param params params request object
  */
-export const remove = async (params: any): Promise<any> => {
+export const remove = async (params: any, tenantId: string): Promise<any> => {
     let { id } = params;
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        await consult.remove(model, id);
+        await consult.remove(tenantId, model, id);
         
         return respuestas.Deleted;
     } catch (error) {

@@ -2,15 +2,15 @@ import * as controller from "./controller";
 import { validar } from "../../helpers/aunthentication";
 import { InternalServerError } from "../../errors";
 import { Router, Request, Response } from "express";
+import { getTenantId } from '../../helpers/axios';
+
 const router = Router();
 
 //obtener todos los pedidos
-router.get(
-	"/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.get("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.get(req.query);
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.get(req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -18,12 +18,10 @@ router.get(
 		}
 	}
 );
-router.get(
-	"/stats",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.get("/stats", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.getStats();
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.getStats(tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -33,13 +31,11 @@ router.get(
 );
 
 //obtener un pedido en concreto
-router.get(
-	"/:id",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.get("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		let { id } = req.params;
 		try {
-			let { message, response, code } = await controller.getOne(id, req.query);
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.getOne(id, req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -49,12 +45,10 @@ router.get(
 );
 
 //obtener los conceptos de un pedido
-router.get(
-	"/:id/conceptos/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.get("/:id/conceptos/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.getConceptsByOrder(req.params, req.query);
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.getConceptsByOrder(req.params, req.query, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -64,12 +58,10 @@ router.get(
 );
 
 //obtener la informacion de banco de un pedido
-router.get(
-	"/:id/movimiento_banco/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.get("/:id/movimiento_banco/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.getBankMovesByOrder(req.params, req.query);
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.getBankMovesByOrder(req.params, req.query, tenantId);
 			return res.status(code).json(message ? { message } : { response });
 		} catch (error) {
 			console.log(error);
@@ -79,12 +71,10 @@ router.get(
 );
 
 //crear un pedido
-router.post(
-	"/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.create(req.body, req.file);
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.create(req.body, req.file, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -94,12 +84,10 @@ router.post(
 );
 
 //actualizar un pedido
-router.post(
-	"/:id",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.update(req.params, req.body);
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.update(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -110,12 +98,10 @@ router.post(
 
 
 //actualizar los detalles de un pedido
-router.post(
-	"/:id/detalles/",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/:id/detalles/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, response, code } = await controller.addDetail(req.params, req.body);
+			let tenantId: string = getTenantId(req);
+			let { message, response, code } = await controller.addDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -125,12 +111,10 @@ router.post(
 );
 
 //actualizar un detalle en concreto de un pedido
-router.post(
-	"/:id/detalles/:id1",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.post("/:id/detalles/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { response, message, code } = await controller.updateDetail(req.params, req.body);
+			let tenantId: string = getTenantId(req);
+			let { response, message, code } = await controller.updateDetail(req.params, req.body, tenantId);
 			return res.status(code).json(message || response);
 		} catch (error) {
 			console.log(error);
@@ -140,12 +124,10 @@ router.post(
 );
 
 //eliminar detalles de  un pedido
-router.delete(
-	"/:id/detalles/:id1",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.delete("/:id/detalles/:id1", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, code } = await controller.deleteDetail(req.params);
+			let tenantId: string = getTenantId(req);
+			let { message, code } = await controller.deleteDetail(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {
 			console.log(error);
@@ -154,12 +136,10 @@ router.delete(
 	}
 );
 //eliminar un pedido
-router.delete(
-	"/:id",
-	validar,
-	async (req: Request, res: Response): Promise<Response> => {
+router.delete("/:id", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let { message, code } = await controller.remove(req.params);
+			let tenantId: string = getTenantId(req);
+			let { message, code } = await controller.remove(req.params, tenantId);
 			return res.status(code).json(message);
 		} catch (error) {
 			console.log(error);

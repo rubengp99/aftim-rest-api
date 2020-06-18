@@ -9,10 +9,10 @@ const model = "rest_areas";
  * Return the last 50 areas of attention
  * @param query the modifier of the consult
  */
-export const get = async (query:any): Promise<any> =>{
+export const get = async (query:any, tenantId: string): Promise<any> =>{
     try {
-        let data: IAreasAtencion[] = await consult.get(model,query);
-        let totalCount: number = await consult.count(model);
+        let data: IAreasAtencion[] = await consult.get(tenantId, model,query);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -33,12 +33,12 @@ export const get = async (query:any): Promise<any> =>{
  * @param id id of the area
  * @param query object to modify the consult
  */
-export const getOne = async (id:string | number ,query:any): Promise<any> =>{
+export const getOne = async (id:string | number ,query:any, tenantId: string): Promise<any> =>{
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
 
-        let data:IAreasAtencion = await consult.getOne(model,id,query);
-        let count:number = await consult.count(model);
+        let data:IAreasAtencion = await consult.getOne(tenantId, model,id,query);
+        let count:number = await consult.count(tenantId, model);
         if(!data)  return respuestas.ElementNotFound;
     
         let link = links.records(data,'areas_atencion',count);
@@ -56,11 +56,11 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
  * Create an area of attention
  * @param body the data of the new area
  */
-export const create = async (body:any): Promise<any> =>{
+export const create = async (body:any, tenantId: string): Promise<any> =>{
     let {data} = body;
     try {
         let newArea: IAreasAtencion = data;
-        let {insertId} = await consult.create(model,newArea);
+        let {insertId} = await consult.create(tenantId, model,newArea);
         let link = links.created('areas_atencion',insertId);
         let response = Object.assign({message:respuestas.Created.message},{link:link});
         return {response,code:respuestas.Created.code};
@@ -76,13 +76,13 @@ export const create = async (body:any): Promise<any> =>{
  * @param params the object of the params request
  * @param body the data of the area to update 
  */
-export const update = async (params:any,body:any): Promise<any>=>{
+export const update = async (params:any,body:any, tenantId: string): Promise<any>=>{
     const {id} = params;
     let {data} = body;
     let newArea:IAreasAtencion = data;
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
-        let {affectedRows}  = await consult.update(model,id,newArea);
+        let {affectedRows}  = await consult.update(tenantId, model,id,newArea);
         let link = links.created('areas_atencion',id);
         let response = Object.assign({message:respuestas.Update.message,affectedRows},{link:link});
         return {response,code:respuestas.Update.code};
@@ -97,11 +97,11 @@ export const update = async (params:any,body:any): Promise<any>=>{
  * Delete a register from the areas
  * @param params the object of params request
  */
-export const remove = async (params:any):Promise<any> => {
+export const remove = async (params:any, tenantId: string): Promise<any> => {
     let {id} = params;
     try {
         if(isNaN(id as number)) return respuestas.InvalidID;
-        await consult.remove(model,id);
+        await consult.remove(tenantId, model,id);
         return respuestas.Deleted;   
     } catch (error) {
         console.log(`Error en el controlador ${model}, error: ${error}`);

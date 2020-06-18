@@ -10,11 +10,11 @@ const model = "adm_enc_ensamblado";
  * 
  * @param req params of the request
  */
-export const get = async (req:Request): Promise<any> =>{
+export const get = async (req:Request, tenantId: string): Promise<any> =>{
     try {
         const { query } = req;
-        let data:IEnsamblado[] = await ensamblado.get(model,query);
-        let totalCount: number = await ensamblado.count(model);
+        let data:IEnsamblado[] = await ensamblado.get(tenantId, model,query);
+        let totalCount: number = await ensamblado.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -22,7 +22,7 @@ export const get = async (req:Request): Promise<any> =>{
 
         for (let i = 0; i < data.length; i++) {
             let { id } = data[i];
-            let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'adm_det_ensamblado', {});
+            let pres:any[] = await ensamblado.getOtherByMe(tenantId, model, id as string, 'adm_det_ensamblado', {});
             data[i].detalles = pres;
         }
         let link = links.pages(data, 'ensamblado', count, totalCount, limit);
@@ -41,16 +41,16 @@ export const get = async (req:Request): Promise<any> =>{
  * @param id id of the entity
  * @param query modifier of the consulter
  */
-export const getOne = async (id:string | number ,query:any): Promise<any> =>{
+export const getOne = async (id:string | number ,query:any, tenantId: string): Promise<any> =>{
     try {
         if(isNaN(id as number)) return respuestas.InvalidID
 
-        let data:IEnsamblado[] = await ensamblado.getOne(model,id,query);
-        let count:number = await ensamblado.count(model);
+        let data:IEnsamblado[] = await ensamblado.getOne(tenantId, model,id,query);
+        let count:number = await ensamblado.count(tenantId, model);
         
         if(!data[0]) return respuestas.ElementNotFound;
 
-        let pres:any[] = await ensamblado.getOtherByMe(model, id as string, 'det_ensamblado', {});
+        let pres:any[] = await ensamblado.getOtherByMe(tenantId, model, id as string, 'det_ensamblado', {});
         data[0].detalles = pres;
         let link = links.records(data,'ensamblado',count);
         let response = Object.assign({ data }, link);
@@ -67,16 +67,16 @@ export const getOne = async (id:string | number ,query:any): Promise<any> =>{
  * 
  * @param req body of the request
  */
-export const create = async (req:Request): Promise<any> =>{
+export const create = async (req:Request, tenantId: string): Promise<any> =>{
     let {data,data1} = req.body;
     let newCargo: IEnsamblado = data;
     let detalles = data1;
     try {
 
-        let {insertId} = await ensamblado.create(model,newCargo);
+        let {insertId} = await ensamblado.create(tenantId, model,newCargo);
         detalles.forEach(async (element: any) => {
             element.enc_ensamblado_id=insertId;
-            await ensamblado.create('det_ensamblado',element);
+            await ensamblado.create(tenantId, 'det_ensamblado',element);
         });
 
         let link = links.created('ensamblado',insertId);

@@ -3,6 +3,8 @@ import { App } from "./../../app";
 
 import {IMovimientoBanco} from "./model";
 
+let tenantId: string = 'test'
+
 const DataPrueba : IMovimientoBanco = {
     adm_banco_id:              1 ,
     adm_tipo_movimiento_id:    1 ,
@@ -43,6 +45,7 @@ describe('Get Routes #Get',()=>{
     test('Obtener todos #Get #All',async()=>{
         const res = await request(app).get(`/api/movimiento_banco`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenantId', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.body.response.data).toBeDefined();
         expect(res.status).toEqual(200);
@@ -51,6 +54,7 @@ describe('Get Routes #Get',()=>{
     test('Obtener todos #Get #All',async()=>{
         const res = await request(app).get(`/api/movimiento_banco/1`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenantId', tenantId)
             .send({ query: { fields: 1, limit: "" } })
         expect(res.body.response.data).toBeDefined();
         expect(res.status).toEqual(200);
@@ -61,6 +65,7 @@ describe('Post Routes #Post', ()=>{
     test('Crear Un movimiento #Create #One',async()=>{
         const res = await request(app).post(`/api/movimiento_banco/`)
             .set('x-access-control', '{"user":"admin","password":"123456"}')
+            .set('tenantId', tenantId)
             .send(pack)
         expect(res.body.response.data).toBeDefined();
         expect(res.status).toEqual(201);

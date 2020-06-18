@@ -64,6 +64,12 @@ export interface IConcepto {
 	grupo?: IGrupo;
 	subgrupo?: ISubgrupo;
 	isSold?: Boolean;
+	direcciones?: IDirecciones,
+}
+
+export interface IDirecciones {
+	municipio: 	string,
+	estado: 	string,
 }
 
 export interface IPresentaciones {}
