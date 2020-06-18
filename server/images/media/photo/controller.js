@@ -1,9 +1,8 @@
-const axios = require('axios');
 const path = require('path');
 const fs = require('fs-extra');
 const { DATA_URL } = require('../../keys');
 const { tablas } = require('./models');
-const { getTenantId, createAxios } = require('../../helpers/axios');
+const { getTenantId, createAxios } = require('../../../auth/encript');
 
 async function getPhotosOfGallery(req, res) {
     try {
@@ -53,7 +52,7 @@ async function insertGalleryPhoto(req,res){
         const { table, id } = req.params;
         const { filename } = req.file;
         let model = tableSelector(table);
-        
+
         if (model == '') return res.status(400).json({ message: 'Bad request' });
         const { data } = await connection.get(`/mysql/${model}/${id}/`, { query: { fields: 'id,imagen' } });
         if(!data) return res.status(404).json({message:'This element not exist'});
