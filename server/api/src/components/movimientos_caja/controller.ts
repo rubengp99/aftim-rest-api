@@ -10,10 +10,10 @@ const model = "adm_movimientos_caja";
  * Get all box moves
  * @param query modifier of the consult
  */
-export async function get(query: any): Promise<any> {
+export async function get(query: any, tenantId: string): Promise<any> {
     try {
-        let data: IMovimientosCaja[] = await consult.get(model, query);
-        let totalCount: number = await consult.count(model);
+        let data: IMovimientosCaja[] = await consult.get(tenantId, model, query);
+        let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
 
@@ -34,12 +34,12 @@ export async function get(query: any): Promise<any> {
  * @param id id of the bank move
  * @param query modifier of the consult
  */
-export async function getOne(id: string | number, query: any): Promise<any> {
+export async function getOne(id: string | number, query: any, tenantId: string): Promise<any> {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: IMovimientosCaja = await consult.getOne(model, id, query);
-        let count = await consult.count(model);
+        let data: IMovimientosCaja = await consult.getOne(tenantId, model, id, query);
+        let count = await consult.count(tenantId, model);
 
         if (!data) return respuestas.ElementNotFound;
 
@@ -54,7 +54,7 @@ export async function getOne(id: string | number, query: any): Promise<any> {
     }
 }
 
-export const create = async (body:any,file:any): Promise<any> => {
+export const create = async (body:any,file:any, tenantId: string): Promise<any> => {
     let { data } = body;
     let newMovCaja: IMovimientosCaja = typeof data == 'string' ? JSON.parse(data) : data;
     if(file){
@@ -62,7 +62,7 @@ export const create = async (body:any,file:any): Promise<any> => {
         newMovCaja.imagen = filename;
     }
     try {
-        let { insertId } = await consult.create(model, newMovCaja) as any;
+        let { insertId } = await consult.create(tenantId, model, newMovCaja) as any;
         let link = links.created(model, insertId);
         newMovCaja.id = insertId;
         let response = Object.assign({ message: respuestas.Created.message, data:newMovCaja }, { link: link });

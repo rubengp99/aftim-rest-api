@@ -46,7 +46,7 @@ describe('Router', () => {
             const response = await request(app.app)
                 .get('/api/areas_atencion')
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .set('tenantId', tenantId);
+                .set('tenant-id', tenantId);
             expect(response.body.data).toBeDefined();
             expect(response.status).toBe(200);
         });
@@ -54,7 +54,7 @@ describe('Router', () => {
             const response = await request(app.app)
                 .get('/api/areas_atencion/1')
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .set('tenantId', tenantId);
+                .set('tenant-id', tenantId);
             expect(response.body.data).toBeDefined();
             expect(response.status).toBe(200);
         });
@@ -66,7 +66,7 @@ describe('Router', () => {
                 .post('/api/areas_atencion')
                 .send(onePrueba)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .set('tenantId', tenantId);
+                .set('tenant-id', tenantId);
             expect(response.body.message).toBeDefined();
             expect(response.status).toBe(201);
         })
@@ -75,7 +75,7 @@ describe('Router', () => {
                 .post('/api/areas_atencion/4')
                 .send(onePrueba)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .set('tenantId', tenantId);
+                .set('tenant-id', tenantId);
                 const ifDontExistExeption = (message) => {
                     return message === 'The element not exist' ? 404 : 201
                 }
@@ -90,7 +90,7 @@ describe('Router', () => {
                 .delete('/api/areas_atencion/5')
                 .send(onePrueba)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
-                .set('tenantId', tenantId);
+                .set('tenant-id', tenantId);
             const ifDontExistExeption = (message) => {
                 return message === 'The element not exist' ? 404 : 200
             }

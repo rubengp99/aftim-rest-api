@@ -2,11 +2,15 @@ import * as controller  from './controller';
 import  {validar}  from'../../helpers/aunthentication';
 import { InternalServerError } from '../../errors';
 import  { Router,Request,Response } from 'express';
+import { getTenantId } from '../../helpers/axios';
+
 const router = Router();
-//obtener todos los movimientos movimiento
+
+//obtener todos los movimientos caja
 router.get('/',validar,async (req:Request,res:Response):Promise<Response>=>{
     try {
-        let {message,response,code}= await controller.get(req.query);
+        let tenantId: string = getTenantId(req);
+        let {message,response,code}= await controller.get(req.query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -18,7 +22,8 @@ router.get('/:id',validar,async (req:Request,res:Response):Promise<Response>=>{
     const {id} = req.params;
     const {query} = req.query;
     try {
-        let {message,response,code}= await controller.getOne(id,query);
+        let tenantId: string = getTenantId(req);
+        let {message,response,code}= await controller.getOne(id,query, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
@@ -29,7 +34,8 @@ router.get('/:id',validar,async (req:Request,res:Response):Promise<Response>=>{
 //crear un movimiento
 router.post('/',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
-        let {message,response,code} = await controller.create(req.body,req.file);
+        let tenantId: string = getTenantId(req);
+        let {message,response,code} = await controller.create(req.body,req.file, tenantId);
         return res.status(code).json(message || response);
     } catch (error) {
         console.log(error);
