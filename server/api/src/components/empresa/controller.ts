@@ -27,7 +27,7 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -52,7 +52,7 @@ export const getOne = async (id: string | number, query: any, tenantId: string):
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -94,7 +94,7 @@ export const getConceptsByEmpresa = async (id: string | number, query: any, tena
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -126,7 +126,7 @@ export const getDepositsByEmpresa = async (id: string | number, query: any, tena
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -178,7 +178,7 @@ export const getGroupsByEmpresa = async (id: string | number, query: any, tenant
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -229,7 +229,7 @@ export const getSubgroupsByEmpresa = async (id: string | number, query: any, ten
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -261,7 +261,7 @@ export const getPedidosByEmpresa = async (id: string | number, query: any, tenan
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -303,8 +303,7 @@ export const getConceptsByGroupByEmpresa = async (eId: string | number, gId: str
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(error);
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -329,7 +328,7 @@ export async function getUserByCompany(id: string | number, query: any, tenantId
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -351,7 +350,7 @@ export const create = async (body: any, tenantId: string): Promise<any> => {
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -378,7 +377,7 @@ export const update = async (params: any, body: any, tenantId: string): Promise<
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -399,7 +398,7 @@ export const remove = async (params: any, tenantId: string): Promise<any> => {
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -437,7 +436,7 @@ export const getCargosByEmpresa = async (id: string | number, query: any, tenant
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
 
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -470,8 +469,7 @@ export const createCargo = async (id: any, body: any, tenantId: string): Promise
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
-        console.log(error);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -505,8 +503,7 @@ export const adjustPrice = async (id:  string | number, body:  any, tenantId: st
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
-        console.log(error);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }

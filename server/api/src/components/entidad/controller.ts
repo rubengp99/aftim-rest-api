@@ -24,7 +24,7 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -49,7 +49,7 @@ export const getOne = async (id: string | number, query: any, tenantId: string):
         return {response,code:respuestas.Ok.code};
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -69,7 +69,7 @@ export const create = async (body: any, tenantId: string): Promise<any> => {
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -94,7 +94,7 @@ export const update = async (params: any, body: any, tenantId: string): Promise<
         return { response, code: respuestas.Update.code };
     } catch (error) {
         if(error.message ==='BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -108,7 +108,7 @@ export const remove = async (params: any, tenantId: string): Promise<any> => {
         
         return respuestas.Deleted;
     } catch (error) {
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }

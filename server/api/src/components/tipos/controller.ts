@@ -3,7 +3,7 @@ import * as links from '../../helpers/links';
 import * as respuestas from '../../errors';
 import { ITipoConceptos } from './model';
 
-const model_1 = "adm_tipos_conceptos"
+const model = "adm_tipos_conceptos"
 
 /**
  * Get all the types of concepts
@@ -11,8 +11,8 @@ const model_1 = "adm_tipos_conceptos"
  */
 export const getTiposConceptos = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let data: ITipoConceptos[] = await tipos.get(tenantId, model_1, query);
-        let totalCount: number = await tipos.count(tenantId, model_1);
+        let data: ITipoConceptos[] = await tipos.get(tenantId, model, query);
+        let totalCount: number = await tipos.count(tenantId, model);
         let count = data.length;
         let { limit } = query;
         
@@ -24,7 +24,7 @@ export const getTiposConceptos = async (query: any, tenantId: string): Promise<a
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model_1}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -38,8 +38,8 @@ export const getOneTipoConcepto = async (id: string | number, query: any, tenant
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
 
-        let data: ITipoConceptos = await tipos.getOne(tenantId, model_1, id, query);
-        let count: number = await tipos.count(tenantId, model_1);
+        let data: ITipoConceptos = await tipos.getOne(tenantId, model, id, query);
+        let count: number = await tipos.count(tenantId, model);
         
         if (!data) return respuestas.ElementNotFound;
         
@@ -49,7 +49,7 @@ export const getOneTipoConcepto = async (id: string | number, query: any, tenant
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model_1}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }

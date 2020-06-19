@@ -24,7 +24,7 @@ export async function get(query:any, tenantId: string): Promise<any>{
         return {response, code:respuestas.Ok.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -49,7 +49,7 @@ export async function getOne(id:string | number ,query:any, tenantId: string): P
         return {response,code:respuestas.Ok.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -79,7 +79,7 @@ export async function getSellsBySeller(params:any, query:any, tenantId: string):
         return { response, code:respuestas.Ok.code };
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -104,7 +104,7 @@ export async function getTopSellers(query:any, tenantId: string):Promise<any>{
         return { response, code: respuestas.Ok.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -151,7 +151,7 @@ export async function  create(body:any, tenantId: string): Promise<any>{
         return {response,code:respuestas.Created.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -175,7 +175,7 @@ export  async function update(params:any,body:any, tenantId: string): Promise<an
         return {response,code:respuestas.Update.code};
     } catch (error) {
         if(error.message ==='DB_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -193,7 +193,7 @@ export async function remove(params:any, tenantId: string): Promise<any> {
         
         return respuestas.Deleted;   
     } catch (error) {
-        console.log(`Error en el controlador ${model}, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }

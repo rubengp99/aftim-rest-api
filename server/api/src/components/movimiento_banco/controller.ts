@@ -23,7 +23,7 @@ export async function get(query: any, tenantId: string): Promise<any> {
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -48,7 +48,7 @@ export async function getOne(id: string | number, query: any, tenantId: string):
         return { response, code: respuestas.Ok.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
@@ -69,7 +69,7 @@ export async function create(body: any, tenantId: string): Promise<any> {
         return { response, code: respuestas.Created.code };
     } catch (error) {
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
-        console.log(`Error al consultar la base de datos, error: ${error}`);
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
     }
 }
