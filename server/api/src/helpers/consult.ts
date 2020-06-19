@@ -15,8 +15,8 @@ export const get = async (tenantId: string, model: string, query?: any): Promise
         let { data } = await connection.get(`/mysql/${model}`, { params: query });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -35,8 +35,8 @@ export const getOne = async (tenantId: string, model: string, id: string | numbe
         let { data } = await connection.get(`/mysql/${model}/${id}`, { params: query });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...:\n ${error}`);
     }
 }
 
@@ -56,8 +56,8 @@ export const getOtherByMe = async (tenantId: string, model: string, id: string |
         let { data } = await connection.get(`/mysql/${model}/${id}/${other}`, { params: query });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -67,8 +67,9 @@ export const getPersonalized = async (tenantId:string, sql: string): Promise<any
         let { data } = await connection.post(`/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        console.log(error)
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -83,8 +84,9 @@ export const create = async (tenantId: string, model: string, object: any): Prom
         let { data } = await connection.post(`/mysql/${model}/`, { data: object });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        console.log(error)
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -99,8 +101,8 @@ export const insertMany = async (tenantId: string, model: string, object: any): 
         let { data } = await connection.post(`/mysql/${model}/many`, { data: object });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 /**
@@ -116,8 +118,8 @@ export const update = async (tenantId: string, model: string, id: string | numbe
         let { data } = await connection.post(`/mysql/${model}/${id}`, { data: object });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -132,8 +134,8 @@ export const remove = async (tenantId: string, model: string, id: string | numbe
         let { data } = await connection.delete(`/mysql/${model}/${id}`);
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -147,8 +149,8 @@ export const count = async (tenantId: string, model: string): Promise<number> =>
         let { data } = await connection.get(`/mysql/count/${model}`);
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 /**
@@ -163,8 +165,8 @@ export const countOther = async (tenantId: string, model: string, other: string,
         let { data } = await connection.get(`/mysql/count/${model}/${id}/${other}`);
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -179,8 +181,8 @@ export const getUser = async (tenantId: string, user: string) => {
         let { data } = await connection.post(`/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }
 
@@ -195,7 +197,7 @@ export const empresa = async (tenantId: string, id: string) => {
         let { data } = await connection.post(`/mysql/query`, { sql: sql });
         return data;
     } catch (error) {
-        if (error.response.status === '400') throw new Error('BD_SYNTAX_ERROR');
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        if (error.toString().includes('400')) throw new Error('BD_SYNTAX_ERROR');
+        throw new Error(`[LOG] Consult just failed...: \n ${error}`);
     }
 }

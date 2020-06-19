@@ -23,13 +23,13 @@ async function get(connection, model, query) {
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
-            throw new Error('BD_SYNTAX_ERROR');
+            throw new Error(`BD_SYNTAX_ERROR`);
         }
         if(error.code === 'ER_NO_SUCH_TABLE'){
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_TABLE_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -61,9 +61,9 @@ async function getOne(connection, model, id, query) {
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
-            throw new Error('BD_SYNTAX_ERROR');
+            throw new Error(`BD_SYNTAX_ERROR`);
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -88,9 +88,9 @@ async function getOtherByMe(connection, model, id, other, query) {
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
-            throw new Error('BD_SYNTAX_ERROR');
+            throw new Error(`BD_SYNTAX_ERROR`);
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -109,9 +109,9 @@ async function create(connection, model, object) {
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
-            throw new Error('BD_SYNTAX_ERROR');
+            throw new Error(`BD_SYNTAX_ERROR`);
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -130,9 +130,9 @@ async function insertMany(connection, model,array){
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
-            throw new Error('BD_SYNTAX_ERROR');
+            throw new Error(`BD_SYNTAX_ERROR`);
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -152,9 +152,9 @@ async function update(connection, model, id, object) {
     } catch (error) {
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2'){ 
             console.log(`${chalk.red('[ERROR]')} ${error}`);
-            throw new Error('BD_SYNTAX_ERROR');
+            throw new Error(`BD_SYNTAX_ERROR`);
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -171,7 +171,7 @@ async function remove(connection, model, id){
         
         return deleted;
     } catch (error) {
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     } 
 }
 
@@ -190,9 +190,9 @@ async function query(connection, sql){
         
         if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
             console.log(`${chalk.red('[ERROR]')} ${error}`);
-            throw new Error('BD_SYNTAX_ERROR');
+            throw new Error(`BD_SYNTAX_ERROR`);
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -209,7 +209,7 @@ async function count(connection, model){
         
         return total;
     } catch (error) {
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
 
@@ -228,7 +228,7 @@ async function countOther(connection, model, id, other){
         
         return total;
     } catch (error) {
-        throw new Error(`Error en conexion connection la BD, error: ${other}`);
+        throw new Error(`[ERROR] Query just failed. \n ${other}`);
     }
 }
 

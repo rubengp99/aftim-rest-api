@@ -24,7 +24,9 @@ export async function validar(req: Request, res: Response, next: NextFunction) {
 
             req.userId = data.id;
             next();
-        }).catch(e => console.log(e))
+        }).catch(function(){
+            return res.status(403).json({ message: "You are not allowed to use this API. Please contact: teamlead@somossistemas.com." });
+        })
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal server error' });

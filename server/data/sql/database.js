@@ -7,10 +7,10 @@ var connection = null;
 function connect(data) {
     try {
         let { id } = data;
-        let db = database;
-        db.database = id;
+        database.database = id;
         connection = createPool(database);
-        console.log(`${chalk.green('[DATABASE]')} connected to ${db.database} database`);
+        console.log(`${chalk.green('[DATABASE]')} connected to ${id}.`);
+        
         return connection;
     } catch (error) {
         console.log(`${chalk.red('[ERROR]')} ${error}`)
