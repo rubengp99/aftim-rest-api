@@ -1,0 +1,22 @@
+export interface IMovimientosCaja {
+    id?:string | number,
+    adm_caja_id?:string | number,
+    fecha_at?:string,
+    fecha_in?:string,
+    hora_in?:string,
+    adm_tipo_pago_id?:string | number,
+    adm_tipo_movimiento_id?:string | number,
+    adm_banco_id?:string | number,
+    referencia:string,
+    debito:number,
+    credito:number,
+    credito_dolar:number,
+    descripcion?:string,
+    origen?:string,
+    numero_origen:string,
+    adm_entidad_id?:string | number,
+    islrnc?:number,
+    riva?:number,
+    fecha_transaccion?:string,
+    imagen?:string
+}
