@@ -8,6 +8,7 @@ module.exports = {
         det_pedidos:"rest_det_pedidos",
         movimiento_banco:"adm_movimientos_bancos",
         usuario: "usuario",
-        empresa: 'adm_empresa'
+        empresa: 'adm_empresa',
+        pagos: "adm_pagos",
     }
 }
