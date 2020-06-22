@@ -12,7 +12,7 @@ dotenv.config();
 app.use(cors({ exposedHeaders: 'Authorization' }));
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.set('port', process.argv[2] || process.env.NOTIFICATION_PORT || 86);
 
 // Routes
