@@ -30,8 +30,9 @@ router.post("/subscribe", validar, async (req, res) => {
 
         let {subscription_data, usuario_id}  = parsed_data;
         
-        const connection = createAxios(baseURL,tenantId);
-        const {auth,p256dh} = subscription_data.keys;
+        const connection = createAxios(baseURL, tenantId); 
+        
+        const {auth, p256dh} = subscription_data.keys;
         const {endpoint,expirationTime} = subscription_data;
         const toSave = {
             auth: auth,
@@ -60,7 +61,11 @@ router.post("/new-message", validar, async (req, res) => {
     const { message, subscription_id } = parsed_data;
     
     const connection = createAxios(baseURL,tenantId) ;
+
     const { result } = await connection.get(`/subscripcion/${subscription_id}`);
+
+    if (!result) return res.status(404).json({ message: "subscription not found." }) 
+
     const configData = {
         endpoint: result.endpoint,
         expirationTime: result.expiration_time,
