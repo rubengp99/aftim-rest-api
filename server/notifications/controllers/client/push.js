@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const axios = require("axios");
 const router = Router();
-const { web_push, mail, DATA_URL } = require("../../keys");
+const { web_push, mail, DATA_URL, TENNANT_ID } = require("../../keys");
 const webPush = require("web-push");
 
 const { createAxios } = require("./../../axios");
@@ -13,12 +13,13 @@ webPush.setVapidDetails(
 );
 
 const baseURL = `${DATA_URL}/mysql`;
-const tenantId = "almendras";
+const tenantId = TENNANT_ID;
 
 router.post("/subscribe", async (req, res) => {
     try {
         let { data } = req.body;
-        if (typeof data === "undefined") return res.status(400).json({ message: "bad request" });
+        if (typeof data === "undefined")
+            return res.status(400).json({ message: "bad request" });
         let { subscription_data, usuario_id } = data;
         const connection = createAxios(baseURL, tenantId);
         const { auth, p256dh } = subscription_data.keys;
@@ -41,17 +42,16 @@ router.post("/subscribe", async (req, res) => {
 });
 
 router.post("/new-message", async (req, res) => {
-    let { data } = req.body;
-    if (typeof data === "undefined") return res.status(400).json({ message: "bad request" });
-    const { message, subscription_id } = data;
+    if (typeof req.body.data === "undefined") return res.status(400).json({ message: "bad request" });
+    let { message, subscription_id } = req.body.data;
     const connection = createAxios(baseURL, tenantId);
-    const { result } = await connection.get(`/subscripcion/${subscription_id}`);
+    let { data } = await connection.get(`/subscripcion/${subscription_id}`);
     const configData = {
-        endpoint: result.endpoint,
-        expirationTime: result.expiration_time,
+        endpoint: data.endpoint,
+        expirationTime: data.expiration_time,
         keys: {
-            auth: result.auth,
-            p256dh: result.p256dh,
+            auth: data.auth,
+            p256dh: data.p256dh,
         },
     };
     const payload = JSON.stringify({
