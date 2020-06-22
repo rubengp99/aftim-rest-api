@@ -1,33 +1,60 @@
-const { Router } = require('express');
-const axios = require('axios');
+const { Router } = require("express");
+const axios = require("axios");
 const router = Router();
-const { web_push, mail, DATA_URL } = require('../../keys');
-const webPush = require('web-push');
+const { web_push, mail, DATA_URL } = require("../../keys");
+const webPush = require("web-push");
 
-webPush.setVapidDetails(`mailto:${mail.MAIL}`, web_push.WEB_PUSH_PUBLIC_KEY, web_push.WEB_PUSH_PRIVATE_KEY);
-router.post('/subscribe', async (req, res) => {
-    let subscriptiondata = req.body.subsdata;
-    const { data } = await axios.post(`${DATA_URL}/low/subscriptions`, subscriptiondata);
-    await axios.post(`${DATA_URL}/mysql/usuario`, {
-        data: {
-            subscription_id: data.inserted.id
+const {createAxios} = require("./../../axios");
+
+webPush.setVapidDetails(
+    `mailto:${mail.MAIL}`,
+    web_push.WEB_PUSH_PUBLIC_KEY,
+    web_push.WEB_PUSH_PRIVATE_KEY
+);
+
+const baseURL = `${DATA_URL}/mysql`;
+const tenantId = "almendras";
+
+router.post("/subscribe", async (req, res) => {
+    try {
+        let {subscriptionData,usuario_id} = req.body.data;
+        const connection = createAxios(baseURL,tenantId);
+        const {auth,p256dh} = subscriptionData.keys;
+        const {endpoint,expirationTime} = subscriptionData;
+        const toSave = {
+            value1:auth,
+            value2:p256dh,
+            endpoint:endpoint,
+            expirationTime:expirationTime,
+            usuario_id:usuario_id
         }
-    });
-    res.status(200).json({ message: 'ok' });
+        const { data } = await connection.post(`/subscripcion`,{data:{...toSave}});
+        res.status(200).json({ message: "ok", action: data });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: error });
+    }
 });
 
 router.post("/new-message", async (req, res) => {
-    const { message, userId } = req.body.data;
-    const response = await axios.get(`${DATA_URL}/mysql/usuario/${userId}`);
-    const { data } = await axios.get(`${DATA_URL}/low/subscription/${response.data.subscription_id}`);
-    // Payload Notification
+    const { message, subscriptionId } = req.body.data;
+    const connection = createAxios(baseURL,tenantId) ;
+    const {data} = await connection.get(`/subscripcion/${subscriptionId}`);
+    const configData = {
+            endpoint:data.endpoint,
+            expirationTime:data.expirationTime,
+            keys:{
+             auth:data.value1,
+             p256dh:data.value2,
+            }
+    }
     const payload = JSON.stringify({
         title: "Hoy provoca",
-        message
+        message,
     });
-    res.status(200).json();
+    res.status(200).json({ message: "funciona" });
     try {
-        await webPush.sendNotification(data, payload);
+        await webPush.sendNotification(configData, payload);
     } catch (error) {
         console.log(error);
     }

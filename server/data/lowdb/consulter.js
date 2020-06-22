@@ -30,7 +30,7 @@ async function get(model, id) {
 async function insert(model,data) {
     try {
         data.id = v4();
-        const inserted = await connection.get(model).push(data).write();
+        const inserted  = await connection.get(model).push(data).write();
         return { message: 'inserted', inserted }
     } catch (error) {
         console.log(`${chalk.red('[ERROR]')} ${error}`);
