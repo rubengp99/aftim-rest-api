@@ -25,7 +25,7 @@ router.post("/subscribe", async (req, res) => {
             auth:auth,
             p256dh:p256dh,
             endpoint:endpoint,
-            expirationTime:expirationTime,
+            expiration_time:expirationTime,
             usuario_id:usuario_id
         }
         const { data } = await connection.post(`/subscripcion`,{data:{...toSave}});
@@ -37,12 +37,12 @@ router.post("/subscribe", async (req, res) => {
 });
 
 router.post("/new-message", async (req, res) => {
-    const { message, subscriptionId } = req.body.data;
+    const { message, subscription_id } = req.body.data;
     const connection = createAxios(baseURL,tenantId) ;
-    const {data} = await connection.get(`/subscripcion/${subscriptionId}`);
+    const {data} = await connection.get(`/subscripcion/${subscription_id}`);
     const configData = {
             endpoint:data.endpoint,
-            expirationTime:data.expirationTime,
+            expirationTime:data.expiration_time,
             keys:{
              auth:data.value1,
              p256dh:data.value2,
