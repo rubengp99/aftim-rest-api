@@ -17,13 +17,13 @@ const tenantId = "almendras";
 
 router.post("/subscribe", async (req, res) => {
     try {
-        let {subscriptionData,usuario_id} = req.body.data;
+        let {subscription_data,usuario_id} = req.body.data;
         const connection = createAxios(baseURL,tenantId);
-        const {auth,p256dh} = subscriptionData.keys;
-        const {endpoint,expirationTime} = subscriptionData;
+        const {auth,p256dh} = subscription_data.keys;
+        const {endpoint,expirationTime} = subscription_data;
         const toSave = {
-            value1:auth,
-            value2:p256dh,
+            auth:auth,
+            p256dh:p256dh,
             endpoint:endpoint,
             expirationTime:expirationTime,
             usuario_id:usuario_id
