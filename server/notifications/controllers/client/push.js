@@ -4,7 +4,8 @@ const router = Router();
 const { web_push, mail, DATA_URL, TENNANT_ID } = require("../../keys");
 const webPush = require("web-push");
 
-const { createAxios } = require("./../../axios");
+const { validar } = require("../../../auth/helpers/authentication");
+const { createAxios, getTenantId } = require("../../../auth/helpers/axios");
 
 webPush.setVapidDetails(
     `mailto:${mail.MAIL}`,
@@ -13,17 +14,26 @@ webPush.setVapidDetails(
 );
 
 const baseURL = `${DATA_URL}/mysql`;
-const tenantId = TENNANT_ID;
 
-router.post("/subscribe", async (req, res) => {
+function getRequestBody(req) {
+    let { data } = req.body;
+    if (typeof data === "undefined") return void 0;
+    return (typeof data === 'string') ? JSON.parse(req.body.data) : data;
+}
+
+router.post("/subscribe", validar, async (req, res) => {
     try {
-        let { data } = req.body;
-        if (typeof data === "undefined")
-            return res.status(400).json({ message: "bad request" });
-        let { subscription_data, usuario_id } = data;
-        const connection = createAxios(baseURL, tenantId);
-        const { auth, p256dh } = subscription_data.keys;
-        const { endpoint, expirationTime } = subscription_data;
+        const parsed_data = getRequestBody(req);
+        const tenantId = getTenantId(req);
+
+        if (!parsed_data) return res.status(400).json({ message: "bad request" });
+
+        let {subscription_data, usuario_id}  = parsed_data;
+        
+        const connection = createAxios(baseURL, tenantId); 
+        
+        const {auth, p256dh} = subscription_data.keys;
+        const {endpoint,expirationTime} = subscription_data;
         const toSave = {
             auth: auth,
             p256dh: p256dh,
@@ -41,11 +51,21 @@ router.post("/subscribe", async (req, res) => {
     }
 });
 
-router.post("/new-message", async (req, res) => {
-    if (typeof req.body.data === "undefined") return res.status(400).json({ message: "bad request" });
-    let { message, subscription_id } = req.body.data;
-    const connection = createAxios(baseURL, tenantId);
-    let { data } = await connection.get(`/subscripcion/${subscription_id}`);
+router.post("/new-message", validar, async (req, res) => {
+    
+    const parsed_data = getRequestBody(req);
+    const tenantId = getTenantId(req);
+
+    if (!parsed_data) return res.status(400).json({ message: "bad request" });
+
+    const { message, subscription_id } = parsed_data;
+    
+    const connection = createAxios(baseURL,tenantId) ;
+
+    const { data } = await connection.get(`/subscripcion/${subscription_id}`);
+
+    if (!data) return res.status(404).json({ message: "subscription not found." }) 
+
     const configData = {
         endpoint: data.endpoint,
         expirationTime: data.expiration_time,
@@ -55,10 +75,10 @@ router.post("/new-message", async (req, res) => {
         },
     };
     const payload = JSON.stringify({
-        title: "Hoy provoca",
+        title: "Hoyprovoca.com",
         message,
     });
-    res.status(200).json({ message: "funciona" });
+    res.status(200).json({ message: "Message sent." });
     try {
         await webPush.sendNotification(configData, payload);
     } catch (error) {
