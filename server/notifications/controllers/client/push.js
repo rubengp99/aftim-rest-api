@@ -19,7 +19,7 @@ router.post("/subscribe", async (req, res) => {
     try {
         let { data } = req.body;
         if (typeof data === "undefined") return res.status(400).json({ message: "bad request" });
-        let { subscription_data, usuario_id } = parsed_data;
+        let { subscription_data, usuario_id } = data;
         const connection = createAxios(baseURL, tenantId);
         const { auth, p256dh } = subscription_data.keys;
         const { endpoint, expirationTime } = subscription_data;
@@ -43,7 +43,7 @@ router.post("/subscribe", async (req, res) => {
 router.post("/new-message", async (req, res) => {
     let { data } = req.body;
     if (typeof data === "undefined") return res.status(400).json({ message: "bad request" });
-    const { message, subscription_id } = parsed_data.data;
+    const { message, subscription_id } = data;
     const connection = createAxios(baseURL, tenantId);
     const { result } = await connection.get(`/subscripcion/${subscription_id}`);
     const configData = {
