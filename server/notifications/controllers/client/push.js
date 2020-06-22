@@ -4,7 +4,8 @@ const router = Router();
 const { web_push, mail, DATA_URL } = require("../../keys");
 const webPush = require("web-push");
 
-const {createAxios} = require("./../../axios");
+const { validar } = require("../../../auth/helpers/authentication");
+const { createAxios, getTenantId } = require("../../../auth/helpers/axios");
 
 webPush.setVapidDetails(
     `mailto:${mail.MAIL}`,
@@ -13,12 +14,19 @@ webPush.setVapidDetails(
 );
 
 const baseURL = `${DATA_URL}/mysql`;
-const tenantId = "almendras";
 
-router.post("/subscribe", async (req, res) => {
+function getRequestBody(req) {
+    let { data } = req.body;
+    return (typeof data === 'string') ? JSON.parse(req.body.data) : data;
+}
+
+router.post("/subscribe", validar, async (req, res) => {
     try {
-       const parsed_data= JSON.parse(req.body.data);
-        let {subscription_data,usuario_id}  = parsed_data;
+        const parsed_data = getRequestBody(req);
+        const tenantId = getTenantId(req);
+
+        let {subscription_data, usuario_id}  = parsed_data;
+        
         const connection = createAxios(baseURL,tenantId);
         const {auth,p256dh} = subscription_data.keys;
         const {endpoint,expirationTime} = subscription_data;
@@ -37,11 +45,15 @@ router.post("/subscribe", async (req, res) => {
     }
 });
 
-router.post("/new-message", async (req, res) => {
-    const parsed_data= JSON.parse(req.body.data);
+router.post("/new-message", validar, async (req, res) => {
+    
+    const parsed_data = getRequestBody(req);
+    const tenantId = getTenantId(req);
+
     const { message, subscription_id } = parsed_data;
+    
     const connection = createAxios(baseURL,tenantId) ;
-    const {data} = await connection.get(`/subscripcion/${subscription_id}`);
+    const { data } = await connection.get(`/subscripcion/${subscription_id}`);
     const configData = {
             endpoint:data.endpoint,
             expirationTime:data.expiration_time,

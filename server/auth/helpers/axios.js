@@ -1,4 +1,5 @@
 const axios = require("axios") ;
+
 const createAxios = function (baseURL, tenantId) {
     console.log("[AXIOS] call from URL: "+baseURL)
     const instance  = axios.create({
@@ -11,6 +12,7 @@ const createAxios = function (baseURL, tenantId) {
         },
         params:{}
     });
+    
     instance.interceptors.request.use(function (config) {
         return config;
     }, function (error) {
