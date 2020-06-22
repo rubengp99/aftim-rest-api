@@ -2,8 +2,8 @@ import { get, getOne } from './controller';
 const request = require('supertest')
 import { App } from "./../../app";
 import {ICambio} from "./model";
-
-let tenantId: string = "almendras"
+import {DATABASE_NAME} from "./../../keys";
+let tenantId: string = DATABASE_NAME;
 const target = "cambio";
 
 describe('Cambio controller',()=>{

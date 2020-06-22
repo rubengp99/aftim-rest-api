@@ -3,7 +3,8 @@ import { App } from "./../../app";
 
 import {IMovimientoBanco} from "./model";
 
-let tenantId: string = "almendras"
+import {DATABASE_NAME} from "./../../keys";
+let tenantId: string = DATABASE_NAME;
 const target = "movimiento_banco";
 const DataPrueba : IMovimientoBanco = {
     adm_banco_id:              1 ,

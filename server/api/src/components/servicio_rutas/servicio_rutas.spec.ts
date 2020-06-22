@@ -1,7 +1,8 @@
 import { IRuta } from './model';
 import { App } from '../../app';
 import request from 'supertest';
-let tenantId: string = "almendras"
+import {DATABASE_NAME} from "./../../keys";
+let tenantId: string = DATABASE_NAME;
 const target = "rutas";
 describe(`Get Routes #Get `, () => {
     const app = new App();

@@ -1,7 +1,8 @@
 const request = require('supertest')
 import { App } from "./../../app";
 import { IFacturas,IDetFacturas } from "./model";
-let tenantId: string = "almendras"
+import {DATABASE_NAME} from "./../../keys";
+let tenantId: string = DATABASE_NAME;
 const target = "factura";
 const datoPrueba : IFacturas= {
     numero_factura: '121212312',

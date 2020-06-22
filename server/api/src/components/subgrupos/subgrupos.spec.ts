@@ -1,7 +1,8 @@
 const request = require('supertest')
 import { App } from "./../../app";
 import { ISubgrupo } from "./model";
-let tenantId: string = "almendras"
+import {DATABASE_NAME} from "./../../keys";
+let tenantId: string = DATABASE_NAME;
 const target = "subgrupos";
 const datosPrueba : ISubgrupo = {
     adm_grupos_id:  1,

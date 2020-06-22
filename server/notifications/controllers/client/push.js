@@ -17,7 +17,8 @@ const tenantId = "almendras";
 
 router.post("/subscribe", async (req, res) => {
     try {
-        let {subscription_data,usuario_id} = req.body.data;
+       const parsed_data= JSON.parse(req.body.data);
+        let {subscription_data,usuario_id}  = parsed_data;
         const connection = createAxios(baseURL,tenantId);
         const {auth,p256dh} = subscription_data.keys;
         const {endpoint,expirationTime} = subscription_data;
@@ -37,7 +38,8 @@ router.post("/subscribe", async (req, res) => {
 });
 
 router.post("/new-message", async (req, res) => {
-    const { message, subscription_id } = req.body.data;
+    const parsed_data= JSON.parse(req.body.data);
+    const { message, subscription_id } = parsed_data;
     const connection = createAxios(baseURL,tenantId) ;
     const {data} = await connection.get(`/subscripcion/${subscription_id}`);
     const configData = {

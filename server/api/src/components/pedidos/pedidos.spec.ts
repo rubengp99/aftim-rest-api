@@ -2,7 +2,8 @@ const request = require('supertest')
 import { App } from "./../../app";
 
 import { IPedidos, IDetPedidos } from "./model";
-let tenantId: string = "almendras"
+import {DATABASE_NAME} from "./../../keys";
+let tenantId: string = DATABASE_NAME;
 const target = "pedidos";
 const datosPrueba: IPedidos = {
     adm_empresa_id: 1,
