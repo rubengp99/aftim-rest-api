@@ -114,6 +114,7 @@ router.post('/:table', async (req, res)=>{
         console.log(`${chalk.red('[ERROR]')} ${error}`);
         if (error.message === 'BD_SYNTAX_ERROR') return res.status(400).json({ error: 'Invalid query' });
         if (error.message === 'BD_TABLE_ERROR') return res.status(404).json({ error: 'Invalid table' });
+        if (error.message === 'BD_DUPLICATE_ENTRY') return res.status(406).json({ error: 'duplicate entry' });
         return res.status(500).json({ error: error });
     }
 });

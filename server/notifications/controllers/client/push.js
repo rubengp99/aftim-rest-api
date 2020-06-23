@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const axios = require("axios");
 const router = Router();
-const { web_push, mail, DATA_URL, TENNANT_ID } = require("../../keys");
+const { web_push, mail, DATA_URL } = require("../../keys");
 const webPush = require("web-push");
 
 const { validar } = require("../../../auth/helpers/authentication");
@@ -12,59 +12,64 @@ webPush.setVapidDetails(
     web_push.WEB_PUSH_PUBLIC_KEY,
     web_push.WEB_PUSH_PRIVATE_KEY
 );
-
+const unsubscribed = "push subscription has unsubscribed or expired.\n";
+const notFound = "subscription not found.";
 const baseURL = `${DATA_URL}/mysql`;
 
 function getRequestBody(req) {
     let { data } = req.body;
     if (typeof data === "undefined") return void 0;
-    return (typeof data === 'string') ? JSON.parse(req.body.data) : data;
+    return typeof data === "string" ? JSON.parse(req.body.data) : data;
 }
 
 router.post("/subscribe", validar, async (req, res) => {
+    const tenantId = getTenantId(req);
+    const connection = createAxios(baseURL, tenantId);
+    const parsed_data = getRequestBody(req);
+    if (!parsed_data) return res.status(400).json({ message: "bad request" });
+    const { subscription_data, usuario_id } = parsed_data;
+    const { auth, p256dh } = subscription_data.keys;
+    const { endpoint, expirationTime } = subscription_data;
+    const toSave = {
+        auth: auth,
+        p256dh: p256dh,
+        endpoint: endpoint,
+        expiration_time: expirationTime,
+        usuario_id: usuario_id,
+    };
     try {
-        const parsed_data = getRequestBody(req);
-        const tenantId = getTenantId(req);
-
-        if (!parsed_data) return res.status(400).json({ message: "bad request" });
-
-        let {subscription_data, usuario_id}  = parsed_data;
-        
-        const connection = createAxios(baseURL, tenantId); 
-        
-        const {auth, p256dh} = subscription_data.keys;
-        const {endpoint,expirationTime} = subscription_data;
-        const toSave = {
-            auth: auth,
-            p256dh: p256dh,
-            endpoint: endpoint,
-            expiration_time: expirationTime,
-            usuario_id: usuario_id,
-        };
         const { saved } = await connection.post(`/subscripcion`, {
             data: { ...toSave },
         });
         res.status(200).json({ message: "ok", action: saved });
     } catch (error) {
+        if (error.response.data.error === "duplicate entry") {
+            await connection.post(`/subscripcion/${usuario_id}`, {
+                data: { ...toSave },
+            });
+            return res
+                .status(201)
+                .json({ message: "updated user", target: usuario_id });
+        }
         console.log(error);
         return res.status(500).json({ message: error });
     }
 });
 
 router.post("/new-message", validar, async (req, res) => {
-    
     const parsed_data = getRequestBody(req);
     const tenantId = getTenantId(req);
 
     if (!parsed_data) return res.status(400).json({ message: "bad request" });
 
     const { message, subscription_id } = parsed_data;
-    
-    const connection = createAxios(baseURL,tenantId) ;
+
+    const connection = createAxios(baseURL, tenantId);
 
     const { data } = await connection.get(`/subscripcion/${subscription_id}`);
 
-    if (!data) return res.status(404).json({ message: "subscription not found." }) 
+    if (!data)
+        return res.status(404).json({ message: "subscription not found." });
 
     const configData = {
         endpoint: data.endpoint,
@@ -78,11 +83,18 @@ router.post("/new-message", validar, async (req, res) => {
         title: "Hoyprovoca.com",
         message,
     });
-    res.status(200).json({ message: "Message sent." });
     try {
         await webPush.sendNotification(configData, payload);
+        res.status(200).json({ message: "Message sent." });
     } catch (error) {
+        if (error.body === unsubscribed)
+            await connection.delete(`/subscripcion/${subscription_id}`);
         console.log(error);
+        res.json({
+            error: error.body,
+            status: error.statusCode,
+            message: "there is an error",
+        });
     }
 });
 

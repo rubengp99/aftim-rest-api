@@ -17,6 +17,5 @@ module.exports = {
         MAIL: process.env.MAIL_SUPPORT,
         PASSWORD: process.env.MAIL_PASSWORD
     },
-    TENNANT_ID:process.env.DATABASE_NAME,
     DATA_URL: process.env.DATA_URL
 }

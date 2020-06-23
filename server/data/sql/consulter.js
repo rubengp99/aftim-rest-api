@@ -110,6 +110,8 @@ async function create(connection, model, object) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error(`BD_SYNTAX_ERROR`);
+        }if(error.code==="ER_DUP_ENTRY"){
+            throw new Error(`BD_DUPLICATE_ENTRY`);
         }
         throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
