@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
 const { mail } = require('../../keys');
+const { createTemplate } = require('./template')
+
 /**
  * Send a email to an especific user
  * @param {string} user 
@@ -26,8 +28,9 @@ async function sendMail(data) {
             to: data.email,
             from: mail.MAIL,
             subject: data.subject,
-            html: data.message
+            html: createTemplate(data)
         });
+        
         if (!messageId) return { code: 500, message: 'Error al enviar correo' };
         return { code: 200, message: 'Correo enviado' };
     } catch (error) {
