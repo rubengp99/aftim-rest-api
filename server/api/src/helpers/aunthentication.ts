@@ -1,13 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { authURL } from '../keys';
 import { getTenantId, createAxios } from './axios';
-import axios from "axios";
 
 export async function validar(req: Request, res: Response, next: NextFunction) {
-    console.log(`[DATE] ${new Date()} ewe`);
+    console.log(`[DATE] ${new Date()}`);
     try {
-       
-
         let head: string = req.headers['x-access-control'] as string;
         let tenantId: string = getTenantId(req);
         console.log("[LOG] Request for tenantId: "+tenantId)

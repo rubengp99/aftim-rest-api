@@ -3,9 +3,11 @@ const { sendMail } = require('./controller')
 
 
 router.post('/sendmail', async (req, res) => {
-    let { data } = req;
+    let { data } = req.body;
     try {
-        let { code, response, message } = await sendMail(data.message, data.mail);
+        if (!data.message || !data.subject || !data.email) return res.status(400).json({ message: "A message must contain: Email, Message and Subject." })
+        
+        let { code, response, message } = await sendMail(data);
         return res.status(code).json(message || { data: response.data, token });
     } catch (error) {
         console.log(error);

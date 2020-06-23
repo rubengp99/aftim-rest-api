@@ -421,7 +421,7 @@ export const update = async (params: any, body: any, file: any, tenantId: string
 		let response = Object.assign({ message: respuestas.Update.message, affectedRows }, { link: link });
 		return { response, code: respuestas.Update.code };
 	} catch (error) {
-		if (error.includes("400")) return respuestas.BadRequest;
+		if (error.message === "BD_SYNTAX_ERROR") return respuestas.BadRequest;
 		console.log(`[ERROR] on controller: ${model}. \n ${error} `);
 		return respuestas.InternalServerError;
 	}

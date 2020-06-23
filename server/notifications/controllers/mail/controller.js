@@ -6,30 +6,32 @@ const { mail } = require('../../keys');
  * @param {string} message
  * @returns {Promise<JSON>} response
  */
-async function sendMail(message, email) {
+async function sendMail(data) {
     try {
 
         let transporter = nodemailer.createTransport({
             service: 'Gmail',
             port: 465,
             secure: false,
+            logger: true,
+            debug: true,
+            ignoreTLS: true,
             auth: {
-                user: mail.EMAIL_DATA.MAIL,
-                pass: mail.EMAIL_DATA.PASSWORD
+                user: mail.MAIL,
+                pass: mail.PASSWORD
             }
         });
 
         let { messageId } = await transporter.sendMail({
-            to: email,
-            from: EMAIL_DATA.MAIL,
-            subject: 'Password recuperation',
-            html: message
+            to: data.email,
+            from: mail.MAIL,
+            subject: data.subject,
+            html: data.message
         });
-        if (!messageId) return { code: 500, message: 'error al enviar correo' };
+        if (!messageId) return { code: 500, message: 'Error al enviar correo' };
         return { code: 200, message: 'Correo enviado' };
     } catch (error) {
-        console.log(error);
-        return { code: 500, message: 'error al enviar correo' };
+        return { code: 500, message: 'Error al enviar correo' };
     }
 }
 
