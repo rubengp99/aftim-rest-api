@@ -24,7 +24,7 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
         let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
 
-        for (const group of data) {
+        for (let group of data) {
             let { id } = group;
             if (fields && fields.includes("subgrupos")) {
                 let sg: ISubgrupo[] = await consult.getOtherByMe(tenantId, model, id as string, submodel, {});
