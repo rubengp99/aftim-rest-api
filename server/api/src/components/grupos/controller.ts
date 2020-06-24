@@ -29,7 +29,6 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
             if (fields && fields.includes("subgrupos")) {
                 let sg: ISubgrupo[] = await consult.getOtherByMe(tenantId, model, id as string, submodel, {});
                 group.subgrupos = sg;
-                return data;
             }    
         }
 
