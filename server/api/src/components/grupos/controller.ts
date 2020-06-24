@@ -2,8 +2,9 @@ import * as consult from '../../helpers/consult';
 import * as respuestas from '../../errors';
 import { IGrupo } from './model';
 import * as links from '../../helpers/links';
+import { ISubgrupo } from 'components/subgrupos/model';
 const model = "adm_grupos";
-
+const submodel = "adm_subgrupos"
 
 /**
  * Get all groups
@@ -11,11 +12,28 @@ const model = "adm_grupos";
  */
 export const get = async (query: any, tenantId: string): Promise<any> => {
     try {
+        let { limit, fields } = query;
+
+        if (query.fields) {
+			let aux = query.fields.split(",");
+			let filtrados = aux.filter((e: any) => e !== "subgrupos");
+			query.fields = filtrados.join(",");
+        }
+        
         let data: IGrupo[] = await consult.get(tenantId, model, query);
         let totalCount: number = await consult.count(tenantId, model);
         let count = data.length;
-        let { limit } = query;
 
+        for (const group of data) {
+            let { id } = group;
+            if (fields && fields.includes("subgrupos")) {
+                let sg: ISubgrupo[] = await consult.getOtherByMe(tenantId, model, id as string, submodel, {});
+                group.subgrupos = sg;
+                return data;
+            }    
+        }
+
+        
         if (count <= 0) return respuestas.Empty;
 
         let link = links.pages(data, model, count, totalCount, limit);
