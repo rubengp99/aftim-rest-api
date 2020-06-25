@@ -5,6 +5,7 @@ const createAxios = function (baseURL, tenantId) {
     const instance  = axios.create({
         baseURL: baseURL,
         withCredentials: true,
+        timeout: 30000,
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
