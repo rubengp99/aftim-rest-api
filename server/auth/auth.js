@@ -121,7 +121,10 @@ async function sendRecuperationMail(tenantId, mail) {
         await connection.post(`${NOTS_URL}/sendmail`, {
             data: {
                 message: template,
-                mail: data[0].email
+                subject: "Solicitaste un cambio de contraseña",
+                mail: data[0].email,
+                link: `https://hoyprovoca.com/resetpassword?email=${data[0].email}&token=${hash}`,
+                type: "PWD_RESET"
             }
         })
 

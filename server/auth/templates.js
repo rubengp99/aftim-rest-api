@@ -1,20 +1,5 @@
 
 function getForgotTemplate(name, hash) {
     //TODO, NEW TEMPLATE
-    return  `
-    <html>
-        <head>
-            <title>Forget Password Email</title>
-        </head>
-
-        <body>
-            <div>
-                <h3>Dear ${name}</h3>
-                <p>You requested for a password reset, your reset code is:</p>
-                <div>${hash}<div>
-                <br>
-            </div>
-        </body>
-    </html>
-    `;
+    return  `¡Saludos desde Hoyprovoca.com, ${name}! \n\n Si no solicitaste este mensaje. Por favor ponte en contacto con teamlead@somossistemas.com o cambia inmediatamente tus credentiales de hoyprovoca.com. \n\n\n Para proceder a recuperar tu contraseña, por favor, haz click en el siguiente enlace.`;
 }
