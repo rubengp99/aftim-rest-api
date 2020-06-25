@@ -6,7 +6,6 @@ export const createAxios = function (baseURL: string, tenantId: string) : AxiosI
     const instance : AxiosInstance = axios.create({
         baseURL: baseURL,
         withCredentials: true,
-        timeout: 30000,
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
