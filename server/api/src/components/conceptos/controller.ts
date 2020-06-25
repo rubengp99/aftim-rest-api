@@ -33,7 +33,7 @@ export const get = async (query: any, tenantId: string): Promise<any> => {
 			concept = await getOptionals(tenantId, fields, concept);
 		}
 
-		let link = links.pages(data, model, count, totalCount, limit);
+		let link = links.pages(data, "conceptos", count, totalCount, limit);
 		let response = Object.assign({ totalCount, count, data }, link);
 		return { response, code: respuestas.Ok.code };
 	} catch (error) {
@@ -67,7 +67,7 @@ export const getOne = async (id: string | number, query: any, tenantId: string):
 
 		data = await getOptionals(tenantId, fields, data);
 
-		let link = links.records(data, model, count);
+		let link = links.records(data, "conceptos", count);
 		let response = Object.assign({ data }, link);
 		return { response, code: respuestas.Ok.code };
 	} catch (error) {
