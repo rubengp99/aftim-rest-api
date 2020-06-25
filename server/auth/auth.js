@@ -55,7 +55,7 @@ async function login(tenantId, usuario, password) {
         if (!valid) return Unauthorized;
 
         const token = jwt.sign({ _id: data[0].login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
-        return { response: { data: data[0] }, token, code: 200 };
+        return { data: data[0] , token, code: 200 };
     } catch (error) {
         throw new Error(`Error al hacer login, ${error}`);
     }
