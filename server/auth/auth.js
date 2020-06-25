@@ -5,7 +5,6 @@ const crypto = require('crypto');
 const moment = require('moment');
 const { DATA_URL, TOKEN_KEY, NOTS_URL } = require("./keys");
 const { encriptar, compareHash } = require("./encript");
-const { getForgotTemplate } = require('./templates');
 
 const Unauthorized = {
     message: "The credentials are invalids",
@@ -115,7 +114,8 @@ async function sendRecuperationMail(tenantId, mail) {
         if (!data[0]) return Unauthorized;
 
         let hash = crypto.randomBytes(3).toString('hex').toUpperCase();
-        let template = getForgotTemplate(data[0].nombre, hash);
+        let template = getForgotTemplate(data[0].nombre);
+        
         await connection.post(`/mysql/usuario/${data[0].id}`, { data: { recovery: hash, recoverydate: moment().format('YYYY-MM-DD hh:mm:ss') } });
 
         await connection.post(`${NOTS_URL}/sendmail`, {
@@ -171,5 +171,11 @@ async function resetPassword(tenantId, usuario, password) {
         throw new Error(`Error al cambiar la contraseña, ${error}`);
     }
 }
+
+const getForgotTemplate =function(name) {
+    //TODO, NEW TEMPLATE
+    return  `¡Saludos desde Hoyprovoca.com, ${name}! \n\n Si no solicitaste este mensaje. Por favor ponte en contacto con teamlead@somossistemas.com o cambia inmediatamente tus credentiales de hoyprovoca.com. \n\n\n Para proceder a recuperar tu contraseña, por favor, haz click en el siguiente enlace.`;
+}
+
 
 module.exports = { apiAccess, login, signup, validate, encript, sendRecuperationMail, resetPassword, validPasswordHash }
