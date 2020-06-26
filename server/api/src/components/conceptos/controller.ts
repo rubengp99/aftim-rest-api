@@ -223,8 +223,14 @@ export const getPresentationsByConcept = async (id: string | number, query: any,
  * @param query modifier of the consult
  */
 export async function getMostSold(query: any, tenantId: string): Promise<any> {
-	const { limit, order, fields } = query;
-	try {
+	let { limit, order } = query;
+	try {	
+		if (query.fields) {
+			let aux = query.fields.split(",");
+			let filtrados = aux.filter((e: any) =>  e !== "existencias");
+			query.fields = filtrados.join(",");
+		}
+
 		let f = makeFields("adm_conceptos", query.fields);
 		let sql = `SELECT ${f}, SUM(cantidad) AS vendidos FROM adm_det_facturas
         LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id
