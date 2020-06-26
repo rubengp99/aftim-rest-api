@@ -10,5 +10,7 @@ module.exports = {
         usuario: "usuario",
         empresa: 'adm_empresa',
         pagos: "adm_pagos",
+        cliente: "adm_clientes",
+        vendedor: "adm_vendedor"
     }
 }
