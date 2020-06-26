@@ -223,15 +223,16 @@ export const getPresentationsByConcept = async (id: string | number, query: any,
  * @param query modifier of the consult
  */
 export async function getMostSold(query: any, tenantId: string): Promise<any> {
-	const { limit, order } = query;
+	const { limit, order, fields } = query;
 	try {
-		let sql = `SELECT adm_conceptos.*, SUM(cantidad) AS vendidos FROM adm_det_facturas
+		let f = makeFields("adm_conceptos", query.fields);
+		let sql = `SELECT ${f}, SUM(cantidad) AS vendidos FROM adm_det_facturas
         LEFT JOIN adm_conceptos ON adm_conceptos_id = adm_conceptos.id LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id
         WHERE adm_enc_facturas.adm_tipos_facturas_id in (1,5)
         ${query["after-fecha_at"] ? `AND adm_det_facturas.fecha_at >= '${query["after-fecha_at"]}'` : ""}
         ${query["before-fecha_at"] ? ` AND adm_det_facturas.fecha_at <= '${query["before-fecha_at"]}'` : ""}
         GROUP BY adm_conceptos_id ORDER BY vendidos ${order ? order : "desc"} LIMIT ${limit ? limit : 10}`;
-		console.log(sql);
+		
 		let data: any[] = await consult.getPersonalized(tenantId, sql);
 		let totalCount: number = await consult.count(tenantId, model); // consulto el total de registros de la BD
 		let count = data.length;
