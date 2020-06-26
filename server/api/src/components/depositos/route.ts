@@ -33,8 +33,7 @@ router.get('/:id', validar, async (req: Request, res: Response): Promise<Respons
 
 //obtener los conceptos de un deposito
 router.get('/:id/conceptos/', validar, async (req: Request, res: Response): Promise<Response> => {
-    let { id } = req.params;
-    let { query } = req.body;
+    let { id, query } = req.params;
     try {
         let tenantId: string = getTenantId(req);
         let { message, response, code } = await controller.getConceptosBydeposito(id, query, tenantId);
