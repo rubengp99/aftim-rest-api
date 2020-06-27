@@ -96,7 +96,7 @@ export async function getPaymentsByOrder(params: any, query: any, tenantId: stri
 
 		if (isNaN(id as number)) return respuestas.InvalidID;
 
-		let data: any[] = await consult.getOtherByMe(tenantId, model, id, "adm_pagos", { fields: "*" });
+		let data: any[] = await consult.getOtherByMe(tenantId, "adm_pedidos", id, "adm_pagos", { fields: "*" });
 
 		let count = data.length;
 
