@@ -57,6 +57,19 @@ router.get("/:id/conceptos/", validar, async (req: Request, res: Response): Prom
 	}
 );
 
+//obtener los pagos de un pedido
+router.get("/:id/pagos/", validar, async (req: Request, res: Response): Promise<Response> => {
+	try {
+		let tenantId: string = getTenantId(req);
+		let { message, response, code } = await controller.getPaymentsByOrder(req.params, req.query, tenantId);
+		return res.status(code).json(message || response);
+	} catch (error) {
+		console.log(error);
+		return res.status(InternalServerError.code).json({ message: InternalServerError.message });
+	}
+}
+);
+
 //obtener la informacion de banco de un pedido
 router.get("/:id/movimiento_banco/", validar, async (req: Request, res: Response): Promise<Response> => {
 		try {

@@ -25,9 +25,9 @@ router.post("/", validar, async (req, res) => {
     const tenantId = getTenantId(req);
     const connection = createAxios(baseURL, tenantId);
     const parsed_data = getRequestBody(req);
-    console.log(req.body)
+
     if (!parsed_data) return res.status(400).json({ message: "bad request" });
-    console.log(parsed_data)
+
     try {
         const { saved } = await connection.post(`/notificaciones`, {
             data: { ...parsed_data },

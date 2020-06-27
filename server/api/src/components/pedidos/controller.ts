@@ -90,6 +90,27 @@ export async function getConceptsByOrder(params: any, query: any, tenantId: stri
 	}
 }
 
+export async function getPaymentsByOrder(params: any, query: any, tenantId: string): Promise<any> {
+	try {
+		let { id } = params;
+
+		if (isNaN(id as number)) return respuestas.InvalidID;
+
+		let data: any[] = await consult.getOtherByMe(tenantId, model, id, "adm_pagos", { fields: "*" });
+
+		let count = data.length;
+
+		let link = links.records(data, `/pedidos/${id}/conceptos/`, count);
+		let response = Object.assign({ data }, link);
+
+		return { response, code: respuestas.Ok.code };
+	} catch (error) {
+		if (error.message === "BD_SYNTAX_ERROR") return respuestas.BadRequest;
+		console.log(`[ERROR] on controller: ${model}. \n ${error} `);
+		return respuestas.InternalServerError;
+	}
+}
+
 export async function getBankMovesByOrder(params: any, query: any, tenantId: string): Promise<any> {
 	try {
 		let { id } = params;
