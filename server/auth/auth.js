@@ -74,7 +74,7 @@ async function signup(tenantId, newUser) {
         newUser.id = data.insertId
         const token = jwt.sign({ _id: newUser.login }, TOKEN_KEY || "2423503", { expiresIn: 60 * 60 * 24 });
 
-        return { response: { data: newUser }, token, code: 200 };
+        return { data: newUser, token, code: 200 };
     } catch (error) {
         throw new Error(`Error al hacer signup, ${error}`);
     }
