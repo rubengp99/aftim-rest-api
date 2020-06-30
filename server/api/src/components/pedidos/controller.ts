@@ -172,14 +172,14 @@ export const create = async (body: any, file: any, tenantId: string): Promise<an
 	try {
 		let { insertId } = await consult.create(tenantId, model, newPedido);
 
-		for (let index = 0; index < newDetalles.length; index++) {
+		/*for (let index = 0; index < newDetalles.length; index++) {
 			newDetalles[index].rest_pedidos_id = insertId;
 			let inserted = await consult.create(tenantId, submodel, newDetalles[index]);
 			newDetalles[index].id = inserted.insertId;
 			let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: newDetalles[index].adm_conceptos_id });
 			movDep[0].existencia = movDep[0].existencia - newDetalles[index].cantidad;
 			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
-		}
+		}*/
 
 		let link = links.created(model, insertId);
 		newPedido.detalles = newDetalles;
@@ -226,13 +226,15 @@ export const remove = async (params: any, tenantId: string): Promise<any> => {
 
 		if (!data) return respuestas.ElementNotFound;
 
-		const data1: IDetPedidos[] = await consult.getOtherByMe(tenantId, model, id, submodel, {});
+		if (data.rest_estatus_id === 3) {
+			const data1: IDetPedidos[] = await consult.getOtherByMe(tenantId, model, id, submodel, {});
 
-		for (let index = 0; index < data1.length; index++) {
-			let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: data1[index].adm_conceptos_id });
-			movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat((data1[index].cantidad as unknown) as string);
-			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
-			await consult.remove(tenantId, submodel, data1[index].id as number);
+			for (let index = 0; index < data1.length; index++) {
+				let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: data1[index].adm_conceptos_id });
+				movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat((data1[index].cantidad as unknown) as string);
+				await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
+				await consult.remove(tenantId, submodel, data1[index].id as number);
+			}
 		}
 
 		await consult.remove(tenantId, model, id);
@@ -267,10 +269,11 @@ export const addDetail = async (params: any, body: any, tenantId: string): Promi
 
 		newDetail.id = insertId;
 
-		let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: newDetail.adm_conceptos_id });
+		/*let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: newDetail.adm_conceptos_id });
 		movDep[0].existencia = movDep[0].existencia - newDetail.cantidad;
 
 		await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
+		*/
 
 		const link = links.created(model, insertId);
 		const response = { data: newDetail, message: respuestas.Created.message, link: link };
@@ -303,11 +306,13 @@ export const updateDetail = async (params: any, body: any, tenantId: string): Pr
 
 		const newDetail: IDetPedidos = data;
 
+		/*
 		let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
 		movDep[0].existencia = parseFloat(movDep[0].existencia) - (newDetail.cantidad - parseFloat(detalle.cantidad));
 		await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
 
 		await consult.update(tenantId, submodel, id1, newDetail);
+		*/
 
 		const link = links.created(model, id);
 		const response = { message: respuestas.Update.message, link: link };
@@ -334,14 +339,17 @@ export const deleteDetail = async (params: any, tenantId: string): Promise<any> 
 
 		if (!pedido) return respuestas.ElementNotFound;
 
-		const detalle = await consult.getOne(tenantId, submodel, id1, {});
-		let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
-		movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
+		
+		if(pedido.rest_estatus_id === 3){
+			const detalle = await consult.getOne(tenantId, submodel, id1, {});
+			let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
+			movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
 
-		await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
+			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
 
-		await consult.remove(tenantId, submodel, id1);
-
+			await consult.remove(tenantId, submodel, id1);
+		}
+		
 		return respuestas.Deleted;
 	} catch (error) {
 		if (error.message === "BD_SYNTAX_ERROR") return respuestas.BadRequest;
