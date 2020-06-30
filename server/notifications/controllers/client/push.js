@@ -19,7 +19,7 @@ const baseURL = `${DATA_URL}/mysql`;
 function getRequestBody(req) {
     let { data } = req.body;
     if (typeof data === "undefined") return void 0;
-    return typeof data === "string" ? JSON.parse(req.body.data) : data;
+    return typeof data.subscription_data === "string" ? JSON.parse(req.body.data.subscription_data) : data.subscription_data;
 }
 
 router.post("/subscribe", validar, async (req, res) => {
@@ -27,11 +27,12 @@ router.post("/subscribe", validar, async (req, res) => {
     const connection = createAxios(baseURL, tenantId);
     const parsed_data = getRequestBody(req);
     if (!parsed_data) return res.status(400).json({ message: "bad request" });
-    const { subscription_data, usuario_id } = parsed_data;
+    const {usuario_id} = req.body.data;
+    const  subscription_data = parsed_data;
     const { auth, p256dh } = subscription_data.keys;
     const { endpoint, expirationTime } = subscription_data;
     const toSave = {
-        auth: auth,
+       auth: auth,
         p256dh: p256dh,
         endpoint: endpoint,
         expiration_time: expirationTime,
