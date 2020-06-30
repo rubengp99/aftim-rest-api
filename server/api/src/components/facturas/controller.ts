@@ -104,7 +104,13 @@ export const create = async (body: any, tenantId: string): Promise<any> => {
         detalles.forEach( async (detalle) =>{
             detalle.adm_enc_facturas_id = insertId;
             await consult.create(tenantId, submodel,detalle);
+            
+            let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
+			movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat((detalle.cantidad as unknown) as string);
+            
+            await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
         });
+
         let link = links.created('facturas', insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         
