@@ -63,11 +63,11 @@ router.post("/new-message", validar, async (req, res) => {
 
     if (!parsed_data) return res.status(400).json({ message: "bad request" });
 
-    const { message, subscription_id } = parsed_data;
+    const { message, usuario_id } = parsed_data;
 
     const connection = createAxios(baseURL, tenantId);
 
-    const { data } = await connection.get(`/subscripcion/${subscription_id}`);
+    const { data } = await connection.get(`/subscripcion/${usuario_id}`);
 
     if (!data)
         return res.status(404).json({ message: "subscription not found." });
