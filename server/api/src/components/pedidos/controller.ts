@@ -226,7 +226,7 @@ export const remove = async (params: any, tenantId: string): Promise<any> => {
 
 		if (!data) return respuestas.ElementNotFound;
 
-		if (data.rest_estatus_id === 3) {
+		/*if (data.rest_estatus_id === 3) {
 			const data1: IDetPedidos[] = await consult.getOtherByMe(tenantId, model, id, submodel, {});
 
 			for (let index = 0; index < data1.length; index++) {
@@ -235,7 +235,7 @@ export const remove = async (params: any, tenantId: string): Promise<any> => {
 				await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
 				await consult.remove(tenantId, submodel, data1[index].id as number);
 			}
-		}
+		}*/
 
 		await consult.remove(tenantId, model, id);
 
@@ -340,7 +340,7 @@ export const deleteDetail = async (params: any, tenantId: string): Promise<any> 
 		if (!pedido) return respuestas.ElementNotFound;
 
 		
-		if(pedido.rest_estatus_id === 3){
+		/*if(pedido.rest_estatus_id === 3){
 			const detalle = await consult.getOne(tenantId, submodel, id1, {});
 			let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
 			movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
@@ -348,7 +348,7 @@ export const deleteDetail = async (params: any, tenantId: string): Promise<any> 
 			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
 
 			await consult.remove(tenantId, submodel, id1);
-		}
+		}*/
 		
 		return respuestas.Deleted;
 	} catch (error) {
