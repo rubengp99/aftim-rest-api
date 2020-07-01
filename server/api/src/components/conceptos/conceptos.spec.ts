@@ -91,7 +91,7 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
     describe('get #conceptos #get ', () => {
 
 
-        it('deberia devolver status 200 #conceptos #get #All', async () => {
+        it(' #conceptos #get #All', async () => {
             const { app } = new App();
             const res = await request(app).get(`/api/${target}`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
@@ -102,7 +102,7 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
         })
 
 
-        it('deberia devolver conceptos ordenados por ventas #conceptos #get #ventas', async () => {
+        it('conceptos ordenados por ventas #conceptos #get #ventas', async () => {
             const { app } = new App();
             const res = await request(app).get(`/api/${target}/mostsold`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
@@ -122,7 +122,7 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
             expect(res.status).toEqual(200);
         })
 
-        it('devolver ventas de un concepto #conceptos #get #ventas', async () => {
+        it(' ventas de un concepto #conceptos #get #ventas', async () => {
             const { app } = new App();
             const res = await request(app).get(`/api/${target}/3/sell`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
@@ -135,7 +135,7 @@ describe(' ruta conceptos #endpointTest #conceptos', () => {
                 expect(res.status).toEqual(ifDontExistExeption(res.body));
         })
 
-        it('devolver devoluciones de un concepto #conceptos #get #devoluciones', async () => {
+        it(' devoluciones de un concepto #conceptos #get #devoluciones', async () => {
             const { app } = new App();
             const res = await request(app).get(`/api/${target}/3/devolutions`)
                 .set('x-access-control', '{"user":"admin","password":"123456"}')
