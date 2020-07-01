@@ -118,7 +118,9 @@ async function sendRecuperationMail(tenantId, mail) {
         
         await connection.post(`/mysql/usuario/${data[0].id}`, { data: { recovery: hash, recoverydate: moment().format('YYYY-MM-DD hh:mm:ss') } });
 
-        await connection.post(`${NOTS_URL}/sendmail`, {
+        connection = createAxios(NOTS_URL, tenantId);
+
+        await connection.post(`/sendmail`, {
             data: {
                 message: template,
                 subject: "Solicitaste un cambio de contraseña",
