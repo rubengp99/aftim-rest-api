@@ -125,7 +125,7 @@ async function sendRecuperationMail(tenantId, mail) {
                 message: template,
                 subject: "Solicitaste un cambio de contraseña",
                 email: data[0].email,
-                link: encodeURIComponent(`https://hoyprovoca.com/resetpassword?email=${data[0].email}&token=${hash}`),
+                link: `https://hoyprovoca.com/resetpassword?email=${data[0].email}&token=${hash}`,
                 type: "PWD_RESET"
             }
         })
