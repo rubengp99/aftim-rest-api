@@ -120,7 +120,7 @@ async function sendRecuperationMail(tenantId, mail) {
 
         connection = createAxios(NOTS_URL, tenantId);
 
-        await connection.post(`/sendmail`, {
+        await connection.post(`/mail/sendmail`, {
             data: {
                 message: template,
                 subject: "Solicitaste un cambio de contraseña",
