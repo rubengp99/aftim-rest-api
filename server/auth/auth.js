@@ -182,7 +182,7 @@ async function validPasswordHash(tenantId, mail, hash) {
         
         await connection.post(`/mysql/usuario/${data[0].id}`, { data: { recovery: '' } });
         
-        return { code: 200, message: 'valid' }
+        return { code: 200, message: 'valid', user: data[0] }
     } catch (error) {
         throw new Error(`Error al compareHash el hash de recuperacion, ${error}`);
     }
