@@ -23,22 +23,26 @@ function getRequestBody(req) {
 }
 
 router.post("/subscribe", validar, async (req, res) => {
-    const tenantId = getTenantId(req);
-    const connection = createAxios(baseURL, tenantId);
-    const parsed_data = getRequestBody(req);
-    if (!parsed_data) return res.status(400).json({ message: "bad request" });
-    const {usuario_id} = req.body.data;
-    const  subscription_data = parsed_data;
-    const { auth, p256dh } = subscription_data.keys;
-    const { endpoint, expirationTime } = subscription_data;
-    const toSave = {
-       auth: auth,
-        p256dh: p256dh,
-        endpoint: endpoint,
-        expiration_time: expirationTime,
-        usuario_id: usuario_id,
-    };
+    
     try {
+        const tenantId = getTenantId(req);
+        const connection = createAxios(baseURL, tenantId);
+        const parsed_data = getRequestBody(req);
+        
+        if (!parsed_data) return res.status(400).json({ message: "bad request" });
+        
+        const {usuario_id} = req.body.data;
+        const  subscription_data = parsed_data;
+        const { auth, p256dh } = subscription_data.keys;
+        const { endpoint, expirationTime } = subscription_data;
+        const toSave = {
+        auth: auth,
+            p256dh: p256dh,
+            endpoint: endpoint,
+            expiration_time: expirationTime,
+            usuario_id: usuario_id,
+        };
+
         const { saved } = await connection.post(`/subscripcion`, {
             data: { ...toSave },
         });
@@ -58,33 +62,34 @@ router.post("/subscribe", validar, async (req, res) => {
 });
 
 router.post("/new-message", validar, async (req, res) => {
-    const parsed_data = getRequestBody(req);
-    const tenantId = getTenantId(req);
-
-    if (!parsed_data) return res.status(400).json({ message: "bad request" });
-
-    const { message, usuario_id } = parsed_data;
-
-    const connection = createAxios(baseURL, tenantId);
-
-    const { data } = await connection.get(`/subscripcion/${usuario_id}`);
-
-    if (!data)
-        return res.status(404).json({ message: "subscription not found." });
-
-    const configData = {
-        endpoint: data.endpoint,
-        expirationTime: data.expiration_time,
-        keys: {
-            auth: data.auth,
-            p256dh: data.p256dh,
-        },
-    };
-    const payload = JSON.stringify({
-        title: "Hoyprovoca.com",
-        message,
-    });
     try {
+        const parsed_data = getRequestBody(req);
+        const tenantId = getTenantId(req);
+
+        if (!parsed_data) return res.status(400).json({ message: "bad request" });
+
+        const { message, usuario_id } = parsed_data;
+
+        const connection = createAxios(baseURL, tenantId);
+
+        const { data } = await connection.get(`/subscripcion`, { fields: { usuario_id: usuario_id } });
+
+        if (!data)
+            return res.status(404).json({ message: "subscription not found." });
+
+        const configData = {
+            endpoint: data.endpoint,
+            expirationTime: data.expiration_time,
+            keys: {
+                auth: data.auth,
+                p256dh: data.p256dh,
+            },
+        };
+        const payload = JSON.stringify({
+            title: "Hoyprovoca.com",
+            message,
+        });
+        
         await webPush.sendNotification(configData, payload);
         res.status(200).json({ message: "Message sent." });
     } catch (error) {
@@ -94,6 +99,30 @@ router.post("/new-message", validar, async (req, res) => {
         res.json({
             error: error.body,
             status: error.statusCode,
+            message: "there is an error",
+        });
+    }
+});
+
+router.get("/:id", validar, async (req, res) => {
+    
+    try {
+        let { id } = req.params;
+
+        const tenantId = getTenantId(req);
+
+        const connection = createAxios(baseURL, tenantId);
+
+        const { data } = await connection.get(`/subscripcion`, { fields: { usuario_id: id } });
+
+        if (!data)
+            return res.status(404).json({ message: "subscription not found." });
+
+        
+        res.status(200).json({ data: data });
+    } catch (error) {
+        res.status(500).json({
+
             message: "there is an error",
         });
     }
