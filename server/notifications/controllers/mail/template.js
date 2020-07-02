@@ -1,8 +1,18 @@
 function createTemplate(data) {
-    let link = data.type === "PWD_RESET" ? `<a href="${data.link}"
+
+    let link;
+
+    if(data.type === "PWD_RESET") {
+        link = `<a href="${data.link}"
     style="background:rgb(255, 182, 7);;text-decoration:none !important; font-weight:500; margin-top:35px; color:#000;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;font-weight:bold;">Recuperar Contraseña</a>` 
-    : `<a href="${data.link}"
+    }else if(data.type === "PWD_VERIFY"){
+        link = `<a href="${data.link}"
+    style="background:rgb(255, 182, 7);;text-decoration:none !important; font-weight:500; margin-top:35px; color:#000;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;font-weight:bold;">Verificar mi Cuenta</a>` 
+    }else{
+        link = `<a href="${data.link}"
     style="background:rgb(255, 182, 7);;text-decoration:none !important; font-weight:500; margin-top:35px; color:#000;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;font-weight:bold;">Revisar Ahora</a>`;
+
+    }
 
     let body = `
     <!doctype html>

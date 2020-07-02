@@ -2,7 +2,7 @@ const axiosUtils = require("./encript");
 let { getTenantId } = axiosUtils;
 const { Router } = require('express');
 const router = Router();
-const { apiAccess, login, signup,signUpClient,signUpSeller, validate, encript, sendRecuperationMail, resetPassword,validPasswordHash } = require("./auth");
+const { apiAccess, login, signup,signUpClient,signUpSeller, validate, encript, sendRecuperationMail, resetPassword,validPasswordHash, sendVerifyMail } = require("./auth");
 
 router.post('/encript', async (req, res) =>{
     let { password } = req.body;
@@ -70,6 +70,18 @@ router.post('/sendmail', async(req, res) =>{
     try {
         let tenantId = getTenantId(req);
         let response = await sendRecuperationMail(tenantId, user);
+        return res.status(200).json({...response});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Internal Error', error: error });
+    } 
+});
+
+router.post('/verify', async(req, res) =>{
+    let { user } = req.body.data;
+    try {
+        let tenantId = getTenantId(req);
+        let response = await sendVerifyMail(tenantId, user);
         return res.status(200).json({...response});
     } catch (error) {
         console.log(error);
