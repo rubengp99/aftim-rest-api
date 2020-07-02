@@ -94,7 +94,7 @@ router.post('/validcode', async(req, res) =>{
     try {
         let tenantId = getTenantId(req);
         let response = await validPasswordHash(tenantId, user,hash);
-        return res.status(200).json({...response});
+        return res.status(response.code).json({...response});
     } catch (error) {
         console.log(error);
         return res.status(500).json({message: 'Internal Error', error: error });

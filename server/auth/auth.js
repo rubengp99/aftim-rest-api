@@ -20,6 +20,16 @@ const Conflict = {
     code: 409
 }
 
+const NotFound = {
+    message: "User not found.",
+    code: 404
+}
+
+const Expired = {
+    message: "Token expired.",
+    code: 440
+}
+
 async function apiAccess(tenantId, token) {
     try {
         let connection = createAxios(DATA_URL, tenantId);
@@ -175,8 +185,8 @@ async function validPasswordHash(tenantId, mail, hash) {
         const sql = `SELECT * FROM usuario WHERE login = '${mail}' or email = '${mail}'`;
         let { data } = await connection.post(`/mysql/query`, { sql: sql });
         
-        if (!data[0]) return Unauthorized;
-        if (moment(data[0].recoverydate).isBefore(moment(), "hour")) return Unauthorized;
+        if (!data[0]) return NotFound;
+        if (moment(data[0].recoverydate).isBefore(moment(), "hour")) return Expired;
         
         if (hash != data[0].recovery) return Unauthorized;
         
