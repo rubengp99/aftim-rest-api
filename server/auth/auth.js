@@ -162,7 +162,6 @@ async function sendVerifyMail(tenantId, mail) {
             }
         })
 
-        await connection.post(`/mysql/usuario/${data[0].id}`, { data: { verificado: 1 } });
         return { code: 200, token: hash }
     } catch (error) {
         throw new Error(`Error al mandar el correo, ${error}`);
