@@ -186,7 +186,11 @@ async function validPasswordHash(tenantId, mail, hash) {
         let { data } = await connection.post(`/mysql/query`, { sql: sql });
         
         if (!data[0]) return NotFound;
-        if (moment(data[0].recoverydate).isBefore(moment(), "hour")) return Expired;
+
+        let startTime = moment().subtract(1, "hour");
+        let endTime = moment().add(1, "hour")
+
+        if (moment(data[0].recoverydate).isBetween(startTime , endTime)) return Expired;
         
         if (hash != data[0].recovery) return Unauthorized;
         
