@@ -176,7 +176,8 @@ async function validPasswordHash(tenantId, mail, hash) {
         let { data } = await connection.post(`/mysql/query`, { sql: sql });
         
         if (!data[0]) return Unauthorized;
-        if (moment().isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
+        if (moment().format("YYYY-MM-DD").isAfter(data[0].recoverydate, 'hour')) return Unauthorized;
+        
         if (hash != data[0].recovery) return Unauthorized;
         
         await connection.post(`/mysql/usuario/${data[0].id}`, { data: { recovery: '' } });
