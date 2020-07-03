@@ -67,10 +67,9 @@ router.post("/new-message", validar, async (req, res) => {
 
     const connection = createAxios(baseURL, tenantId);
 
-    const { data } = await connection.get(`/subscripcion/${usuario_id}`);
+    const { data } = await connection.get(`/subscripcion`,{fields:{usuario_id:usuario_id}});
 
-    if (!data)
-        return res.status(404).json({ message: "subscription not found." });
+    if (!data)return res.status(404).json({ message: "subscription not found." });
 
     const configData = {
         endpoint: data.endpoint,
@@ -96,6 +95,17 @@ router.post("/new-message", validar, async (req, res) => {
             status: error.statusCode,
             message: "there is an error",
         });
+    }
+});
+router.post("/getData", validar, async (req, res) => {
+    const tenantId = getTenantId(req);
+    const connection = createAxios(baseURL, tenantId);
+    try {
+        const { saved } = await connection.get(`/subscripcion`);
+        res.status(200).json({ message: "ok", action: saved });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: error });
     }
 });
 
