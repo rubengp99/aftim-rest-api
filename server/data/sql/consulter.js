@@ -66,7 +66,23 @@ async function getOne(connection, model, id, query) {
         throw new Error(`[ERROR] Query just failed. \n ${error}`);
     }
 }
-
+async function getOneSubscription(connection,  id) {
+    let sql = `SELECT * FROM subscripcion WHERE usuario_id=${id}`;
+    try {
+        let data = await connection.query(sql);
+        if (!data[0][0]) return null;
+        let response = JSON.parse(JSON.stringify(data[0][0]));
+        await disconnect(connection);
+        
+        return response;
+    } catch (error) {
+        if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
+            console.log(`${chalk.red('[ERROR]')} ${error}`);
+            throw new Error(`BD_SYNTAX_ERROR`);
+        }
+        throw new Error(`[ERROR] Query just failed. \n ${error}`);
+    }
+}
 /**
  * This function return a collection of objects filtered by other entity on the database
  * @param {string} model model of the table
@@ -247,5 +263,6 @@ module.exports = {
     remove, 
     query, 
     count, 
-    countOther 
+    countOther,
+    getOneSubscription
 };

@@ -58,16 +58,13 @@ router.post("/subscribe", validar, async (req, res) => {
 });
 
 router.post("/new-message", validar, async (req, res) => {
-    const parsed_data = getRequestBody(req);
+    const reqData = req.body.data;
     const tenantId = getTenantId(req);
-
-    if (!parsed_data) return res.status(400).json({ message: "bad request" });
-
-    const { message, usuario_id } = parsed_data;
+    const { message, usuario_id } = reqData;
 
     const connection = createAxios(baseURL, tenantId);
 
-    const { data } = await connection.get(`/subscripcion`,{fields:{usuario_id:usuario_id}});
+    const { data } = await connection.get(`usuario/${usuario_id}/subscripcion`);
 
     if (!data)return res.status(404).json({ message: "subscription not found." });
 
@@ -97,12 +94,12 @@ router.post("/new-message", validar, async (req, res) => {
         });
     }
 });
-router.post("/getData", validar, async (req, res) => {
+router.get("/", validar, async (req, res) => {
     const tenantId = getTenantId(req);
     const connection = createAxios(baseURL, tenantId);
     try {
-        const { saved } = await connection.get(`/subscripcion`);
-        res.status(200).json({ message: "ok", action: saved });
+        const { data } = await connection.get(`/subscripcion`,);
+        res.status(200).json({ message: "ok", data: data });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: error });
