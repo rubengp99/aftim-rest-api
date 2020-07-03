@@ -45,18 +45,18 @@ router.post("/subscribe", validar, async (req, res) => {
             usuario_id: usuario_id,
         };
 
-        const { saved } = await connection.post(`/subscripcion`, {
+        const { data } = await connection.post(`/subscripcion`, {
             data: { ...toSave },
         });
-        res.status(200).json({ message: "ok", action: saved });
+        res.status(200).json({ message: "ok", action: data });
     } catch (error) {
         if (error.response.data.error === "duplicate entry") {
-            await connection.post(`/subscripcion/${usuario_id}`, {
+          let datos =  await connection.post(`/subscripcion/${usuario_id}`, {
                 data: { ...toSave },
             });
             return res
                 .status(201)
-                .json({ message: "updated user", target: usuario_id });
+                .json({ message: "updated user", target: usuario_id,result:datos });
         }
         console.log(error);
         return res.status(500).json({ message: error });
