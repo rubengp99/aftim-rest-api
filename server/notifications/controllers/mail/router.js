@@ -11,8 +11,7 @@ router.post('/sendmail', async (req, res) => {
         let { code, response, message } = await sendMail(data);
         return res.status(code).json(message || { data: response.data, token });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: 'Internal Error' });
+        return res.status(500).json({ message: 'Internal Error', error: error });
     }
 });
 

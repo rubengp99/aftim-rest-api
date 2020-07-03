@@ -19,26 +19,32 @@ const baseURL = `${DATA_URL}/mysql`;
 function getRequestBody(req) {
     let { data } = req.body;
     if (typeof data === "undefined") return void 0;
-    return typeof data.subscription_data === "string" ? JSON.parse(req.body.data.subscription_data) : data.subscription_data;
+    return typeof data.subscription_data === "string"
+        ? JSON.parse(req.body.data.subscription_data)
+        : data.subscription_data;
 }
 
 router.post("/subscribe", validar, async (req, res) => {
-    const tenantId = getTenantId(req);
-    const connection = createAxios(baseURL, tenantId);
-    const parsed_data = getRequestBody(req);
-    if (!parsed_data) return res.status(400).json({ message: "bad request" });
-    const {usuario_id} = req.body.data;
-    const  subscription_data = parsed_data;
-    const { auth, p256dh } = subscription_data.keys;
-    const { endpoint, expirationTime } = subscription_data;
-    const toSave = {
-       auth: auth,
-        p256dh: p256dh,
-        endpoint: endpoint,
-        expiration_time: expirationTime,
-        usuario_id: usuario_id,
-    };
     try {
+        const tenantId = getTenantId(req);
+        const connection = createAxios(baseURL, tenantId);
+        const parsed_data = getRequestBody(req);
+
+        if (!parsed_data)
+            return res.status(400).json({ message: "bad request" });
+
+        const { usuario_id } = req.body.data;
+        const subscription_data = parsed_data;
+        const { auth, p256dh } = subscription_data.keys;
+        const { endpoint, expirationTime } = subscription_data;
+        const toSave = {
+            auth: auth,
+            p256dh: p256dh,
+            endpoint: endpoint,
+            expiration_time: expirationTime,
+            usuario_id: usuario_id,
+        };
+
         const { saved } = await connection.post(`/subscripcion`, {
             data: { ...toSave },
         });
@@ -66,7 +72,8 @@ router.post("/new-message", validar, async (req, res) => {
 
     const { data } = await connection.get(`usuario/${usuario_id}/subscripcion`);
 
-    if (!data)return res.status(404).json({ message: "subscription not found." });
+    if (!data)
+        return res.status(404).json({ message: "subscription not found." });
 
     const configData = {
         endpoint: data.endpoint,
@@ -98,11 +105,34 @@ router.get("/", validar, async (req, res) => {
     const tenantId = getTenantId(req);
     const connection = createAxios(baseURL, tenantId);
     try {
-        const { data } = await connection.get(`/subscripcion`,);
+        const { data } = await connection.get(`/subscripcion`);
         res.status(200).json({ message: "ok", data: data });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: error });
+    }
+});
+
+router.get("/:id", validar, async (req, res) => {
+    try {
+        let { id } = req.params;
+
+        const tenantId = getTenantId(req);
+
+        const connection = createAxios(baseURL, tenantId);
+
+        const { data } = await connection.get(`/subscripcion`, {
+            fields: { usuario_id: id },
+        });
+
+        if (!data)
+            return res.status(404).json({ message: "subscription not found." });
+
+        res.status(200).json({ data: data });
+    } catch (error) {
+        res.status(500).json({
+            message: "there is an error",
+        });
     }
 });
 

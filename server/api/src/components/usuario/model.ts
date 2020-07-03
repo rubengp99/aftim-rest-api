@@ -21,4 +21,5 @@ export interface IUsuario {
     adm_vendedor_id:    string | number,
     telefono:           string,
     bloqueado:          number,
+    verificado:         number,
 }

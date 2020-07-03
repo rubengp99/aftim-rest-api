@@ -172,14 +172,16 @@ export const create = async (body: any, file: any, tenantId: string): Promise<an
 	try {
 		let { insertId } = await consult.create(tenantId, model, newPedido);
 
-		/*for (let index = 0; index < newDetalles.length; index++) {
+		for (let index = 0; index < newDetalles.length; index++) {
 			newDetalles[index].rest_pedidos_id = insertId;
 			let inserted = await consult.create(tenantId, submodel, newDetalles[index]);
 			newDetalles[index].id = inserted.insertId;
-			let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: newDetalles[index].adm_conceptos_id });
+			
+			/*let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: newDetalles[index].adm_conceptos_id });
 			movDep[0].existencia = movDep[0].existencia - newDetalles[index].cantidad;
 			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
-		}*/
+			*/
+		}
 
 		let link = links.created(model, insertId);
 		newPedido.detalles = newDetalles;

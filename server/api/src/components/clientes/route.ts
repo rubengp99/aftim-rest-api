@@ -23,7 +23,7 @@ router.get('/mostbuyers',validar, async (req:Request, res:Response):Promise<Resp
     try {
         let tenantId: string = getTenantId(req);
         let { message, response, code } = await controller.getMostBuyers(req.query, tenantId);
-        return res.status(code).json(message ? {message} : {response});
+        return res.status(code).json(message ? {message} : {...response});
     } catch (error) {
         console.log(error);
         return res.status(InternalServerError.code).json({message:InternalServerError.message});
