@@ -87,13 +87,16 @@ export async function getSellsBySeller(params:any, query:any, tenantId: string):
 export async function getTopSellers(query:any, tenantId: string):Promise<any>{
     try {
         let where = makeWhere(query,'adm_det_facturas',1);
-        let sql = `SELECT COUNT(adm_det_facturas.id) AS ventas, 
-        SUM(adm_det_facturas.precio) AS venta_total, 
-        SUM(adm_det_facturas.precio_dolar) AS venta_total_dolar, adm_vendedor.* 
-        FROM adm_det_facturas LEFT JOIN adm_vendedor ON adm_det_facturas.adm_vendedor_id = adm_vendedor.id
-        LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id
-        WHERE adm_enc_facturas.adm_tipos_facturas_id IN (5,1) ${where}
-        GROUP BY  adm_det_facturas.adm_vendedor_id ORDER BY venta_total ${query.order || 'DESC'} LIMIT ${query.limit || '10'}`;
+
+        let sql = `SELECT COUNT(adm_enc_facturas.id) AS ventas,
+		SUM(adm_enc_facturas.subtotal_dolar) AS venta_total_dolar,
+	    SUM(adm_enc_facturas.subtotal) AS venta_total,
+		adm_vendedor.*
+		FROM adm_enc_facturas
+		LEFT JOIN adm_vendedor ON adm_vendedor.id = adm_enc_facturas.adm_vendedor_id
+		WHERE adm_enc_facturas.adm_tipos_facturas_id IN (5,1) ${where}
+        GROUP BY  adm_enc_facturas.adm_vendedor_id ORDER BY venta_total_dolar ${query.order || 'DESC'} LIMIT ${query.limit || '10'}`;
+        
         const data: any[] = await consult.getPersonalized(tenantId, sql);
         const count = data.length;
         
