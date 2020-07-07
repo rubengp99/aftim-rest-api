@@ -137,8 +137,8 @@ export async function getBankMovesByOrder(params: any, query: any, tenantId: str
 export async function getStats(tenantId: string): Promise<any> {
 	try {
 		let statusNuevo = await consult.countOther(tenantId, "rest_estatus", model, "1");
-		let statusFacturado = await consult.countOther(tenantId, "rest_estatus", model, "2");
-		let statusPorFacturar = await consult.countOther(tenantId, "rest_estatus", model, "3");
+		let statusPorFacturar = await consult.countOther(tenantId, "rest_estatus", model, "2");
+		let statusFacturado = await consult.countOther(tenantId, "rest_estatus", model, "3");
 		let sql = "SELECT COUNT(*), rest_pedidos.adm_empresa_id FROM rest_pedidos  GROUP BY rest_pedidos.adm_empresa_id";
 		let data1 = await consult.getPersonalized(tenantId, sql);
 
@@ -179,8 +179,7 @@ export const create = async (body: any, file: any, tenantId: string): Promise<an
 			
 			/*let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: newDetalles[index].adm_conceptos_id });
 			movDep[0].existencia = movDep[0].existencia - newDetalles[index].cantidad;
-			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
-			*/
+			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);*/
 		}
 
 		let link = links.created(model, insertId);
@@ -228,16 +227,16 @@ export const remove = async (params: any, tenantId: string): Promise<any> => {
 
 		if (!data) return respuestas.ElementNotFound;
 
-		/*if (data.rest_estatus_id === 3) {
+		if (data.rest_estatus_id === 3) {
 			const data1: IDetPedidos[] = await consult.getOtherByMe(tenantId, model, id, submodel, {});
 
 			for (let index = 0; index < data1.length; index++) {
-				let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: data1[index].adm_conceptos_id });
+				/*let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: data1[index].adm_conceptos_id });
 				movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat((data1[index].cantidad as unknown) as string);
-				await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
+				await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);*/
 				await consult.remove(tenantId, submodel, data1[index].id as number);
 			}
-		}*/
+		}
 
 		await consult.remove(tenantId, model, id);
 
@@ -273,9 +272,7 @@ export const addDetail = async (params: any, body: any, tenantId: string): Promi
 
 		/*let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: newDetail.adm_conceptos_id });
 		movDep[0].existencia = movDep[0].existencia - newDetail.cantidad;
-
-		await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
-		*/
+		await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);*/
 
 		const link = links.created(model, insertId);
 		const response = { data: newDetail, message: respuestas.Created.message, link: link };
@@ -308,13 +305,11 @@ export const updateDetail = async (params: any, body: any, tenantId: string): Pr
 
 		const newDetail: IDetPedidos = data;
 
-		/*
-		let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
+		/*let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
 		movDep[0].existencia = parseFloat(movDep[0].existencia) - (newDetail.cantidad - parseFloat(detalle.cantidad));
-		await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
+		await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);*/
 
 		await consult.update(tenantId, submodel, id1, newDetail);
-		*/
 
 		const link = links.created(model, id);
 		const response = { message: respuestas.Update.message, link: link };
@@ -340,15 +335,15 @@ export const deleteDetail = async (params: any, tenantId: string): Promise<any> 
 		const pedido = await consult.getOne(tenantId, model, id, { fields: "id" });
 
 		if (!pedido) return respuestas.ElementNotFound;
-
 		
+		const detalle = await consult.getOne(tenantId, submodel, id1, {});
+		await consult.remove(tenantId, submodel, id1);
+
 		/*if(pedido.rest_estatus_id === 3){
 			const detalle = await consult.getOne(tenantId, submodel, id1, {});
 			let movDep: any[] = await consult.get(tenantId, "adm_movimiento_deposito", { adm_conceptos_id: detalle.adm_conceptos_id });
 			movDep[0].existencia = parseFloat(movDep[0].existencia) + parseFloat(detalle.cantidad);
-
 			await consult.update(tenantId, "adm_movimiento_deposito", movDep[0].id, movDep[0]);
-
 			await consult.remove(tenantId, submodel, id1);
 		}*/
 		
