@@ -63,17 +63,16 @@ export const getOne = async (id: string | number, query: any, tenantId: string):
 }
 
 export const getTotal = async (query: any, tenantId: string): Promise<any> =>{
-    try {
-        let where = makeWhere(query,'adm_enc_facturas',1);
+    try { 
+   
+        let where = makeWhere(query,'adm_det_facturas',1);
 
         let sql = `SELECT SUM(precio_dolar*ROUND(cantidad)) AS subtotal_dolar,
 	    SUM(precio*ROUND(cantidad)) AS subtotal
 		FROM adm_det_facturas
 		LEFT JOIN adm_enc_facturas ON adm_enc_facturas.id = adm_det_facturas.adm_enc_facturas_id
-        ${where} AND adm_enc_facturas.adm_tipos_facturas_id IN (5,1) AND adm_enc_facturas.estatus_pago = 1` 
+                WHERE adm_enc_facturas.adm_tipos_facturas_id IN (5,1) AND adm_enc_facturas.estatus_pago = 1 ${where}` 
         
-        console.log(sql)
-
         let facturas:IFacturas[] = await consult.getPersonalized(tenantId, sql);
         let count = facturas.length;
 
@@ -110,8 +109,9 @@ function makeWhere(query:any,tabla:any,ind:number){
                 index++;
             }
         }
-
     }
+
+    return where;
 }
 
 /**
