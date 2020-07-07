@@ -64,7 +64,8 @@ export const getOne = async (id: string | number, query: any, tenantId: string):
 
 export const getTotal = async (query: any, tenantId: string): Promise<any> =>{
     try {
-        
+        let where = makeWhere(query,'adm_enc_facturas',1);
+
         let sql = `SELECT SUM(precio_dolar*ROUND(cantidad)) AS subtotal_dolar,
 	    SUM(precio*ROUND(cantidad)) AS subtotal
 		FROM adm_det_facturas
@@ -83,6 +84,31 @@ export const getTotal = async (query: any, tenantId: string): Promise<any> =>{
         if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`[ERROR] on controller: ${model}. \n ${error} `);
         return respuestas.InternalServerError;
+    }
+}
+
+function makeWhere(query:any,tabla:any,ind:number){
+    let where = "";
+    var index = ind || 0;
+    for (const prop in query) {
+        if (prop !== 'fields' && prop !== 'limit' && prop !== 'order' && prop !== 'orderField' && prop !== 'offset' && !prop.includes('ext')) {
+            if (prop.includes('after') || prop.includes('before')) {
+                if (prop.split('-').length > 1) {
+                    where += (index == 0) ? " WHERE " : " AND ";
+                    where += `${tabla}.${prop.split('-')[1]} ${prop.split('-')[0] === 'before' ? '<=' : '>='} '${query[prop]}'`;
+                    index++;
+                }
+            } else if (Array.isArray(query[prop])) {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} in(${query[prop].join(",")}) `;
+                index++;
+            } else {
+                where += (index == 0) ? " WHERE " : " AND ";
+                where += `${tabla}.${prop} like '%${query[prop]}%'`;
+                index++;
+            }
+        }
+
     }
 }
 

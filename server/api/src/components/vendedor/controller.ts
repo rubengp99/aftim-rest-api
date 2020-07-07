@@ -86,7 +86,7 @@ export async function getSellsBySeller(params:any, query:any, tenantId: string):
 
 export async function getTopSellers(query:any, tenantId: string):Promise<any>{
     try {
-        let where = makeWhere(query,'adm_det_facturas',1);
+        let where = makeWhere(query,'adm_enc_facturas',1);
 
         let sql = `SELECT 
         (SELECT COUNT(*) FROM adm_enc_facturas WHERE adm_enc_facturas.adm_vendedor_id = adm_vendedor.id) AS ventas,
