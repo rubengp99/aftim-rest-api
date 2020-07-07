@@ -70,7 +70,8 @@ export const getOne = async (id: string | number, query: any, tenantId: string):
  */
 export const getCosts = async (query: any, tenantId: string): Promise<any> => {
     try {
-        let where = makeWhere(query, "adm_det_facturas", 0);
+
+        let where = makeWhere(query, "adm_det_compra", 0);
 
         let sql = `SELECT adm_enc_compra.id,
         SUM(
