@@ -73,12 +73,12 @@ export const getTotal = async (query: any, tenantId: string): Promise<any> =>{
 		LEFT JOIN adm_enc_facturas ON adm_enc_facturas.id = adm_det_facturas.adm_enc_facturas_id
                 WHERE adm_enc_facturas.adm_tipos_facturas_id IN (5,1) AND adm_enc_facturas.estatus_pago = 1 ${where}` 
         
-        let facturas:IFacturas[] = await consult.getPersonalized(tenantId, sql);
-        let count = facturas.length;
+        let { data } = await consult.getPersonalized(tenantId, sql);
+        let count = data.length;
 
         if (count <= 0) return respuestas.Empty;
         
-        let response = facturas
+        let response = Object.assign({ count, data });
         
         return { response, code: respuestas.Ok.code };
     } catch (error) {
