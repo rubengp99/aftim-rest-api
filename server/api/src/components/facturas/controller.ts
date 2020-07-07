@@ -70,8 +70,7 @@ export const getTotal = async (query: any, tenantId: string): Promise<any> =>{
 	    SUM(precio*ROUND(cantidad)) AS subtotal
 		FROM adm_det_facturas
 		LEFT JOIN adm_enc_facturas ON adm_enc_facturas.id = adm_det_facturas.adm_enc_facturas_id
-        WHERE adm_enc_facturas.adm_tipos_facturas_id IN (5,1) AND adm_enc_facturas.estatus_pago = 1
-        ${where}` 
+        ${where} AND adm_enc_facturas.adm_tipos_facturas_id IN (5,1) AND adm_enc_facturas.estatus_pago = 1` 
         
         let facturas:IFacturas[] = await consult.getPersonalized(tenantId, sql);
         let count = facturas.length;
