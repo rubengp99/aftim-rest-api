@@ -30,8 +30,8 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
     }
 });
 
-//obtener todas las compras (costos)
-router.get('/costos',validar, async (req:Request, res:Response):Promise<Response> => {
+//obtener todas las compras (costos), genera conflicto con get /:id, por eso se usa POST
+router.post('/costos',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
         let tenantId: string = getTenantId(req);
         let { message, response, code } = await controller.getCosts(req.query, tenantId);
