@@ -123,7 +123,9 @@ export const create = async (body: any, tenantId: string): Promise<any> => {
     let newCargo: IFacturas = data;
     let detalles: IDetFacturas[] = data1;
     try {
-        let { insertId } = await consult.create(tenantId, model, newCargo);
+        let factura = await consult.create(tenantId, model, newCargo);
+
+        let { insertId } = factura;
 
         detalles.forEach( async (detalle) =>{
             detalle.adm_enc_facturas_id = insertId;
@@ -136,7 +138,7 @@ export const create = async (body: any, tenantId: string): Promise<any> => {
         });
 
         let link = links.created('facturas', insertId);
-        let response = Object.assign({ message: respuestas.Created.message }, { link: link });
+        let response = Object.assign({ message: respuestas.Created.message }, { link: link }, factura);
         
         return { response, code: respuestas.Created.code };
     } catch (error) {
