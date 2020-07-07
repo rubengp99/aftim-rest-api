@@ -113,12 +113,12 @@ export async function getMostBuyers(query: any, tenantId: string): Promise<any>{
     try {
         let where = makeWhere(query,'adm_enc_facturas',1);
         
-        let sql = `SELECT COUNT(adm_det_facturas.id) AS compras, 
-        SUM(adm_det_facturas.precio) AS total, 
-        SUM(adm_det_facturas.precio_dolar) AS totalDolar, adm_clientes.* 
-        FROM adm_det_facturas 
-		LEFT JOIN adm_enc_facturas ON adm_enc_facturas_id = adm_enc_facturas.id
-		LEFT JOIN adm_clientes ON adm_enc_facturas.adm_clientes_id = adm_clientes.id
+        let sql = `SELECT COUNT(adm_enc_facturas.id) AS compras,
+        SUM(adm_enc_facturas.subtotal_dolar) AS totalDolar,
+        SUM(adm_enc_facturas.subtotal) AS total,
+        adm_clientes.*
+        FROM adm_enc_facturas
+        LEFT JOIN adm_clientes ON adm_clientes.id = adm_enc_facturas.adm_clientes_id
         WHERE adm_enc_facturas.adm_tipos_facturas_id IN (5,1) ${where}
         GROUP BY  adm_enc_facturas.adm_clientes_id ORDER BY totalDolar ${query.order || 'DESC'} LIMIT ${query.limit || '10'}`;
         
