@@ -37,6 +37,40 @@ export async function getPedidosByUser (id: string | number, query: any, tenantI
     }
 }
 
+export async function getPedidosByRepartidor (id: string | number, query: any, tenantId: string): Promise<any> {
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let recurso: IUsuario = await consult.getOne(tenantId, model, id, { fields: 'id' });
+        
+        if (!recurso) return respuestas.ElementNotFound;
+
+        if (recurso.perfil_id !== 4) return Object.assign({ totalCount: 0, count: 0, data: [] });
+
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'rest_pedidos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'rest_pedidos', id);
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
+            let pres: any[] = await consult.getOtherByMe(tenantId, 'rest_pedidos', id as string, 'rest_det_pedidos', {});
+            data[i].detalles = pres;
+        }
+
+        let link = links.pages(data, `usuario/${id}/pedidos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
+        return respuestas.InternalServerError;
+    }
+}
+
 export async function getPagosByUser (id: string | number, query: any, tenantId: string): Promise<any> {
     try {
         if (isNaN(id as number)) return respuestas.InvalidID;
