@@ -235,7 +235,7 @@ export const create = async (body: any, tenantId: string): Promise<any> => {
         let link = links.created(model, insertId);
         let response = Object.assign({ message: respuestas.Created.message }, { link: link });
         
-        return { response, code: respuestas.Created.code };
+        return { response, code: respuestas.Created.code, insertId: insertId };
     } catch (error) {
         if (error.message == 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
         console.log(`[ERROR] on controller: ${model}. \n ${error} `);
