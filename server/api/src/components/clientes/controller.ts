@@ -81,6 +81,65 @@ export async function getBuys(params: any, query: any, tenantId: string): Promis
     }
 }
 
+export async function getPedidosByCliente (id: string | number, query: any, tenantId: string): Promise<any> {
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let recurso: ICliente = await consult.getOne(tenantId, model, id, { fields: 'id' });
+        
+        if (!recurso) return respuestas.ElementNotFound;
+
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'rest_pedidos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'rest_pedidos', id);
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+        for (let i = 0; i < data.length; i++) {
+            let { id } = data[i];
+            let pres: any[] = await consult.getOtherByMe(tenantId, 'rest_pedidos', id as string, 'rest_det_pedidos', {});
+            data[i].detalles = pres;
+        }
+
+        let link = links.pages(data, `usuario/${id}/pedidos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
+        return respuestas.InternalServerError;
+    }
+}
+
+export async function getPagosByCliente (id: string | number, query: any, tenantId: string): Promise<any> {
+    try {
+        if (isNaN(id as number)) return respuestas.InvalidID;
+
+        let recurso: ICliente = await consult.getOne(tenantId, model, id, { fields: 'id' });
+        
+        if (!recurso) return respuestas.ElementNotFound;
+
+        let data: any = await consult.getOtherByMe(tenantId, model, id, 'adm_pagos', query);
+        let totalCount = await consult.countOther(tenantId, model, 'adm_pagos', id);
+        let count = data.length;
+        let { limit } = query;
+
+        if (count <= 0) return respuestas.Empty;
+
+
+        let link = links.pages(data, `usuario/${id}/pagos`, count, totalCount, limit);
+        let response = Object.assign({ totalCount, count, data }, link);
+        
+        return { response, code: respuestas.Ok.code };
+    } catch (error) {
+        if (error.message === 'BD_SYNTAX_ERROR') return respuestas.BadRequest;
+        console.log(`[ERROR] on controller: ${model}. \n ${error} `);
+        return respuestas.InternalServerError;
+    }
+}
+
 export async function getDevolutions(params: any, query: any, tenantId: string): Promise<any> {
     try {
         let { id } = params;

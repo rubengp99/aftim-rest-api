@@ -43,6 +43,34 @@ router.get('/:id',validar, async (req:Request, res:Response):Promise<Response> =
     }
 });
 
+//obtener los pedidos de un usuario
+router.get('/:id/pedidos',validar, async(req:Request, res:Response): Promise<Response> =>{
+    let {id} = req.params;
+    let {query} = req;
+    try {
+        let tenantId: string = getTenantId(req);
+        let { code, response, message } = await controller.getPedidosByCliente(id,query, tenantId);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res.status(InternalServerError.code).json({message:InternalServerError.message});
+    }
+});
+
+//obtener los pedidos de un usuario
+router.get('/:id/pagos',validar, async(req:Request, res:Response): Promise<Response> =>{
+    let {id} = req.params;
+    let {query} = req;
+    try {
+        let tenantId: string = getTenantId(req);
+        let { code, response, message } = await controller.getPagosByCliente(id,query, tenantId);
+        return res.status(code).json(message || response);
+    } catch (error) {
+        console.log(error);
+        return res.status(InternalServerError.code).json({message:InternalServerError.message});
+    }
+});
+
 //obtener las compras de un cliente
 router.get('/:id/buys',validar, async (req:Request, res:Response):Promise<Response> => {
     try {
