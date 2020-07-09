@@ -77,19 +77,14 @@ export const getCosts = async (query: any, tenantId: string): Promise<any> => {
         SUM((adm_conceptos.ultimo_costo*ROUND(adm_det_compra.cantidad))) AS costo_total,
         SUM((adm_conceptos.costo_dolar*ROUND(adm_det_compra.cantidad))) AS costo_total_dolar
         FROM adm_enc_compra
-        LEFT JOIN adm_det_compra ON adm_enc_compra.id = adm_det_compra.adm_enc_compra_id
-        LEFT JOIN adm_conceptos ON adm_conceptos.id = adm_det_compra.adm_conceptos_id
+        INNER JOIN adm_det_compra ON adm_enc_compra.id = adm_det_compra.adm_enc_compra_id
+        INNER JOIN adm_conceptos ON adm_conceptos.id = adm_det_compra.adm_conceptos_id
         ${where}
         GROUP BY adm_enc_compra.id`;
         
         let data: any[] = await consult.getPersonalized(tenantId, sql);
 		let totalCount: number = await consult.count(tenantId, model); // consulto el total de registros de la BD
 		let count = data.length;
-
-        data.forEach(compra => {
-            compra.costo_total = parseFloat(compra.costo_total) - parseFloat(compra.descuento);
-            compra.costo_total_dolar = parseFloat(compra.costo_total_dolar) - parseFloat(compra.descuento_dolar);
-        })
 
 		if (count <= 0) return respuestas.Empty;
 
