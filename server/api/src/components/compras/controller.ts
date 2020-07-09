@@ -74,8 +74,9 @@ export const getCosts = async (query: any, tenantId: string): Promise<any> => {
         let where = makeWhere(query, "adm_enc_compra", 0);
 
         let sql = `SELECT
-        SUM(subtotal) AS costo_total,
-        SUM(subtotal_dolar) AS costo_total_dolar
+        subtotal AS costo_total,
+        subtotal_dolar AS costo_total_dolar
+        FROM adm_enc_compra
         ${where}`;
         
         let data: any[] = await consult.getPersonalized(tenantId, sql);
